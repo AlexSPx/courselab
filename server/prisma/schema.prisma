@@ -1,0 +1,228 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         String  @id @default(uuid())
+  email      String  @unique @db.VarChar(255)
+  username   String  @unique
+  first_name String?
+  last_name  String?
+  socials    Json?
+  password   String
+  isActive   Boolean @default(true)
+  isVerified Boolean @default(false)
+  isAdmin    Boolean @default(false)
+
+  // Relation Fields
+  courses        CourseEnrollment[]
+  videoQuestions VideoQuestion[]
+  documents      DocumentsOnUsers[]
+  assignments    AssignmentsOnUsers[]
+
+  @@map("user")
+}
+
+model Course {
+  name        String  @id @unique
+  public_name String?
+  details     Json?
+  published   Boolean @default(false)
+
+  model ModelType @default(WEEKLY)
+  weeks Int?
+
+  // Relation Fields
+  members    CourseEnrollment[]
+  dataModels CourseDataModel[]
+  @@map("course")
+}
+
+model CourseEnrollment {
+  id   String   @id @default(uuid())
+  role UserRole
+
+  // Relation Fields
+  user_id   String
+  course_id String
+  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  course    Course @relation(fields: [course_id], references: [name], onDelete: Cascade)
+
+  @@map("courseEnrollment")
+}
+
+model CourseDataModel {
+  id    String   @id @default(uuid())
+  name  String
+  type  DataType
+  props Json
+
+  // Relation Fields
+  document_id   String?     @unique
+  document      Document?   @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  video_id      String?     @unique
+  video         Video?      @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  course_id     String
+  course        Course      @relation(fields: [course_id], references: [name], onDelete: Cascade)
+  assignment_id String?     @unique
+  assignment    Assignment? @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
+  quiz_id String? @unique
+  quiz Quiz? @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+
+  @@map("courseDataModel")
+}
+
+model Document {
+  id   String @id @default(uuid())
+  name String
+  file Json
+
+  // Relations
+  courseDataModel CourseDataModel?
+  members         DocumentsOnUsers[]
+}
+
+model DocumentsOnUsers {
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id     String
+  document    Document @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  document_id String
+  role        FileRole
+  AssignedAt  DateTime @default(now())
+
+  @@id([user_id, document_id])
+}
+
+model Video {
+  id   String  @id @default(uuid())
+  name String
+  path String?
+
+  // Relations
+  questions       VideoQuestion[]
+  courseDataModel CourseDataModel?
+}
+
+model VideoQuestion {
+  id        String   @id @default(uuid())
+  content   String
+  timestamp Float?
+  date      DateTime @default(now())
+  answered  Boolean?
+  is_answer Boolean?
+
+  // Relations
+  parentQuestion   VideoQuestion?  @relation("VideoQuestionToVideoQuestion", fields: [parentQuestionId], references: [id], onDelete: Cascade)
+  parentQuestionId String?
+  VideoAnswers     VideoQuestion[] @relation("VideoQuestionToVideoQuestion")
+
+  video_id  String
+  video     Video  @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  author_id String
+  author    User   @relation(fields: [author_id], references: [id], onDelete: Cascade) 
+}
+
+model Assignment {
+  id           String  @id @default(uuid())
+  name         String
+  content      String?
+  daysToSubmit Int?
+
+  courseDataModel CourseDataModel?
+  members         AssignmentsOnUsers[]
+}
+
+model AssignmentsOnUsers {
+  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+  assignment    Assignment     @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
+  assignment_id String
+  role          AssignmentRole
+
+  // relations
+  submits AssignmentSubmits[]
+
+  @@id([user_id, assignment_id])
+}
+
+model AssignmentSubmits {
+  id                 String              @id @default(uuid())
+  dateOfSubmit       DateTime
+  dateOfRemoval      DateTime?
+  AssignmentsOnUsers AssignmentsOnUsers? @relation(fields: [user_id, assignment_id], references: [user_id, assignment_id], onDelete: Cascade)
+  user_id            String?
+  assignment_id      String?
+}
+
+model Quiz {
+  id String @id @default(uuid())
+  name String
+  description String?
+
+  questions QuizQuestion[]
+  courseDataModel CourseDataModel?
+}
+
+model QuizQuestion {
+  id String @id @default(uuid())
+  type QuestionType
+  question String
+
+  closed String[]
+  answer Int?
+  
+  opened String?
+
+  Quizz Quiz @relation(fields: [quizz_id], references: [id], onDelete: Cascade)
+  quizz_id String
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+enum QuestionType {
+  CLOSED
+  OPENED
+}
+
+enum FileRole {
+  ADMIN
+  EDITOR
+  READER
+}
+
+enum AssignmentRole {
+  ADMIN
+  EDITOR
+  STUDENT
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum DataType {
+  VIDEO
+  DOCUMENT
+  QUIZ
+  ASSIGNMENT
+}
+
+enum ModelType {
+  FREE
+  WEEKLY
+}
