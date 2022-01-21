@@ -9,7 +9,12 @@ import {
 } from "react-beautiful-dnd";
 import { AiOutlineEdit } from "react-icons/ai";
 import QuizMenu from "../../components/Menus/QuizMenu";
-import { useModals } from "../../components/Modal";
+import {
+  ErrorModal,
+  LoadingModal,
+  SuccessModal,
+  useModals,
+} from "../../components/Modal";
 import { QuizInterface, QuizzQuestionInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { Left, Right, Main } from "../Layouts/MainLayout";
@@ -126,7 +131,17 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
   };
 
   const handleSaveChanges = async () => {
+    const lkey = Date.now();
     try {
+      pushModal(
+        <LoadingModal
+          title={"Saving changes"}
+          body={"Please wait"}
+          key={lkey}
+        />,
+        { timer: false }
+      );
+
       setQuestions(
         questions.map((question, index) => {
           question.orderIndex = index;
@@ -135,18 +150,75 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
       );
 
       const diff = difference(questions as any, quiz.questions as any);
-      console.log(diff);
 
       const res = await axios.post(
         `${baseurl}/quiz/questions`,
         { quizId: quiz.id, questions: filter(diff, size) },
         { withCredentials: true }
       );
+      if (res.status === 200) {
+        closeModal(lkey);
+        pushModal(
+          <SuccessModal title={"Success"} body={"Changes have been saved"} />
+        );
+      }
     } catch (error) {
-      console.log(error);
+      closeModal(lkey);
+      pushModal(<ErrorModal title="Error" body={`${error}`} />);
     }
   };
 
+  const handleGeneralSettings = async () => {
+    const lkey = Date.now();
+    try {
+      pushModal(
+        <LoadingModal
+          title={"Saving changes"}
+          body={"Please wait"}
+          key={lkey}
+        />,
+        { timer: false }
+      );
+
+      const res = await axios.post(
+        `${baseurl}/quiz/changes`,
+        { id: quiz.id, data: { name, description } },
+        { withCredentials: true }
+      );
+      if (res.status === 200) {
+        closeModal(lkey);
+        pushModal(
+          <SuccessModal title={"Success"} body={"Changes have been saved"} />
+        );
+      }
+    } catch (error) {
+      closeModal(lkey);
+      pushModal(<ErrorModal title="Error" body={`${error}`} />);
+    }
+  };
+
+  const handleDelete = async () => {
+    const lkey = Date.now();
+    try {
+      pushModal(
+        <LoadingModal title={"Deleting..."} body={"Please wait"} key={lkey} />,
+        { timer: false }
+      );
+
+      const res = await axios.delete(`${baseurl}/quiz/${quiz.id}`, {
+        withCredentials: true,
+      });
+      if (res.status === 200) {
+        closeModal(lkey);
+        pushModal(
+          <SuccessModal title={"Success"} body={"Quiz has been deleted"} />
+        );
+      }
+    } catch (error) {
+      closeModal(lkey);
+      pushModal(<ErrorModal title="Error" body={`${error}`} />);
+    }
+  };
   return (
     <>
       <Left />
@@ -179,10 +251,16 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
             />
           </div>
           <div className="flex flex-row justify-center">
-            <button className="btn btn-outline my-4 mx-1 w-[45%]">
+            <button
+              className="btn btn-outline my-4 mx-1 w-[45%]"
+              onClick={handleGeneralSettings}
+            >
               Save General Settings
             </button>
-            <button className="btn btn-outline my-4 mx-1 w-[45%] border-red-500 text-red-500 hover:bg-red-100 hover:text-red-500 hover:border-red-500">
+            <button
+              className="btn btn-outline my-4 mx-1 w-[45%] border-red-500 text-red-500 hover:bg-red-100 hover:text-red-500 hover:border-red-500"
+              onClick={handleDelete}
+            >
               Delete Quiz
             </button>
           </div>

@@ -43,11 +43,11 @@ router.post("/changes", isAuth, async (req, res) => {
   }
 });
 
-router.delete("/changes", isAuth, async (req, res) => {
+router.delete("/:id", isAuth, async (req, res) => {
   try {
     await prismaClient.quiz.deleteMany({
       where: {
-        id: req.body.id,
+        id: req.params.id,
         courseDataModel: {
           course: {
             members: {

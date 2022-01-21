@@ -23,7 +23,7 @@ export default function AuthHeader() {
           <Link href="/home">
             <a className="btn btn-ghost btn-sm rounded-btn">Home</a>
           </Link>
-          <a className="btn btn-ghost btn-sm rounded-btn">Portfolio</a>
+          <a className="btn btn-ghost btn-sm rounded-btn">Files</a>
           <a className="btn btn-ghost btn-sm rounded-btn">About</a>
           <a className="btn btn-ghost btn-sm rounded-btn">Contact</a>
         </div>

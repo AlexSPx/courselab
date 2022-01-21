@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { AiOutlineLoading } from "react-icons/ai";
 import { ModalContext } from "../../contexts/ModalContex";
 import { CheckIcon, ErrorIcon, LoadingFlexCenter } from "../../svg/small";
 
@@ -107,7 +108,7 @@ export const LoadingModal = ({
     <Modal key={Date.now()}>
       <div className="z-50 flex px-5 flex-row items-center shadow-lg rounded-xl w-full md:w-96 h-24 bg-white border border-yellow-400 dark:bg-gray-800 relative overflow-hidden m-1">
         <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
-          <LoadingFlexCenter css="h-5 w-5 border-yellow-200 loaderY" />
+          <AiOutlineLoading className="loaderY text-yellow-600" />
         </div>
         <div className="flex flex-col justify-center mx-3">
           <p className="text-lg">{title}</p>

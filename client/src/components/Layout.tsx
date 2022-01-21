@@ -8,7 +8,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <>
-      <div className="flex flex-col w-screen h-screen">
+      <div className="flex flex-col w-screen h-screen overflow-auto">
         {userData?.isAuth ? <AuthHeader /> : <Header />}
         {/* <div className="overflow-auto">{children}</div> */}
         {children}
