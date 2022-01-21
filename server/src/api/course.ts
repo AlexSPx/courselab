@@ -154,6 +154,7 @@ router.get("/fetchadmin/:name", isAuth, async (req, res) => {
               document_id: true,
               video_id: true,
               assignment_id: true,
+              quiz_id: true,
               course_id: true,
             },
           },

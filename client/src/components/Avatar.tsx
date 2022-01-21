@@ -5,12 +5,12 @@ import useHasImage from "../Hooks/useHasImage";
 import { GeneralUserInformation } from "../interfaces";
 
 export default function Avatar({ user }: { user?: GeneralUserInformation }) {
-  const userCtx = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
   const userInfo = {
-    username: user ? user.username : userCtx?.userData.user?.username,
-    first_name: user ? user.first_name : userCtx?.userData.user?.first_name,
-    last_name: user ? user.last_name : userCtx?.userData.user?.last_name,
+    username: user ? user.username : userData?.user?.username,
+    first_name: user ? user.first_name : userData?.user?.first_name,
+    last_name: user ? user.last_name : userData?.user?.last_name,
   };
 
   const { url } = useHasImage(`${userInfo.username}`, {

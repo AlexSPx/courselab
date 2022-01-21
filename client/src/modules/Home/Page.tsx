@@ -9,7 +9,7 @@ import { Left, Main, Right } from "../Layouts/MainLayout";
 import Avatar from "../../components/Avatar";
 
 export default function Page() {
-  const userCtx = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
   return (
     <>
@@ -35,11 +35,10 @@ export default function Page() {
             </div>
             <div className="flex flex-col mx-2">
               <p className="text-xl font-semibold">
-                {userCtx?.userData.user?.first_name}{" "}
-                {userCtx?.userData.user?.last_name}
+                {userData?.user?.first_name} {userData?.user?.last_name}
               </p>
               <p className="text-gray-600 italic">
-                @{userCtx?.userData.user?.username}
+                @{userData?.user?.username}
               </p>
             </div>
           </div>

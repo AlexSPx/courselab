@@ -109,7 +109,7 @@ export const io = new Server(httpServer, {
   app.use("/api/doc", document);
   app.use("/api/video", video);
   app.use("/api/assignment", assignment);
-  app.use("/api/quizz", quiz);
+  app.use("/api/quiz", quiz);
 
   // static
   app.use(

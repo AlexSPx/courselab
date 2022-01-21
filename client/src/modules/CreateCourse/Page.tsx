@@ -78,7 +78,7 @@ export default function Page({ drafts }: { drafts: CourseInterface[] }) {
   };
 
   const mapDrafts = drafts?.map((draft) => {
-    return <CourseDraftCard draft={draft} key={draft.id} />;
+    return <CourseDraftCard draft={draft} key={draft.name} />;
   });
 
   return (

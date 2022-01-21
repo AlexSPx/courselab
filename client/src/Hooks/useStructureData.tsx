@@ -92,7 +92,6 @@ export default function useStructureData(
       return temp;
     });
   };
-  console.log(data);
 
   const delFile = (dataModel: DataModelInterface) => {
     setData(

@@ -1,16 +1,30 @@
-import { WithAuth } from "../Auth/withAuth";
-import AuthHeader from "../Layouts/AuthHeaders";
+import { GetServerSideProps, NextPage } from "next";
+import { withSession } from "../../lib/withSession";
 import { MainLayout } from "../Layouts/MainLayout";
 import Page from "./Page";
-import SkeletonLoading from "./SkeletonLoading";
 
-export default function index() {
+export const Home: NextPage = () => {
   return (
-    <WithAuth loading={<SkeletonLoading />}>
-      <AuthHeader />
-      <MainLayout>
-        <Page />
-      </MainLayout>
-    </WithAuth>
+    <MainLayout>
+      <Page />
+    </MainLayout>
   );
-}
+};
+
+export const getServerSideProps: GetServerSideProps = withSession(
+  async ({ query, req }) => {
+    try {
+      return {
+        props: {
+          user: req.user,
+        },
+      };
+    } catch (error) {
+      return {
+        props: {
+          user: undefined,
+        },
+      };
+    }
+  }
+);

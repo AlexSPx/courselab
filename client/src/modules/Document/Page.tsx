@@ -31,7 +31,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
   const [usersInDoc, setUsersInDoc] = useState<GeneralUserInformation[]>([]);
 
   const { socket } = useContext(WebSocketContext);
-  const userCtx = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
   const router = useRouter();
 
@@ -45,7 +45,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
   useEffect(() => {
     if (!socket || !quill) return;
 
-    quill.setContents(JSON.parse(doc.file as any));
+    quill.setContents(doc.file as any);
 
     const autoSave = setInterval(() => {
       const value = quill.getContents();
@@ -118,7 +118,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
       socket.emit("cursor-change", {
         range,
         docId: doc.id,
-        id: `${userCtx?.userData.user?.username}`,
+        id: `${userData?.user?.username}`,
       });
     };
 
@@ -128,7 +128,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
     return () => {
       quill.off("text-change", tracker);
     };
-  }, [doc.id, quill, socket, userCtx?.userData.user?.username]);
+  }, [doc.id, quill, socket, userData?.user?.username]);
 
   useEffect(() => {
     if (socket == null || !quill || !cursors) return;

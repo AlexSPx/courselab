@@ -1,10 +1,9 @@
 import axios from "axios";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import useSWR from "swr";
 import { VideoInterface } from "../../interfaces";
 import { baseurl, fetcher } from "../../lib/fetcher";
-import { WithAuth } from "../Auth/withAuth";
-import AuthHeader from "../Layouts/AuthHeaders";
+import { withSession } from "../../lib/withSession";
 import { MainLayout } from "../Layouts/MainLayout";
 import Page from "./Page";
 
@@ -18,29 +17,29 @@ export const Video: NextPage<VideoPageProps> = ({ video }) => {
   });
 
   return (
-    <WithAuth>
-      <AuthHeader />
-      <MainLayout css="overflow-auto">
-        <Page video={data || video} mutate={mutate} />
-      </MainLayout>
-    </WithAuth>
+    <MainLayout css="overflow-auto">
+      <Page video={data || video} mutate={mutate} />
+    </MainLayout>
   );
 };
 
-Video.getInitialProps = async ({ query, req }) => {
-  const videoId = typeof query.id === "string" ? query.id : "";
+export const getServerSideProps: GetServerSideProps = withSession(
+  async ({ query, req }) => {
+    const videoId = typeof query.id === "string" ? query.id : "";
 
-  try {
-    const res = await axios.get(`${baseurl}/video/${videoId}`, {
-      withCredentials: true,
-      headers: {
-        cookie: req?.headers.cookie,
-      },
-    });
-    console.log(res.data);
+    try {
+      const res = await axios.get(`${baseurl}/video/${videoId}`, {
+        withCredentials: true,
+        headers: {
+          cookie: req?.headers.cookie,
+        },
+      });
 
-    return { video: res.data };
-  } catch (error) {
-    return { video: null };
+      return {
+        props: { user: req.user, video: res.data },
+      };
+    } catch (error) {
+      return { props: { user: undefined, video: null } };
+    }
   }
-};
+);

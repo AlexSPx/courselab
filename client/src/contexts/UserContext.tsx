@@ -1,10 +1,26 @@
-import React, { createContext } from "react";
+import React, { createContext, useEffect } from "react";
 import { UserContextInterface, UserDataInterface } from "../interfaces";
 
-export const UserContext = createContext<UserContextInterface | null>(null);
+export const UserContext = createContext<UserProps>({
+  userData: null,
+  setUserData: null,
+});
 
-const UserCtxProvider: React.FC = ({ children }) => {
-  const [userData, setUserData] = React.useState<UserDataInterface | any>(null);
+interface UserProps {
+  userData: UserDataInterface | null;
+  setUserData: React.Dispatch<
+    React.SetStateAction<UserDataInterface | null>
+  > | null;
+}
+
+interface UserProviderProps {
+  user: UserDataInterface | null;
+}
+
+const UserCtxProvider: React.FC<UserProviderProps> = ({ children, user }) => {
+  const [userData, setUserData] = React.useState<UserDataInterface | null>(
+    user ? user : null
+  );
 
   return (
     <UserContext.Provider

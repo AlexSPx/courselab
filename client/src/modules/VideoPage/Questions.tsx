@@ -37,7 +37,7 @@ export default function Questions({
     video.questions || []
   );
 
-  const UserCtx = useContext(UserContext);
+  const { userData } = useContext(UserContext);
   const { pushModal } = useModals();
 
   const handleAddTimestamp = () => {
@@ -57,7 +57,7 @@ export default function Questions({
         return;
       }
       const question = {
-        authorId: UserCtx?.userData.user?.id,
+        authorId: userData?.user?.id,
         videoId: video.id,
         content,
         timestamp,
@@ -81,11 +81,11 @@ export default function Questions({
   };
 
   const renderQuestions = questions.map((question) => {
-    if (!UserCtx?.userData.user?.id) return;
+    if (!userData?.user?.id) return;
     return (
       <QuestionBlock
         question={question}
-        currentUser={UserCtx?.userData.user?.id}
+        currentUser={userData?.user?.id}
         videoId={video.id}
         playerRef={playerRef}
         key={question.id}

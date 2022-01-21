@@ -1,9 +1,8 @@
 import axios from "axios";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { CourseInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
-import { WithAuth } from "../Auth/withAuth";
-import AuthHeader from "../Layouts/AuthHeaders";
+import { withSession } from "../../lib/withSession";
 import Page from "./Page";
 
 interface CourseEditorPageProps {
@@ -13,29 +12,40 @@ interface CourseEditorPageProps {
 export const CreateCoursePage: NextPage<CourseEditorPageProps> = ({
   course,
 }) => {
-  return (
-    <WithAuth>
-      <AuthHeader />
-      <Page course={course} />
-    </WithAuth>
-  );
+  return <Page course={course} />;
 };
 
-CreateCoursePage.getInitialProps = async ({ query, req }) => {
-  const course = typeof query.name === "string" ? query.name : "";
+export const getServerSideProps: GetServerSideProps = withSession(
+  async ({ req, query }) => {
+    const course = typeof query.name === "string" ? query.name : "";
 
-  try {
-    const res = await axios.get(`${baseurl}/course/fetchadmin/${course}`, {
-      withCredentials: true,
-      headers: {
-        cookie: req?.headers.cookie,
-      },
-    });
+    try {
+      const courseRes = await axios.get(
+        `${baseurl}/course/fetchadmin/${course}`,
+        {
+          withCredentials: true,
+          headers: {
+            cookie: req?.headers.cookie,
+          },
+        }
+      );
+      console.log(req.user);
 
-    return {
-      course: res.data,
-    };
-  } catch (error) {
-    return { course };
+      return {
+        props: {
+          user: req.user,
+          course: courseRes.data,
+        },
+      };
+    } catch (error) {
+      console.log(error);
+
+      return {
+        props: {
+          user: undefined,
+          course,
+        },
+      };
+    }
   }
-};
+);

@@ -195,8 +195,8 @@ const RenderFile = ({
     } else if (data.type === "ASSIGNMENT") {
       setHref(`${router.basePath}/assignment/${data.assignment_id}/edit`);
       return <AssignmentIcon />;
-    } else if (data.type === "QUIZZ") {
-      setHref(`${router.basePath}/quizz/${data.quizz_id}/edit`);
+    } else if (data.type === "QUIZ") {
+      setHref(`${router.basePath}/quiz/${data.quiz_id}/edit`);
       return <QuizzIcon />;
     } else {
       return <></>;

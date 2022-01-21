@@ -4,4 +4,5 @@ module.exports = {
     domains: ["localhost", "avatars.dicebear.com"],
   },
   swcMinify: true,
+  experimental: { optimizeCss: true },
 };

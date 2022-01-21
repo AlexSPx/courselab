@@ -9,7 +9,7 @@ import { ErrorModal, useModals } from "../../components/Modal";
 import { useRouter } from "next/router";
 
 export default function AuthHeader() {
-  const userCtx = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
   const [dropdown, setDropdown] = useState(false);
 
@@ -79,7 +79,7 @@ export default function AuthHeader() {
             >
               <Avatar />
             </div>
-            {dropdown && <Menu user={userCtx?.userData} />}
+            {dropdown && <Menu user={userData} />}
           </div>
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function AuthHeader() {
   );
 }
 
-const Menu = ({ user }: { user: UserDataInterface | undefined }) => {
+const Menu = ({ user }: { user: UserDataInterface | null }) => {
   const { pushModal } = useModals();
   const router = useRouter();
 

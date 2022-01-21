@@ -4,7 +4,7 @@ export interface ModalsInterface {
 }
 
 export interface UserDataInterface {
-  isAuth: boolean;
+  isAuth: boolean | null;
   user?: {
     id: string;
     username: string;
@@ -41,12 +41,12 @@ export interface DataModelInterface {
     day: number;
     index: number;
   };
-  type: "DOCUMENT" | "VIDEO" | "ASSIGNMENT" | "QUIZZ";
+  type: "DOCUMENT" | "VIDEO" | "ASSIGNMENT" | "QUIZ";
   document_id?: string;
   video_id?: string;
   course_id: string;
   assignment_id?: string;
-  quizz_id?: string;
+  quiz_id?: string;
 }
 
 export interface DocumentInterface {
@@ -98,4 +98,20 @@ export interface AssignmentInterface {
   name: string;
   content: string;
   daysToSubmit: number;
+}
+
+export interface QuizInterface {
+  id: string;
+  name: string;
+  description: string;
+  questions: QuizzQuestionInterface[];
+}
+
+export interface QuizzQuestionInterface {
+  id: string;
+  question: string;
+  type: "CLOSED" | "OPENED";
+  answer: string[];
+  options: string[];
+  orderIndex: number;
 }
