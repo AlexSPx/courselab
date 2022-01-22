@@ -9,6 +9,7 @@ import Quill from "quill";
 import QuillCursors from "quill-cursors";
 import { UserContext } from "../../contexts/UserContext";
 import randomColor from "../../lib/randomColor";
+import { isEqual } from "lodash";
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -25,8 +26,6 @@ const TOOLBAR_OPTIONS = [
 export default function Page({ doc }: { doc: DocumentInterface }) {
   const [quill, setQuill] = useState<Quill>();
   const [cursors, setCursors] = useState<QuillCursors>();
-
-  const [lastSavedData, setLastSavedData] = useState();
 
   const [usersInDoc, setUsersInDoc] = useState<GeneralUserInformation[]>([]);
 
@@ -45,10 +44,11 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
   useEffect(() => {
     if (!socket || !quill) return;
 
-    quill.setContents(doc.file as any);
+    quill.setContents(JSON.parse(doc.file as any));
 
     const autoSave = setInterval(() => {
       const value = quill.getContents();
+
       if (value) {
         console.log("saving");
 
@@ -183,9 +183,9 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
       <div className="divider divider-vertical sticky top-0"></div>
       <Main css="items-center w-screen">
         <div
-          style={{ height: "calc(100% + 2.75rem)", width: "85%" }}
+          style={{ width: "85%" }}
           ref={wrapperRef}
-          className="page"
+          className="page w-full"
           id="journal-scroll"
         ></div>
       </Main>

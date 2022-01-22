@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FIleAdder from "../../components/FIleAdder";
 import {
   ErrorModal,
@@ -10,6 +10,16 @@ import {
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { Left, Main, Right } from "../Layouts/MainLayout";
+import Quill from "quill";
+
+const TOOLBAR_OPTIONS = [
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  [{ font: [] }],
+  [{ list: "ordered" }, { list: "bullet" }],
+  ["bold", "italic", "underline"],
+  [{ align: [] }],
+  ["image", "blockquote", "code-block"],
+];
 
 export default function Page({
   assignment,
@@ -17,9 +27,33 @@ export default function Page({
   assignment: AssignmentInterface;
 }) {
   const [name, setName] = useState<string>(assignment.name);
-  const [content, setContent] = useState(assignment.content);
+
+  const [quill, setQuill] = useState<Quill>();
 
   const { pushModal, closeAll } = useModals();
+
+  useEffect(() => {
+    if (!quill) return;
+
+    quill.setContents(JSON.parse(assignment.content));
+  }, [assignment.content, quill]);
+
+  const wrapperRef = useCallback((wrapper: HTMLDivElement) => {
+    if (typeof window === "undefined") return;
+    if (wrapper === null) return;
+
+    wrapper.innerHTML = "";
+    const editor = document.createElement("div");
+    wrapper.append(editor);
+    const q = new Quill(editor, {
+      theme: "bubble",
+      placeholder: "Type here...",
+      modules: {
+        toolbar: TOOLBAR_OPTIONS,
+      },
+    });
+    setQuill(q);
+  }, []);
 
   const handleSaveChanges = async () => {
     try {
@@ -32,7 +66,7 @@ export default function Page({
         {
           assignmentId: assignment.id,
           name,
-          content,
+          content: JSON.stringify(quill?.getContents()),
         },
         { withCredentials: true }
       );
@@ -95,21 +129,18 @@ export default function Page({
       <Left></Left>
       <Main css="items-center">
         <input
-          className="label text-center px-7 font-semibold text-2xl border-b-2 border-gray-800"
+          className="label text-center px-7 font-semibold text-2xl border-b-2 border-gray-800 w-full overflow-hidden"
           value={name}
           onChange={(e: React.ChangeEvent<any>) => {
             setName(e.target.value);
           }}
         />
-        <textarea
-          className="w-4/5 textarea textarea-bordered mt-3"
-          value={content}
-          onChange={(e: React.ChangeEvent<any>) => {
-            setContent(e.target.value);
-          }}
-        />
+        <div
+          ref={wrapperRef}
+          className="w-full h-full min-h-[10em] border border-gray-800 rounded-md mt-2"
+        ></div>
 
-        <p className="divider w-full text-lg font-semibold my-8 sm:w-4/5">
+        <p className="divider w-full text-lg font-semibold my-8">
           Attach a File
         </p>
         <FIleAdder type="" />

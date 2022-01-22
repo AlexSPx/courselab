@@ -7,7 +7,7 @@ import { isAuth } from "../functions/auth";
 
 const router = Router();
 
-export const initialDocData = { ops: [{ insert: "\n" }] };
+export const initialDocData = `{ ops: [{ insert: "\n" }] }`;
 
 export function DocumentSocket(socket: Socket) {
   socket.on("join-document", async ({ docId }: { docId: string }) => {

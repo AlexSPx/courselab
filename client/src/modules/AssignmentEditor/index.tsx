@@ -1,10 +1,12 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import dynamic from "next/dynamic";
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
 import { MainLayout } from "../Layouts/MainLayout";
-import Page from "./Page";
+
+const Page = dynamic(() => import("./Page"), { ssr: false });
 
 type AssigmentEditorTypes = {
   assignment: AssignmentInterface;
@@ -16,7 +18,7 @@ export const AssignmentEditor: NextPage<AssigmentEditorTypes> = ({
   console.log(assignment);
 
   return (
-    <MainLayout>
+    <MainLayout css="overflow-auto">
       <Page assignment={assignment} />
     </MainLayout>
   );

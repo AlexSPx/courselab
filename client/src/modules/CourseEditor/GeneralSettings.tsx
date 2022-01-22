@@ -33,6 +33,8 @@ export default function GeneralSettings({
 
     const changesForm = new FormData();
 
+    console.log(course.name);
+
     changesForm.append("name", name);
     changesForm.append("public_name", publicName);
     changesForm.append("description", description);

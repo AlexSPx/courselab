@@ -193,7 +193,7 @@ router.post(
     try {
       await prismaClient.course.update({
         where: {
-          name: req.body.name,
+          name: req.body.old_name,
         },
         data: {
           name: req.body.name,
@@ -232,6 +232,8 @@ router.post(
       deleteCache(`course?edit:${req.body.name}`);
       return res.sendStatus(201);
     } catch (err) {
+      console.log(err);
+
       return res.status(400).send("Something went wrong");
     }
   }
@@ -279,7 +281,7 @@ router.post("/coursedata", isAuth, async (req, res) => {
           document: {
             create: {
               name,
-              file: initialDocData,
+              file: JSON.stringify(initialDocData),
               members: {
                 create: [
                   {
