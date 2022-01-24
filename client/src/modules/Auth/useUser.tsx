@@ -22,7 +22,7 @@ export default function useUser() {
           }
         );
 
-        userCtx?.setUserData(data);
+        userCtx.setUserData!(data);
         setData(data);
 
         if (data.isAuth) {

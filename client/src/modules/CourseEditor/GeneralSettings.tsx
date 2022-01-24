@@ -4,13 +4,9 @@ import { useState } from "react";
 import useHasImage from "../../Hooks/useHasImage";
 import { CourseInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
-import {
-  ErrorModal,
-  LoadingModal,
-  SuccessModal,
-  useModals,
-} from "../../components/Modal";
+
 import ImageSelector from "../../components/Inputs/ImageSelector";
+import useRequest from "../../lib/useRequest";
 
 export default function GeneralSettings({
   course,
@@ -26,14 +22,10 @@ export default function GeneralSettings({
 
   const { url } = useHasImage(`${course.name}`, { type: "course_logo" });
 
-  const { pushModal, closeModal } = useModals();
+  const { executeQuery } = useRequest();
 
   const saveChanges = async () => {
-    const ackey = Date.now();
-
     const changesForm = new FormData();
-
-    console.log(course.name);
 
     changesForm.append("name", name);
     changesForm.append("public_name", publicName);
@@ -42,47 +34,24 @@ export default function GeneralSettings({
     changesForm.append("old_name", course.name);
     if (image) changesForm.append("image", image);
 
-    pushModal(
-      <LoadingModal
-        key={ackey}
-        title="Saveing Changes..."
-        body="This might take a bit"
-      />,
-      { timer: false }
-    );
-    try {
-      const changesRes = await axios.post(
-        `${baseurl}/course/savechanges`,
-        changesForm,
-        { withCredentials: true }
-      );
+    executeQuery(
+      async () => {
+        const changesRes = await axios.post(
+          `${baseurl}/course/savechanges`,
+          changesForm,
+          { withCredentials: true }
+        );
 
-      if (changesRes.status === 201) {
-        router.push(name);
-        closeModal(ackey);
-        pushModal(
-          <SuccessModal
-            title={`Changes: ${course.public_name}`}
-            body="Changes - saved"
-          />,
-          {
-            value: 3000,
-          }
-        );
-      } else {
+        return changesRes;
+      },
+      {
+        loadingTitle: "Saving Changes...",
+        successTitle: `Changes: ${course.public_name}`,
+        successBody: "Changes have been saved",
+        successStatus: 201,
+        onSuccess: () => router.push(name),
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          closeModal(ackey);
-          pushModal(<ErrorModal title="Error" body={error.response.data} />);
-        }
-      } else {
-        pushModal(
-          <ErrorModal title="Error" body="An unexpected error has occurred" />
-        );
-      }
-    }
+    );
   };
 
   return (

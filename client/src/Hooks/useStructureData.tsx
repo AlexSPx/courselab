@@ -1,16 +1,11 @@
 import axios from "axios";
 import { isEqual } from "lodash";
 import { SetStateAction, useEffect, useState } from "react";
-import {
-  ErrorModal,
-  LoadingModal,
-  SuccessModal,
-  useModals,
-} from "../components/Modal";
+
 import { CourseInterface, DataModelInterface } from "../interfaces";
 import { baseurl } from "../lib/fetcher";
-import { addWeek, initializeData, prepareData } from "../lib/structureHelpers";
-import { filter } from "lodash";
+import { initializeData, prepareData } from "../lib/structureHelpers";
+import useRequest from "../lib/useRequest";
 
 export type Data = Array<Array<DataModelInterface[]>> | null;
 
@@ -40,41 +35,26 @@ export default function useStructureData(
     setChanges(isEqual(data, compareData));
   }, [compareData, data]);
 
-  const { pushModal, closeAll } = useModals();
+  const { executeQuery } = useRequest();
 
   const saveWeeks = async () => {
     const { weeks } = prepareData(data, compareData);
 
-    pushModal(<LoadingModal title="Saving Changes" body="Saving..." />, {
-      timer: false,
-    });
-
-    try {
-      const saveRes = await axios.post(
-        `${baseurl}/course/data/save`,
-        { weeks, name: course.name },
-        { withCredentials: true }
-      );
-
-      if (saveRes.status === 200) {
-        closeAll();
-        pushModal(
-          <SuccessModal title="Success" body="Changes have been saved" />
+    executeQuery(
+      async () => {
+        const res = await axios.post(
+          `${baseurl}/course/data/save`,
+          { weeks, name: course.name },
+          { withCredentials: true }
         );
-        setCompareData(data);
+        return res;
+      },
+      {
+        loadingTitle: "Saving Changes",
+        successBody: "Changes have been saved",
+        onSuccess: () => setCompareData(data),
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          closeAll();
-          pushModal(<ErrorModal title="Error" body={error.response.data} />);
-        }
-      } else {
-        pushModal(
-          <ErrorModal title="Error" body="An unexpected error has occurred" />
-        );
-      }
-    }
+    );
   };
 
   const createWeek = () => {

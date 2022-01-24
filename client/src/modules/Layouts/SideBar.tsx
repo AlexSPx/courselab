@@ -14,7 +14,7 @@ const SideBar: React.FC<CssProp> = ({ children, css }) => {
   );
 };
 
-export const SideBarButton = ({
+export const SideBarHref = ({
   label,
   icon,
   href,
@@ -30,6 +30,26 @@ export const SideBarButton = ({
         {label}
       </a>
     </Link>
+  );
+};
+
+export const SideBarButton = ({
+  label,
+  icon,
+  func,
+}: {
+  label: string;
+  icon?: JSX.Element;
+  func: () => void;
+}) => {
+  return (
+    <button
+      className="w-5/6 btn btn-outline btn-sm rounded-btn my-1 justify-center"
+      onClick={func}
+    >
+      <div className="mx-1">{icon}</div>
+      {label}
+    </button>
   );
 };
 

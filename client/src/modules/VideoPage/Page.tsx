@@ -13,6 +13,7 @@ import VideoPlayer from "./VideoPlayer";
 import { Left, Main, Right } from "../Layouts/MainLayout";
 import ReactPlayer from "react-player";
 import Questions from "./Questions";
+import useRequest from "../../lib/useRequest";
 
 export default function Page({
   video,
@@ -24,8 +25,7 @@ export default function Page({
   const [file, setFile] = useState<File | null>(null);
   const [name, setName] = useState<string>(video?.name);
 
-  const { pushModal, closeAll } = useModals();
-
+  const { executeQuery } = useRequest();
   const playerRef = useRef<ReactPlayer | undefined>();
 
   const handleVideoUpload = async () => {
@@ -33,30 +33,23 @@ export default function Page({
     const newVideo = new FormData();
     newVideo.append("video", file);
     newVideo.append("videoId", video.id);
-    // newVideo.append("name", name);
-    try {
-      pushModal(
-        <LoadingModal
-          title="Uploading"
-          body="Uploading video, please wait"
-          key={Date.now()}
-        />
-      );
-      const res = await axios.post(`${baseurl}/video/upload`, newVideo, {
-        withCredentials: true,
-      });
+    newVideo.append("name", name);
 
-      if (res.status === 200) {
-        closeAll();
-        pushModal(
-          <SuccessModal title="Uploaded" body="Successfully uploaded" />
-        );
-        mutate();
+    executeQuery(
+      async () => {
+        const res = await axios.post(`${baseurl}/video/upload`, newVideo, {
+          withCredentials: true,
+        });
+        return res;
+      },
+      {
+        loadingTitle: "Uploading",
+        loadingBody: "Uploading video, please wait",
+        successTitle: "Uploaded",
+        successBody: "Successfully uploaded",
+        onSuccess: () => mutate(),
       }
-    } catch (error) {
-      closeAll();
-      pushModal(<ErrorModal title="Error" body={`${error}`} />);
-    }
+    );
   };
 
   return (

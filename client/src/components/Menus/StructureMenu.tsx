@@ -3,6 +3,7 @@ import { useState } from "react";
 import useRightClickContext from "../../contexts/RightClickMenuContext";
 import { DataModelInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
+import useRequest from "../../lib/useRequest";
 import { DownArrow, MoveIcon, RightArrow, UpArrow } from "../../svg/small";
 
 export default function StructureMenu({
@@ -20,14 +21,26 @@ export default function StructureMenu({
 
   const [moveMenu, setMoveMenu] = useState(false);
 
-  const handleDelete = async () => {
-    const res = await axios.delete(`${baseurl}/course/delete/${dataModel.id}`, {
-      withCredentials: true,
-    });
+  const { executeQuery } = useRequest();
 
-    if (res.status === 200) {
-      onDelete(dataModel);
-    }
+  const handleDelete = async () => {
+    executeQuery(
+      async () => {
+        const res = await axios.delete(
+          `${baseurl}/course/delete/${dataModel.id}`,
+          {
+            withCredentials: true,
+          }
+        );
+        return res;
+      },
+      {
+        loadingTitle: "Deleting",
+        successTitle: "Deleted",
+        successBody: "Successfully deleted",
+        onSuccess: () => onDelete(dataModel),
+      }
+    );
   };
 
   if (visible) {

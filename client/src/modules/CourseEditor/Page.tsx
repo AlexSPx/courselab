@@ -1,6 +1,10 @@
 import { CourseInterface } from "../../interfaces";
 import { SettingsIcon, StructureIcon } from "../../svg/small";
-import SideBar, { SideBarButton, SideBarSection } from "../Layouts/SideBar";
+import SideBar, {
+  SideBarButton,
+  SideBarHref,
+  SideBarSection,
+} from "../Layouts/SideBar";
 import { useRouter } from "next/dist/client/router";
 import Structure from "./Structure";
 import GeneralSettings from "./GeneralSettings";
@@ -21,6 +25,11 @@ export default function Page({ course }: { course: CourseInterface }) {
     }
   };
 
+  const handlePublish = () => {
+    try {
+    } catch (error) {}
+  };
+
   return (
     <div
       className="flex flex-row w-full h-full overflow-auto bg-gray-50"
@@ -28,16 +37,17 @@ export default function Page({ course }: { course: CourseInterface }) {
     >
       <SideBar css="bg-white">
         <SideBarSection label="Settings" />
-        <SideBarButton
+        <SideBarHref
           label="General settings"
           icon={<SettingsIcon />}
           href={path}
         />
-        <SideBarButton
+        <SideBarHref
           label="Course structure"
           icon={<StructureIcon />}
           href={path + "?stt=structure"}
         />
+        <SideBarButton label="Publish" func={() => {}} />
       </SideBar>
 
       <div className="flex flex-col w-full h-full items-center py-4">

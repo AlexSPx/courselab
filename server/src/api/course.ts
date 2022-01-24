@@ -232,12 +232,33 @@ router.post(
       deleteCache(`course?edit:${req.body.name}`);
       return res.sendStatus(201);
     } catch (err) {
-      console.log(err);
-
       return res.status(400).send("Something went wrong");
     }
   }
 );
+
+router.post("/publish", isAuth, async (req, res) => {
+  try {
+    await prismaClient.course.updateMany({
+      where: {
+        name: req.body.name,
+        members: {
+          some: {
+            id: req.session.user?.id,
+            role: "ADMIN",
+          },
+        },
+      },
+      data: {
+        published: true,
+      },
+    });
+
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send("Something went wrong");
+  }
+});
 
 router.post(`/data/save`, isAuth, async (req, res) => {
   try {

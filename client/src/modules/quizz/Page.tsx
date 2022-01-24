@@ -17,6 +17,7 @@ import {
 } from "../../components/Modal";
 import { QuizInterface, QuizzQuestionInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
+import useRequest from "../../lib/useRequest";
 import { Left, Right, Main } from "../Layouts/MainLayout";
 import ClosedQuestionModal from "./ClosedQuestionModal";
 import OpenedQuestionModal from "./OpenedQuestionModal";
@@ -44,6 +45,7 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
   const questionsWrapperRef = useRef(null);
 
   const { pushModal, closeModal } = useModals();
+  const { executeQuery } = useRequest();
 
   useEffect(() => {
     setWinReady(true);
@@ -131,93 +133,62 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
   };
 
   const handleSaveChanges = async () => {
-    const lkey = Date.now();
-    try {
-      pushModal(
-        <LoadingModal
-          title={"Saving changes"}
-          body={"Please wait"}
-          key={lkey}
-        />,
-        { timer: false }
-      );
-
-      setQuestions(
-        questions.map((question, index) => {
-          question.orderIndex = index;
-          return question;
-        })
-      );
-
-      const diff = difference(questions as any, quiz.questions as any);
-
-      const res = await axios.post(
-        `${baseurl}/quiz/questions`,
-        { quizId: quiz.id, questions: filter(diff, size) },
-        { withCredentials: true }
-      );
-      if (res.status === 200) {
-        closeModal(lkey);
-        pushModal(
-          <SuccessModal title={"Success"} body={"Changes have been saved"} />
+    executeQuery(
+      async () => {
+        setQuestions(
+          questions.map((question, index) => {
+            question.orderIndex = index;
+            return question;
+          })
         );
+        const diff = difference(questions as any, quiz.questions as any);
+        const res = await axios.post(
+          `${baseurl}/quiz/questions`,
+          { quizId: quiz.id, questions: filter(diff, size) },
+          { withCredentials: true }
+        );
+        return res;
+      },
+      {
+        loadingTitle: "Saving Changes",
+        loadingBody: "Please wait",
+        successBody: "Changes have been saved",
       }
-    } catch (error) {
-      closeModal(lkey);
-      pushModal(<ErrorModal title="Error" body={`${error}`} />);
-    }
+    );
   };
 
   const handleGeneralSettings = async () => {
-    const lkey = Date.now();
-    try {
-      pushModal(
-        <LoadingModal
-          title={"Saving changes"}
-          body={"Please wait"}
-          key={lkey}
-        />,
-        { timer: false }
-      );
-
-      const res = await axios.post(
-        `${baseurl}/quiz/changes`,
-        { id: quiz.id, data: { name, description } },
-        { withCredentials: true }
-      );
-      if (res.status === 200) {
-        closeModal(lkey);
-        pushModal(
-          <SuccessModal title={"Success"} body={"Changes have been saved"} />
+    executeQuery(
+      async () => {
+        const res = await axios.post(
+          `${baseurl}/quiz/changes`,
+          { id: quiz.id, data: { name, description } },
+          { withCredentials: true }
         );
+        return res;
+      },
+      {
+        loadingTitle: "Saving Changes",
+        loadingBody: "Please wait",
+        successBody: "Changes have been saved",
       }
-    } catch (error) {
-      closeModal(lkey);
-      pushModal(<ErrorModal title="Error" body={`${error}`} />);
-    }
+    );
   };
 
   const handleDelete = async () => {
-    const lkey = Date.now();
-    try {
-      pushModal(
-        <LoadingModal title={"Deleting..."} body={"Please wait"} key={lkey} />,
-        { timer: false }
-      );
-
-      const res = await axios.delete(`${baseurl}/quiz/${quiz.id}`, {
-        withCredentials: true,
-      });
-      if (res.status === 200) {
-        closeModal(lkey);
-        pushModal(
-          <SuccessModal title={"Success"} body={"Quiz has been deleted"} />
-        );
+    executeQuery(
+      async () => {
+        const res = await axios.delete(`${baseurl}/quiz/${quiz.id}`, {
+          withCredentials: true,
+        });
+        return res;
+      },
+      {
+        loadingTitle: "Deleting...",
+        loadingBody: "Please wait",
+        successBody: "Quiz has been deleted",
       }
-    } catch (error) {
-      closeModal(lkey);
-      pushModal(<ErrorModal title="Error" body={`${error}`} />);
-    }
+    );
   };
   return (
     <>

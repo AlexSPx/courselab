@@ -11,6 +11,7 @@ import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { Left, Main, Right } from "../Layouts/MainLayout";
 import Quill from "quill";
+import useRequest from "../../lib/useRequest";
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -30,7 +31,7 @@ export default function Page({
 
   const [quill, setQuill] = useState<Quill>();
 
-  const { pushModal, closeAll } = useModals();
+  const { executeQuery } = useRequest();
 
   useEffect(() => {
     if (!quill) return;
@@ -56,72 +57,45 @@ export default function Page({
   }, []);
 
   const handleSaveChanges = async () => {
-    try {
-      pushModal(<LoadingModal title="Saving chnages" body="Almost done..." />, {
-        timer: false,
-      });
-
-      const res = await axios.post(
-        `${baseurl}/assignment/save`,
-        {
-          assignmentId: assignment.id,
-          name,
-          content: JSON.stringify(quill?.getContents()),
-        },
-        { withCredentials: true }
-      );
-
-      if (res.status === 200) {
-        closeAll();
-        pushModal(
-          <SuccessModal title="Success" body="Changes have been saved" />
+    executeQuery(
+      async () => {
+        const res = await axios.post(
+          `${baseurl}/assignment/save`,
+          {
+            assignmentId: assignment.id,
+            name,
+            content: JSON.stringify(quill?.getContents()),
+          },
+          { withCredentials: true }
         );
+
+        return res;
+      },
+      {
+        loadingTitle: "Saving changes",
+        successBody: "Changes have been saved",
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          closeAll();
-          pushModal(<ErrorModal title="Error" body={error.response.data} />);
-        }
-      } else {
-        pushModal(
-          <ErrorModal title="Error" body="An unexpected error has occurred" />
-        );
-      }
-    }
+    );
   };
 
   const handleDeleteAssignment = async () => {
-    try {
-      pushModal(
-        <LoadingModal title="Deliting..." body="This might take a bit" />,
-        {
-          timer: false,
-        }
-      );
-
-      const res = await axios.delete(`${baseurl}/assignment/${assignment.id}`, {
-        withCredentials: true,
-      });
-
-      if (res.status === 200) {
-        closeAll();
-        pushModal(
-          <SuccessModal title="Deleted" body="Assignment has been deleted" />
+    executeQuery(
+      async () => {
+        const res = await axios.delete(
+          `${baseurl}/assignment/${assignment.id}`,
+          {
+            withCredentials: true,
+          }
         );
+
+        return res;
+      },
+      {
+        loadingTitle: "Deleting changes",
+        successTitle: "Deleted",
+        successBody: "Assignment has been deleted",
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          closeAll();
-          pushModal(<ErrorModal title="Error" body={error.response.data} />);
-        }
-      } else {
-        pushModal(
-          <ErrorModal title="Error" body="An unexpected error has occurred" />
-        );
-      }
-    }
+    );
   };
 
   return (

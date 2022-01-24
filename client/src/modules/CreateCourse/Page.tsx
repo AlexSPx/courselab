@@ -12,6 +12,7 @@ import { baseurl } from "../../lib/fetcher";
 import { CourseInterface } from "../../interfaces";
 import CourseDraftCard from "../../components/cards/CourseDraftCard";
 import { useSWRConfig } from "swr";
+import useRequest from "../../lib/useRequest";
 
 export default function Page({ drafts }: { drafts: CourseInterface[] }) {
   const [name, setName] = useState("");
@@ -19,62 +20,31 @@ export default function Page({ drafts }: { drafts: CourseInterface[] }) {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File>();
 
-  const { pushModal, closeModal, closeAll } = useModals();
+  const { executeQuery } = useRequest();
   const { mutate } = useSWRConfig();
 
   const createCourse = async () => {
-    closeAll();
-    if (!name || !publicName || !description || !description) {
-      pushModal(<ErrorModal title="Error" body="Missing arguments" />);
-    }
-    const ackey = Date.now();
-    pushModal(
-      <LoadingModal
-        key={ackey}
-        title="Creating a new course"
-        body="This might take a bit"
-      />,
-      { timer: false }
+    const courseData = new FormData();
+    courseData.append("name", name);
+    courseData.append("public_name", publicName);
+    courseData.append("description", description);
+    if (image) courseData.append("image", image);
+
+    executeQuery(
+      async () => {
+        const res = await axios.post(`${baseurl}/course/create`, courseData, {
+          withCredentials: true,
+        });
+        return res;
+      },
+      {
+        loadingTitle: "Creating your course...",
+        successTitle: "Course has been created",
+        successBody: "A new course draft has been created",
+        successStatus: 201,
+        onSuccess: () => mutate(`${baseurl}/course/mydrafts`),
+      }
     );
-    try {
-      const courseData = new FormData();
-      courseData.append("name", name);
-      courseData.append("public_name", publicName);
-      courseData.append("description", description);
-      if (image) courseData.append("image", image);
-
-      const response = await axios.post(
-        `${baseurl}/course/create`,
-        courseData,
-        { withCredentials: true }
-      );
-
-      if (response.status === 201) {
-        closeModal(ackey);
-        pushModal(
-          <SuccessModal
-            title="Course has been created"
-            body="A new course draft has been created"
-          />,
-          {
-            value: 3000,
-          }
-        );
-
-        mutate(`${baseurl}/course/mydrafts`);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          closeModal(ackey);
-          pushModal(<ErrorModal title="Error" body={error.response.data} />);
-        }
-      } else {
-        pushModal(
-          <ErrorModal title="Error" body="An unexpected error has occurred" />
-        );
-      }
-    }
   };
 
   const mapDrafts = drafts?.map((draft) => {
