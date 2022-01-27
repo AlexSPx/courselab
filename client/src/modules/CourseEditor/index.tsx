@@ -1,7 +1,8 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import useSWR from "swr";
 import { CourseInterface } from "../../interfaces";
-import { baseurl } from "../../lib/fetcher";
+import { baseurl, fetcher } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
 import Page from "./Page";
 
@@ -12,7 +13,14 @@ interface CourseEditorPageProps {
 export const CreateCoursePage: NextPage<CourseEditorPageProps> = ({
   course,
 }) => {
-  return <Page course={course} />;
+  const { data } = useSWR<CourseInterface>(
+    `${baseurl}/course/fetchadmin/${course.name}`,
+    {
+      fallbackData: course,
+    }
+  );
+
+  return <Page course={data || course} />;
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(

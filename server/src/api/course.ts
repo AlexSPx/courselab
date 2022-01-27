@@ -36,7 +36,7 @@ router.post(
         await sharp(image_path)
           .resize({
             fit: sharp.fit.contain,
-            width: 500,
+            width: 600,
           })
           .toFile(
             path
@@ -244,7 +244,7 @@ router.post("/publish", isAuth, async (req, res) => {
         name: req.body.name,
         members: {
           some: {
-            id: req.session.user?.id,
+            user_id: req.session.user?.id,
             role: "ADMIN",
           },
         },
@@ -254,6 +254,31 @@ router.post("/publish", isAuth, async (req, res) => {
       },
     });
 
+    deleteCache(`course?edit:${req.body.name}`);
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send("Something went wrong");
+  }
+});
+
+router.post("/unlist", isAuth, async (req, res) => {
+  try {
+    await prismaClient.course.updateMany({
+      where: {
+        name: req.body.name,
+        members: {
+          some: {
+            user_id: req.session.user?.id,
+            role: "ADMIN",
+          },
+        },
+      },
+      data: {
+        published: false,
+      },
+    });
+
+    deleteCache(`course?edit:${req.body.name}`);
     return res.sendStatus(200);
   } catch (error) {
     return res.status(400).send("Something went wrong");
@@ -450,6 +475,27 @@ router.delete("/delete/:name", isAuth, async (req, res) => {
     return res.status(200).send(deletedData.id);
   } catch (error) {
     return res.status(400).send(error);
+  }
+});
+
+router.get(`/explore/:alg`, async (_req, res) => {
+  try {
+    const courses = await prismaClient.course.findMany({
+      where: {
+        published: true,
+      },
+      include: {
+        dataModels: {
+          select: {
+            type: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).send(courses);
+  } catch (error) {
+    return res.status(400).send("Someting went wrong");
   }
 });
 

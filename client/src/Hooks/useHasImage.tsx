@@ -12,7 +12,7 @@ export default function useHasImage(
   const [url, setUrl] = useState<string>(`/`);
 
   if (type === "avatar") AvatarCheck(name, setUrl, avatar);
-  if (type === "course_logo") CourseLogoCheck(name, setUrl);
+  else if (type === "course_logo") CourseLogoCheck(name, setUrl);
 
   return { url };
 }
@@ -24,7 +24,7 @@ const AvatarCheck = (
 ) => {
   const url = `/user/avatars/${name}`;
 
-  const { error } = useSWR(`${baseurl}${url}.jpg`);
+  const { error } = useSWR(`${baseurl}${url}.jpg`, { refreshInterval: 0 });
 
   useEffect(() => {
     if (error) {

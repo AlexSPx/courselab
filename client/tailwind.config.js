@@ -12,5 +12,5 @@ module.exports = {
       xsm: "320px",
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [require("daisyui"), require("@tailwindcss/line-clamp")],
 };

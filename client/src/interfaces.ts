@@ -41,12 +41,25 @@ export interface DataModelInterface {
     day: number;
     index: number;
   };
-  type: "DOCUMENT" | "VIDEO" | "ASSIGNMENT" | "QUIZ";
+  type: dataModelType;
   document_id?: string;
   video_id?: string;
   course_id: string;
   assignment_id?: string;
   quiz_id?: string;
+}
+
+export interface CourseGeneralInterface {
+  name: string;
+  public_name: string;
+  weeks: number;
+  details: {
+    description: string;
+  };
+  videos: number;
+  documents: number;
+  quizzes: number;
+  assignments: number;
 }
 
 export interface DocumentInterface {
@@ -58,6 +71,8 @@ export interface DocumentInterface {
     course_id: string;
   };
 }
+
+export type dataModelType = "DOCUMENT" | "VIDEO" | "ASSIGNMENT" | "QUIZ";
 
 export interface DocumentUser {
   user: GeneralUserInformation;
