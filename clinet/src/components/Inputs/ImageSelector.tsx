@@ -53,7 +53,6 @@ export default function ImageSelector({
         onChange={(e: React.ChangeEvent<any>): void =>
           setImage(e.target.files[0])
         }
-        accept="image/*"
       />
     </label>
   );

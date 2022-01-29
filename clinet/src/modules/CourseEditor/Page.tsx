@@ -8,16 +8,16 @@ import SideBar, {
 import { useRouter } from "next/dist/client/router";
 import Structure from "./Structure";
 import GeneralSettings from "./GeneralSettings";
-import useRequest from "../../lib/useRequest";
-import axios from "axios";
-import { baseurl } from "../../lib/fetcher";
-import { mutate } from "swr";
+import dynamic from "next/dynamic";
 import { IoIosLaptop } from "react-icons/io";
-import Landing from "./Landing";
+import { baseurl } from "../../lib/fetcher";
+import axios from "axios";
+import { mutate } from "swr";
+
+const Landing = dynamic(() => import("./Landing"), { ssr: false });
 
 export default function Page({ course }: { course: CourseInterface }) {
   const router = useRouter();
-  const { executeQuery } = useRequest();
 
   const path = `/course/edit/${course.name}`;
 
@@ -102,4 +102,10 @@ export default function Page({ course }: { course: CourseInterface }) {
       </div>
     </div>
   );
+}
+function executeQuery(
+  arg0: () => Promise<any>,
+  arg1: { loadingTitle: string; successTitle: string; onSuccess: () => any }
+) {
+  throw new Error("Function not implemented.");
 }

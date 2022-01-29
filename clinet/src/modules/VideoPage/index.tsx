@@ -12,7 +12,7 @@ type VideoPageProps = {
 };
 
 export const Video: NextPage<VideoPageProps> = ({ video }) => {
-  const { data, mutate } = useSWR(`${baseurl}/video/${video?.id}`, {
+  const { data, mutate } = useSWR(`${baseurl}/video/${video?.id}`, fetcher, {
     fallback: video || {},
   });
 

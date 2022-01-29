@@ -14,7 +14,7 @@ interface CreateCoursePageProps {
 export const CreateCoursePage: NextPage<CreateCoursePageProps> = ({
   drafts,
 }) => {
-  const { data } = useSWR(`${baseurl}/course/mydrafts`, {
+  const { data } = useSWR(`${baseurl}/course/mydrafts`, fetcher, {
     fallbackData: drafts,
   });
 

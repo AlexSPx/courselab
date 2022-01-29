@@ -62,6 +62,11 @@ export interface CourseGeneralInterface {
   assignments: number;
 }
 
+export interface Sponsor {
+  name: string;
+  preview: string;
+}
+
 export interface DocumentInterface {
   id: string;
   name: string;

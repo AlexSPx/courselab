@@ -8,19 +8,15 @@ import WebSocketProvider from "../contexts/SocketContext";
 import "../styles/globals.css";
 import "../styles/Calendar.css";
 import "../styles/DatePicker.css";
-import { SWRConfig } from "swr";
-import { fetcher } from "../lib/fetcher";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WebSocketProvider>
       <ModalContextProvider>
         <UserCtxProvider user={pageProps.user}>
-          <SWRConfig value={{ fetcher: fetcher }}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </SWRConfig>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </UserCtxProvider>
       </ModalContextProvider>
     </WebSocketProvider>
