@@ -1,46 +1,70 @@
+import axios, { AxiosResponse } from "axios";
 import { useRef, useState } from "react";
 import Modal from "..";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
 import { Sponsor } from "../../../interfaces";
+import { baseurl } from "../../../lib/fetcher";
+import useRequest from "../../../lib/useRequest";
 import { CloseIcon } from "../../../svg/small";
 import ImageSelector from "../../Inputs/ImageSelector";
 
 export default function SponsorCreate({
   onClose,
   setSponsors,
+  courseName,
 }: {
   onClose: Function;
-  setSponsors: React.Dispatch<React.SetStateAction<Sponsor[] | undefined>>;
+  setSponsors: React.Dispatch<React.SetStateAction<Sponsor[]>>;
+  courseName: string;
 }) {
   const wrapperRef = useRef(null);
 
   const [name, setName] = useState<string>();
   const [image, setImage] = useState<File>();
+  const [error, setError] = useState<string>();
 
   useOnOutsideClick(wrapperRef, () => onClose());
 
-  //   const sendRequst = async () => {
-  //     setSponsors((sponsors) => {
-  //       console.log(sponsors);
-  //       console.log("HEREEE");
+  const { executeQuery } = useRequest();
 
-  //       return [
-  //         {
-  //           name: `name`,
-  //           preview: `http://localhost:5000/api/user/avatars/alexspx.jpg`,
-  //         },
-  //         {
-  //           name: `name`,
-  //           preview: `http://localhost:5000/api/user/avatars/alexspx.jpg`,
-  //         },
-  //         {
-  //           name: `name`,
-  //           preview: `http://localhost:5000/api/user/avatars/alexspx.jpg`,
-  //         },
-  //       ];
-  //     });
-  //     onClose();
-  //   };
+  const handleAddASponsor = async () => {
+    if (!name || !image) {
+      setError("Name must be provided");
+      return;
+    }
+
+    const data = new FormData();
+    data.append("image", image);
+    data.append("action", "UPLOAD");
+
+    executeQuery(
+      async () => {
+        const res = await axios.post(
+          `${baseurl}/course/details/sponsor/${courseName}/${name}`,
+          data,
+          { withCredentials: true }
+        );
+
+        return res;
+      },
+      {
+        loadingBody: "Saving changes...",
+        successBody: "Sponsor uploaded",
+        successStatus: 201,
+        onSuccess: (resd: AxiosResponse) => {
+          setSponsors((sponsors) => {
+            const sponsor = {
+              name,
+              path: resd.data.path,
+            };
+            if (!sponsors) return [sponsor];
+            return [...sponsors, sponsor];
+          });
+          onClose();
+        },
+      }
+    );
+  };
 
   return (
     <Modal>
@@ -80,22 +104,14 @@ export default function SponsorCreate({
                 setName(e.target.value);
               }}
             />
-            {/* {error && (
+            {error && (
               <div className="flex w-full my-1 items-center justify-center text-red-600 font-semibold">
                 Error: {error}
               </div>
-            )} */}
+            )}
             <button
               className="btn btn-outline my-2"
-              onClick={() =>
-                setSponsors([
-                  {
-                    name: "asd",
-                    preview:
-                      "http://localhost:5000/api/user/avatars/alexspx.jpg",
-                  },
-                ])
-              }
+              onClick={handleAddASponsor}
             >
               Create
             </button>

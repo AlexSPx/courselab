@@ -1,12 +1,17 @@
 import { prismaClient } from "../index";
 import { Router } from "express";
 import { isAuth } from "../functions/auth";
-import { uploadCourseImg } from "../settings/multer";
+import {
+  uplaodCourseImages,
+  uplaodCourseSponsorImages,
+  uploadCourseImg,
+} from "../settings/multer";
 import sharp from "sharp";
 import path from "path";
 import { existsSync, renameSync, unlinkSync } from "fs";
 import { initialDocData } from "./document";
 import { deleteCache, getOrSetCache } from "../functions/redisCaching";
+import { Sponsor, sponsorFiles } from "../functions/misc";
 
 const router = Router();
 
@@ -92,6 +97,199 @@ router.post(
     }
   }
 );
+
+router.get("/details/:name", isAuth, async (req, res) => {
+  try {
+    const details = await prismaClient.courseExtendedDetails.findUnique({
+      where: {
+        courseName: req.params.name,
+      },
+      include: {
+        course: {
+          select: {
+            public_name: true,
+            published: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).send(details);
+  } catch (error) {
+    return res.status(400).send("Something went wrong");
+  }
+});
+
+router.post("/details/reviews/:name", isAuth, async (req, res) => {
+  try {
+    await prismaClient.courseExtendedDetails.update({
+      where: {
+        courseName: req.params.name,
+      },
+      data: { reviews: req.body.reviews },
+    });
+
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send("Something went wrong");
+  }
+});
+
+router.post(
+  "/details/sponsor/:course/:sponsor",
+  uplaodCourseSponsorImages.single("image"),
+  isAuth,
+  async (req, res) => {
+    try {
+      if (req.body.action === "UPLOAD") {
+        if (!req.body.skip) {
+          await prismaClient.courseExtendedDetails.update({
+            where: {
+              courseName: req.params.course,
+            },
+            data: {
+              sponsors: {
+                push: { name: req.params.sponsor, path: req.file?.filename },
+              },
+            },
+          });
+
+          return res.status(201).send({ path: req.file?.filename });
+        }
+
+        return res.status(400).send("Sponsor already exists");
+      } else {
+        const sponsors = (
+          await prismaClient.courseExtendedDetails.findFirst({
+            where: {
+              courseName: req.params.course,
+            },
+            select: {
+              sponsors: true,
+            },
+          })
+        )?.sponsors as Sponsor[] | undefined;
+
+        const apath = path.join(
+          __dirname +
+            `../../../images/courses/${
+              sponsors?.find((sponsor) => sponsor.name === req.params.sponsor)
+                ?.path
+            }`
+        );
+
+        unlinkSync(apath);
+
+        const updatedSponsors = sponsors?.filter(
+          (sp: any) => sp.name !== req.params.sponsor
+        );
+
+        await prismaClient.courseExtendedDetails.update({
+          where: {
+            courseName: req.params.course,
+          },
+          data: {
+            sponsors: updatedSponsors as any,
+          },
+        });
+
+        return res.sendStatus(200);
+      }
+    } catch (error) {
+      return res.status(400).send("Something went wrong");
+    }
+  }
+);
+
+router.post(
+  "/details/images/:course",
+  isAuth,
+  uplaodCourseImages.array("images"),
+  async (req, res) => {
+    try {
+      const course = req.params.course;
+
+      let data = null;
+      if (req.files) {
+        const imgs = (req.files as Express.Multer.File[] | undefined)?.map(
+          (f: Express.Multer.File) => f.filename
+        );
+
+        const uploaded = await prismaClient.courseExtendedDetails.update({
+          where: {
+            courseName: course,
+          },
+          data: {
+            images: {
+              push: imgs,
+            },
+          },
+          select: {
+            images: true,
+          },
+        });
+
+        data = uploaded.images;
+      }
+
+      if (req.body.removed) {
+        const initialImages = (
+          await prismaClient.courseExtendedDetails.findFirst({
+            where: {
+              courseName: course,
+            },
+            select: {
+              images: true,
+            },
+          })
+        )?.images;
+
+        const apath = (imgName: string) =>
+          path.join(__dirname + `../../../images/courses/${imgName}`);
+
+        const updated = initialImages?.filter((image) => {
+          if (!req.body.removed.includes(image)) {
+            return image;
+          }
+          unlinkSync(apath(image));
+          return;
+        });
+
+        await prismaClient.courseExtendedDetails.update({
+          where: {
+            courseName: course,
+          },
+          data: {
+            images: updated,
+          },
+        });
+
+        data = updated;
+      }
+
+      return res.status(200).send(data);
+    } catch (error) {
+      return res.status(400).send("Something went wrong");
+    }
+  }
+);
+
+router.post("/details/desc/:course", isAuth, async (req, res) => {
+  try {
+    await prismaClient.courseExtendedDetails.update({
+      where: {
+        courseName: req.params.course,
+      },
+      data: {
+        description: req.body.description,
+      },
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send("Something went wrong");
+  }
+});
 
 router.get("/mydrafts", isAuth, async (req, res) => {
   try {

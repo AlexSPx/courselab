@@ -393,7 +393,7 @@ const OpenEndedQuestion = ({
   );
 };
 
-function difference(object: [], base: []) {
+export function difference(object: [], base: []) {
   return transform(object, (result: any, value, key) => {
     if (!isEqual(value, base[key])) {
       result[key] = value;

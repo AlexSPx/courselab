@@ -1,22 +1,19 @@
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
+import { UserDataInterface } from "../interfaces";
 import AuthHeader from "../modules/Layouts/AuthHeaders";
 import Header from "./Header";
 
-export default function Layout({ children }: LayoutProps) {
-  const { userData } = useContext(UserContext);
+interface LayoutProps {
+  children: React.ReactNode;
+  isAuth: boolean;
+}
 
+export default function Layout({ children, isAuth }: LayoutProps) {
   return (
     <>
       <div className="flex flex-col w-screen h-screen overflow-auto">
-        {userData?.isAuth ? <AuthHeader /> : <Header />}
-        {/* <div className="overflow-auto">{children}</div> */}
+        {isAuth ? <AuthHeader /> : <Header />}
         {children}
       </div>
     </>
   );
-}
-
-interface LayoutProps {
-  children: React.ReactNode;
 }

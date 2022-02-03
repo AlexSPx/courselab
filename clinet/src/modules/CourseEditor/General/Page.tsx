@@ -1,19 +1,17 @@
 import axios from "axios";
-import { NextRouter } from "next/dist/client/router";
+import { useRouter } from "next/dist/client/router";
 import { useState } from "react";
-import useHasImage from "../../Hooks/useHasImage";
-import { CourseInterface } from "../../interfaces";
-import { baseurl } from "../../lib/fetcher";
+import useHasImage from "../../../Hooks/useHasImage";
+import { CourseInterface } from "../../../interfaces";
+import { baseurl } from "../../../lib/fetcher";
 
-import ImageSelector from "../../components/Inputs/ImageSelector";
-import useRequest from "../../lib/useRequest";
+import ImageSelector from "../../../components/Inputs/ImageSelector";
+import useRequest from "../../../lib/useRequest";
 
 export default function GeneralSettings({
   course,
-  router,
 }: {
   course: CourseInterface;
-  router: NextRouter;
 }) {
   const [description, setDescription] = useState(course.details.description);
   const [name, setName] = useState(course.name);
@@ -21,6 +19,8 @@ export default function GeneralSettings({
   const [image, setImage] = useState<File | undefined>();
 
   const { url } = useHasImage(`${course.name}`, { type: "course_logo" });
+
+  const router = useRouter();
 
   const { executeQuery } = useRequest();
 

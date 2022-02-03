@@ -1,5 +1,5 @@
 import React, { createContext, useEffect } from "react";
-import { UserContextInterface, UserDataInterface } from "../interfaces";
+import { UserDataInterface } from "../interfaces";
 
 export const UserContext = createContext<UserProps>({
   userData: null,
@@ -21,6 +21,10 @@ const UserCtxProvider: React.FC<UserProviderProps> = ({ children, user }) => {
   const [userData, setUserData] = React.useState<UserDataInterface | null>(
     user ? user : null
   );
+
+  useEffect(() => {
+    setUserData(user);
+  }, [user]);
 
   return (
     <UserContext.Provider

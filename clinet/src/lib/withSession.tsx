@@ -32,7 +32,7 @@ export function withSession<
       return {
         redirect: {
           permanent: false,
-          destination: "/login",
+          destination: redirectTo,
         },
         props: { user: null },
       };

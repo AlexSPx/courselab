@@ -33,6 +33,18 @@ export interface CourseInterface {
   dataModels: DataModelInterface[];
 }
 
+export interface CourseDetails {
+  courseName: string;
+  images: string[];
+  description: string;
+  sponsors: Sponsor[];
+  reviews: string[];
+  course: {
+    public_name: string;
+    published: boolean;
+  };
+}
+
 export interface DataModelInterface {
   id: string;
   name: string;
@@ -64,7 +76,8 @@ export interface CourseGeneralInterface {
 
 export interface Sponsor {
   name: string;
-  preview: string;
+
+  path: string;
 }
 
 export interface DocumentInterface {

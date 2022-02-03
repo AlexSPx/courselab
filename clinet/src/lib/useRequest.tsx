@@ -44,7 +44,7 @@ export default function useRequest() {
       const data = await query();
 
       if (data.status === (successStatus || 200)) {
-        if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess(data);
         closeModal(ackey);
         pushModal(
           <SuccessModal

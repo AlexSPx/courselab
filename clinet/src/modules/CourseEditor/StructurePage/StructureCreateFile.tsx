@@ -1,12 +1,12 @@
 import axios from "axios";
 import { isEmpty } from "lodash";
 import { useRef, useState } from "react";
-import Modal from "../../components/Modal";
-import useOnOutsideClick from "../../Hooks/useOnOutsideClick";
-import { StructureData } from "../../Hooks/useStructureData";
-import { DataModelInterface } from "../../interfaces";
-import { baseurl } from "../../lib/fetcher";
-import { CloseIcon } from "../../svg/small";
+import Modal from "../../../components/Modal";
+import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
+import { StructureData } from "../../../Hooks/useStructureData";
+import { DataModelInterface } from "../../../interfaces";
+import { baseurl } from "../../../lib/fetcher";
+import { CloseIcon } from "../../../svg/small";
 
 type DataSCF = {
   day: DataModelInterface[];

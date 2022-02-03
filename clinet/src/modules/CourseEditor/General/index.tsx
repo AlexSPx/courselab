@@ -1,18 +1,23 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import { CourseInterface } from "../../interfaces";
-import { baseurl } from "../../lib/fetcher";
-import { withSession } from "../../lib/withSession";
+import { CourseInterface } from "../../../interfaces";
+import { baseurl } from "../../../lib/fetcher";
+import { withSession } from "../../../lib/withSession";
+import { CourseEditorLayout } from "../CourseEditorLayout";
 import Page from "./Page";
 
 interface CourseEditorPageProps {
   course: CourseInterface;
 }
 
-export const CreateCoursePage: NextPage<CourseEditorPageProps> = ({
+export const CourseGeneralSettings: NextPage<CourseEditorPageProps> = ({
   course,
 }) => {
-  return <Page course={course} />;
+  return (
+    <CourseEditorLayout name={course.name} published={course.published}>
+      <Page course={course} />
+    </CourseEditorLayout>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
@@ -29,7 +34,6 @@ export const getServerSideProps: GetServerSideProps = withSession(
           },
         }
       );
-      console.log(req.user);
 
       return {
         props: {

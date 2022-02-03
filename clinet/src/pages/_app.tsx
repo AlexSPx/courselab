@@ -10,11 +10,13 @@ import "../styles/Calendar.css";
 import "../styles/DatePicker.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  console.log(pageProps);
+
   return (
     <WebSocketProvider>
       <ModalContextProvider>
         <UserCtxProvider user={pageProps.user}>
-          <Layout>
+          <Layout isAuth={pageProps.user?.isAuth}>
             <Component {...pageProps} />
           </Layout>
         </UserCtxProvider>

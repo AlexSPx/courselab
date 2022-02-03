@@ -122,10 +122,10 @@ export const io = new Server(httpServer, {
     express.static(path.join(__dirname, "../images/courseImage"))
   );
 
-  // app.use(
-  //   "/api/video/stream",
-  //   express.static(path.join(__dirname, `../videos`))
-  // );
+  app.use(
+    "/api/course/images",
+    express.static(path.join(__dirname, "../images/courses"))
+  );
 
   httpServer.listen(PORT, () => console.log(`running on port ${PORT}`));
 })();

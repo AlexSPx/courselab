@@ -41,9 +41,21 @@ model Course {
   weeks Int?
 
   // Relation Fields
-  members    CourseEnrollment[]
-  dataModels CourseDataModel[]
+  ExtendedDetails CourseExtendedDetails?
+  members         CourseEnrollment[]
+  dataModels      CourseDataModel[]
   @@map("course")
+}
+
+model CourseExtendedDetails {
+  images      String[]
+  description String?
+  sponsors    Json[]
+  reviews     String[]
+
+
+  course Course @relation(fields: [courseName], references: [name], onDelete: Cascade)
+  courseName String @id
 }
 
 model CourseEnrollment {
@@ -74,8 +86,8 @@ model CourseDataModel {
   course        Course      @relation(fields: [course_id], references: [name], onDelete: Cascade)
   assignment_id String?     @unique
   assignment    Assignment? @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
-  quiz_id String? @unique
-  quiz Quiz? @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  quiz_id       String?     @unique
+  quiz          Quiz?       @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
 
   @@map("courseDataModel")
 }
@@ -127,7 +139,7 @@ model VideoQuestion {
   video_id  String
   video     Video  @relation(fields: [video_id], references: [id], onDelete: Cascade)
   author_id String
-  author    User   @relation(fields: [author_id], references: [id], onDelete: Cascade) 
+  author    User   @relation(fields: [author_id], references: [id], onDelete: Cascade)
 }
 
 model Assignment {
@@ -163,23 +175,23 @@ model AssignmentSubmits {
 }
 
 model Quiz {
-  id String @id @default(uuid())
-  name String
+  id          String  @id @default(uuid())
+  name        String
   description String?
 
-  questions QuizQuestion[]
+  questions       QuizQuestion[]
   courseDataModel CourseDataModel?
 }
 
 model QuizQuestion {
-  id String @id @default(uuid())
-  type QuestionType
-  question String
-  options String[]
-  answer String[]
+  id         String       @id @default(uuid())
+  type       QuestionType
+  question   String
+  options    String[]
+  answer     String[]
   orderIndex Int
 
-  Quizz Quiz @relation(fields: [quizz_id], references: [id], onDelete: Cascade)
+  Quizz    Quiz   @relation(fields: [quizz_id], references: [id], onDelete: Cascade)
   quizz_id String
 }
 

@@ -1,12 +1,14 @@
 import { NextRouter, useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
-import StructureMenu from "../../components/Menus/StructureMenu";
-import { useModals } from "../../components/Modal";
+import StructureMenu from "../../../components/Menus/StructureMenu";
+import { useModals } from "../../../components/Modal";
 import StructureCreateFile, { CreateFile } from "./StructureCreateFile";
 
-import useStructureData, { StructureData } from "../../Hooks/useStructureData";
-import { CourseInterface, DataModelInterface } from "../../interfaces";
+import useStructureData, {
+  StructureData,
+} from "../../../Hooks/useStructureData";
+import { CourseInterface, DataModelInterface } from "../../../interfaces";
 
 import {
   AssignmentIcon,
@@ -16,7 +18,7 @@ import {
   QuizzIcon,
   UpArrow,
   VideoIcon,
-} from "../../svg/small";
+} from "../../../svg/small";
 
 export default function Structure({ course }: { course: CourseInterface }) {
   const structureData = useStructureData(course);
