@@ -27,7 +27,7 @@ export default function Page({
   );
 }
 
-const formatRawData = (courses: CourseGeneralRawInterface[]) => {
+export const formatRawData = (courses: CourseGeneralRawInterface[]) => {
   return courses.map((course) => {
     let videos = 0,
       documents = 0,

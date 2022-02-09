@@ -15,6 +15,10 @@ import useRequest from "../../../lib/useRequest";
 
 const TextDetails = dynamic(() => import("./TextDetails"), { ssr: false });
 
+type FileWithPreview = File & {
+  preview: string;
+};
+
 const baseStyle = {
   flex: 1,
   display: "flex",
@@ -51,7 +55,7 @@ const removedStyles: CSSProperties = {
 };
 
 export default function Landing({ details }: { details: CourseDetails }) {
-  const [files, setFiles] = useState<File[]>();
+  const [files, setFiles] = useState<FileWithPreview[]>();
   const [quill, setQuill] = useState<Quill>();
   const [sponsors, setSponsors] = useState<Sponsor[]>(details.sponsors);
   const [tweets, setTweets] = useState<string[]>(details.reviews);
@@ -112,8 +116,8 @@ const ImagesSection = ({
   initial,
   courseName,
 }: {
-  files: File[] | undefined;
-  setFiles: React.Dispatch<React.SetStateAction<File[] | undefined>>;
+  files: FileWithPreview[] | undefined;
+  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | undefined>>;
   initial: string[];
   courseName: string;
 }) => {

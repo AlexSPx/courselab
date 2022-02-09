@@ -20,6 +20,8 @@ import sharedsession from "express-socket.io-session";
 import { addUser, leaveDoc, removeUser } from "./functions/redisCaching";
 import { OnlineUser } from "./functions/online";
 
+import resizingMiddleware from "./middlewares/resizeMiddleware";
+
 require("dotenv").config();
 
 export const prismaClient = new PrismaClient();
@@ -126,6 +128,8 @@ export const io = new Server(httpServer, {
     "/api/course/images",
     express.static(path.join(__dirname, "../images/courses"))
   );
+
+  app.use("/(*_\\d+x\\d+.(jpe?g|png))", resizingMiddleware);
 
   httpServer.listen(PORT, () => console.log(`running on port ${PORT}`));
 })();

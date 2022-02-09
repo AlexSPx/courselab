@@ -24,7 +24,9 @@ export default function AuthHeader() {
             <a className="btn btn-ghost btn-sm rounded-btn">Home</a>
           </Link>
           <a className="btn btn-ghost btn-sm rounded-btn">Files</a>
-          <a className="btn btn-ghost btn-sm rounded-btn">About</a>
+          <Link href="/courses">
+            <a className="btn btn-ghost btn-sm rounded-btn">Explorer</a>
+          </Link>
           <a className="btn btn-ghost btn-sm rounded-btn">Contact</a>
         </div>
         <div className="flex-1 lg:flex-none">

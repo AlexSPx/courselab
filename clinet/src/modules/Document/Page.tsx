@@ -9,7 +9,6 @@ import Quill from "quill";
 import QuillCursors from "quill-cursors";
 import { UserContext } from "../../contexts/UserContext";
 import randomColor from "../../lib/randomColor";
-import { isEqual } from "lodash";
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],

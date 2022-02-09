@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import { ModalsInterface } from "../interfaces";
 
 export const ModalContext = createContext<ModalsInterface | null>(null);

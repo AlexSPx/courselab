@@ -1,11 +1,22 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import useSWR from "swr";
 import { absurl, baseurl, fetcher } from "../lib/fetcher";
+import { withSize } from "../lib/withSize";
 
 export default function useHasImage(
   name: string,
 
-  { avatar, type }: { avatar?: string; type?: "avatar" | "course_logo" } = {
+  {
+    avatar,
+    type,
+    width,
+    height,
+  }: {
+    avatar?: string;
+    type?: "avatar" | "course_logo";
+    width?: string | number;
+    height?: string | number;
+  } = {
     type: "avatar",
   }
 ) {
@@ -14,6 +25,9 @@ export default function useHasImage(
   if (type === "avatar") AvatarCheck(name, setUrl, avatar);
   if (type === "course_logo") CourseLogoCheck(name, setUrl);
 
+  if (width && height) {
+    return { url: withSize(url, { width, height }) };
+  }
   return { url };
 }
 

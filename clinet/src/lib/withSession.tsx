@@ -34,7 +34,7 @@ export function withSession<
           permanent: false,
           destination: redirectTo,
         },
-        props: { user: null },
+        props: { user: { isAuth: false, user: null } },
       };
     }
 

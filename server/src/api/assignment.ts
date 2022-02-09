@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { deleteCache } from "../functions/redisCaching";
 import { prismaClient } from "../";
-import { isAuth } from "../functions/auth";
+import { isAuth } from "../middlewares/auth";
 
 const router = Router();
 

@@ -33,6 +33,14 @@ export interface CourseInterface {
   dataModels: DataModelInterface[];
 }
 
+export interface Enrollment {
+  id: string;
+  role: "STUDENT" | "ADMIN";
+  user: GeneralUserInformation;
+  course_id: string;
+  course?: CourseInterface;
+}
+
 export interface CourseDetails {
   courseName: string;
   images: string[];
@@ -76,7 +84,6 @@ export interface CourseGeneralInterface {
 
 export interface Sponsor {
   name: string;
-
   path: string;
 }
 
@@ -86,7 +93,10 @@ export interface DocumentInterface {
   file: JSON;
   members: DocumentUser[];
   courseDataModel?: {
-    course_id: string;
+    course: {
+      name: string;
+      members: Enrollment[];
+    };
   };
 }
 

@@ -4,7 +4,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { ModalContext } from "../../contexts/ModalContex";
 import { CheckIcon, ErrorIcon, LoadingFlexCenter } from "../../svg/small";
 
-const Modal: React.FC<{}> = ({ children }) => {
+const Modal: React.FC = ({ children }) => {
   const [isBrowser, setIsBrowser] = useState(false);
   useEffect(() => {
     setIsBrowser(true);
@@ -16,6 +16,24 @@ const Modal: React.FC<{}> = ({ children }) => {
     return createPortal(
       modal,
       document.getElementById("modals") as HTMLElement
+    );
+  } else {
+    return null;
+  }
+};
+
+export const NotificationModal: React.FC = ({ children }) => {
+  const [isBrowser, setIsBrowser] = useState(false);
+  useEffect(() => {
+    setIsBrowser(true);
+  }, []);
+
+  const notification = <>{children}</>;
+
+  if (isBrowser) {
+    return createPortal(
+      notification,
+      document.getElementById("notifications") as HTMLElement
     );
   } else {
     return null;
@@ -61,7 +79,7 @@ export const ErrorModal = ({
   body: string;
 }) => {
   return (
-    <Modal key={Date.now()}>
+    <NotificationModal key={Date.now()}>
       <div className="z-50 flex px-5 flex-row items-center shadow-lg rounded-xl w-full md:w-96 h-24 bg-white border border-red-600 dark:bg-gray-800 relative overflow-hidden m-1">
         <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
           <ErrorIcon />
@@ -71,7 +89,7 @@ export const ErrorModal = ({
           <p className="text-sm">{body}</p>
         </div>
       </div>
-    </Modal>
+    </NotificationModal>
   );
 };
 
@@ -83,7 +101,7 @@ export const SuccessModal = ({
   body: string;
 }) => {
   return (
-    <Modal key={Date.now()}>
+    <NotificationModal key={Date.now()}>
       <div className="z-50 flex px-5 flex-row items-center shadow-lg rounded-xl w-full md:w-96 h-24 bg-white border border-green-600 dark:bg-gray-800 relative overflow-hidden m-1">
         <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
           <CheckIcon />
@@ -93,7 +111,7 @@ export const SuccessModal = ({
           <p className="text-sm">{body}</p>
         </div>
       </div>
-    </Modal>
+    </NotificationModal>
   );
 };
 
@@ -105,7 +123,7 @@ export const LoadingModal = ({
   body: string;
 }) => {
   return (
-    <Modal key={Date.now()}>
+    <NotificationModal key={Date.now()}>
       <div className="z-50 flex px-5 flex-row items-center shadow-lg rounded-xl w-full md:w-96 h-24 bg-white border border-yellow-400 dark:bg-gray-800 relative overflow-hidden m-1">
         <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
           <AiOutlineLoading className="loaderY text-yellow-600" />
@@ -115,7 +133,7 @@ export const LoadingModal = ({
           <p className="text-sm">{body}</p>
         </div>
       </div>
-    </Modal>
+    </NotificationModal>
   );
 };
 

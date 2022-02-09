@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import { GetServerSideProps } from "next";
 import { dataModelType } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
+import { withSession } from "../../lib/withSession";
 import { MainLayout } from "../Layouts/MainLayout";
 import Page from "./Page";
 
@@ -30,17 +31,33 @@ export const CourseExplorer: NextPage<CourseExplorerProps> = ({ courses }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const courses = await axios.get(`${baseurl}/course/explore/null`, {
-    withCredentials: true,
-    headers: {
-      cookie: req.headers.cookie ? req.headers.cookie : null,
-    },
-  });
+export const getServerSideProps: GetServerSideProps = withSession(
+  async ({ req }) => {
+    try {
+      const courses = await axios.get(`${baseurl}/course/explore/null`, {
+        withCredentials: true,
+        headers: {
+          cookie: req.headers.cookie ? req.headers.cookie : null,
+          headers: {
+            cookie: req?.headers.cookie,
+          },
+        },
+      });
 
-  return {
-    props: {
-      courses: courses.data,
-    },
-  };
-};
+      return {
+        props: {
+          courses: courses.data,
+          user: req.user || null,
+        },
+      };
+    } catch (error) {
+      return {
+        props: {
+          courses: null,
+          user: req.user || null,
+        },
+      };
+    }
+  },
+  { requiresAuth: false }
+);

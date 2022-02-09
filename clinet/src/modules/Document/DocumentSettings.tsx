@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import useHasImage from "../../Hooks/useHasImage";
 import useOnlineQuery from "../../Hooks/useOnlineQuery";
 import {
@@ -45,6 +51,23 @@ export default function DocumentSettings({
     );
   };
 
+  const getDocUsers = useCallback(() => {
+    const docUsers: DocumentUser[] = [...doc.members];
+
+    if (doc.courseDataModel) {
+      doc.courseDataModel.course.members.forEach((mmbr) => {
+        if (mmbr.role === "ADMIN") return;
+        docUsers.push({
+          user: mmbr.user,
+          role: "READER",
+          AssignedAt: new Date(),
+        });
+      });
+    }
+    return docUsers;
+  }, [doc.courseDataModel, doc.members]);
+
+  const docUsers = useMemo(() => getDocUsers(), [getDocUsers]);
   return (
     <Right css="sticky right-0 top-0 w-1/5 overflow-hidden">
       <div className="flex flex-col items-center w-5/6 h-12">
@@ -68,7 +91,7 @@ export default function DocumentSettings({
         />
         {showMembers && (
           <>
-            <Members docUsers={doc.members} />
+            <Members docUsers={docUsers} />
             <button
               className="btn btn-sm btn-outline w-full h-2"
               onClick={addMember}
@@ -105,8 +128,6 @@ const DropDown = ({
 const Members = ({ docUsers }: { docUsers: DocumentUser[] }) => {
   const ids = docUsers.map((docUser) => docUser.user.id);
   const { onlineUsers } = useOnlineQuery(ids, 3000);
-
-  console.log(onlineUsers);
 
   const renderUsers = docUsers.map((docUser) => {
     const isOnline = onlineUsers.some((user) => user.id === docUser.user.id);

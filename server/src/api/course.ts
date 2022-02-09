@@ -1,6 +1,6 @@
 import { prismaClient } from "../index";
 import { Router } from "express";
-import { isAuth } from "../functions/auth";
+import { isAuth } from "../middlewares/auth";
 import {
   uplaodCourseImages,
   uplaodCourseSponsorImages,
@@ -97,6 +97,41 @@ router.post(
     }
   }
 );
+
+router.post("/enroll", isAuth, async (req, res) => {
+  try {
+    const check = await prismaClient.courseEnrollment.findFirst({
+      where: {
+        course_id: req.body.course,
+        user_id: req.body.userId,
+      },
+    });
+
+    if (check) {
+      return res.status(400).send("You have already endolled in this course");
+    }
+
+    await prismaClient.courseEnrollment.create({
+      data: {
+        role: "STUDENT",
+        course: {
+          connect: {
+            name: req.body.course,
+          },
+        },
+        user: {
+          connect: {
+            id: req.body.userId,
+          },
+        },
+      },
+    });
+
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send("Somethin went wrong");
+  }
+});
 
 router.get("/details/:name", isAuth, async (req, res) => {
   try {
@@ -288,6 +323,30 @@ router.post("/details/desc/:course", isAuth, async (req, res) => {
     res.sendStatus(200);
   } catch (error) {
     return res.status(400).send("Something went wrong");
+  }
+});
+
+router.get("/mycourses", isAuth, async (req, res) => {
+  try {
+    const courses = await prismaClient.courseEnrollment.findMany({
+      where: {
+        user_id: req.session.user?.id,
+        role: "STUDENT",
+      },
+      select: {
+        id: true,
+        course: {
+          select: {
+            name: true,
+            public_name: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).send(courses);
+  } catch (error) {
+    return res.status(400).send("Somethin went wrong");
   }
 });
 
@@ -692,6 +751,102 @@ router.get(`/explore/:alg`, async (_req, res) => {
     });
 
     return res.status(200).send(courses);
+  } catch (error) {
+    return res.status(400).send("Someting went wrong");
+  }
+});
+
+router.get(`/:name`, async (req, res) => {
+  try {
+    const course = await prismaClient.course.findFirst({
+      where: {
+        name: req.params.name,
+      },
+      include: {
+        dataModels: {
+          select: {
+            type: true,
+          },
+        },
+        ExtendedDetails: {
+          select: {
+            images: true,
+            description: true,
+            sponsors: true,
+            reviews: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).send(course);
+  } catch (error) {
+    return res.status(400).send("Someting went wrong");
+  }
+});
+
+router.get("/mycourse/:name", isAuth, async (req, res) => {
+  try {
+    const course = await prismaClient.courseEnrollment.findFirst({
+      where: {
+        course_id: req.params.name,
+        user_id: req.session.user?.id,
+      },
+      include: {
+        course: {
+          include: {
+            dataModels: {
+              where: {
+                AND: [
+                  {
+                    props: {
+                      path: ["week"],
+                      equals: 0,
+                    },
+                  },
+                  {
+                    props: {
+                      path: ["day"],
+                      equals: 0,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return res.status(200).send(course);
+  } catch (error) {
+    return res.status(400).send("Someting went wrong");
+  }
+});
+
+router.post("/files/:course", isAuth, async (req, res) => {
+  try {
+    const files = await prismaClient.courseDataModel.findMany({
+      where: {
+        course_id: req.params.course,
+        AND: [
+          {
+            props: {
+              path: ["week"],
+              equals: parseInt(req.body.week),
+            },
+          },
+          {
+            props: {
+              path: ["day"],
+              equals: parseInt(req.body.day),
+            },
+          },
+        ],
+      },
+    });
+
+    return res.status(200).send(files);
   } catch (error) {
     return res.status(400).send("Someting went wrong");
   }

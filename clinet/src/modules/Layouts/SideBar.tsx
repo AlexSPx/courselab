@@ -21,7 +21,7 @@ export const SideBarHref = ({
 }: {
   label?: string;
   icon?: JSX.Element;
-  href: string;
+  href: string | any;
 }) => {
   return (
     <Link href={href}>

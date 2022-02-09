@@ -7,9 +7,14 @@ import { UserContext } from "../../contexts/UserContext";
 import { Left, Main, Right } from "../Layouts/MainLayout";
 
 import Avatar from "../../components/Avatar";
+import { MyCourseInterface } from ".";
 
-export default function Page() {
+export default function Page({ courses }: { courses: MyCourseInterface[] }) {
   const { userData } = useContext(UserContext);
+
+  const mapCourses = courses.map((course) => {
+    return <MyCourseCard course={course} key={course.id} />;
+  });
 
   return (
     <>
@@ -17,11 +22,7 @@ export default function Page() {
       {/* <div className="h-full border-r"></div> */}
       <Main css="items-center">
         <p className="text-2xl font-light text-center">My Courses</p>
-        <div className="mt-3">
-          <MyCourseCard course={""} />
-          <MyCourseCard course={""} />
-          <MyCourseCard course={""} />
-        </div>
+        <div className="flex flex-col mt-3 w-full max-w-2xl">{mapCourses}</div>
         <Link href="/course/create">
           <a className="btn max-w-2xl w-full">Create a Course</a>
         </Link>

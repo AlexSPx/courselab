@@ -18,6 +18,7 @@ export type StructureData = {
   addFile: (dataModel: DataModelInterface) => void;
   delFile: (dataModelId: DataModelInterface) => void;
   getWeek: () => DataModelInterface[][];
+  getDay: (dayIndex: number) => DataModelInterface[];
   saveWeeks: () => Promise<void>;
   setCurrentWeek: React.Dispatch<SetStateAction<number>>;
 };
@@ -62,9 +63,16 @@ export default function useStructureData(
     setData((prev: Data) => [...prev!, [[], [], [], [], [], [], []]]);
   };
 
-  const addFile = (dataModel: DataModelInterface) => {
+  const addFile = (dataModel: DataModelInterface | DataModelInterface[]) => {
     setData((prev) => {
       const temp = prev!;
+
+      if (Array.isArray(dataModel)) {
+        dataModel.forEach((dm) => {
+          temp[dm.props.week][dm.props.day][dm.props.index] = dm;
+        });
+        return temp;
+      }
 
       temp[dataModel.props.week][dataModel.props.day][dataModel.props.index] =
         dataModel;
@@ -107,6 +115,7 @@ export default function useStructureData(
     courseName: course.name,
     createWeek,
     getWeek,
+    getDay,
     saveWeeks,
     setCurrentWeek,
     addFile,

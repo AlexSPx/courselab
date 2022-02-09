@@ -3,7 +3,7 @@ import { Router } from "express";
 import { unlinkSync } from "fs";
 import path from "path";
 import sharp from "sharp";
-import { isAuth } from "../functions/auth";
+import { isAuth } from "../middlewares/auth";
 import { getAllOnline, removeUser } from "../functions/redisCaching";
 import { prismaClient } from "../index";
 import { uploadAvatar } from "../settings/multer";

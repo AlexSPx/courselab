@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { prismaClient } from "../";
-import { isAuth } from "../functions/auth";
+import { isAuth } from "../middlewares/auth";
 const router = Router();
 
 router.get("/:id", isAuth, async (req, res) => {

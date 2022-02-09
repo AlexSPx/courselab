@@ -8,6 +8,8 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["filterJson"]
+
 }
 
 model User {
@@ -135,7 +137,6 @@ model VideoQuestion {
   parentQuestion   VideoQuestion?  @relation("VideoQuestionToVideoQuestion", fields: [parentQuestionId], references: [id], onDelete: Cascade)
   parentQuestionId String?
   VideoAnswers     VideoQuestion[] @relation("VideoQuestionToVideoQuestion")
-
   video_id  String
   video     Video  @relation(fields: [video_id], references: [id], onDelete: Cascade)
   author_id String

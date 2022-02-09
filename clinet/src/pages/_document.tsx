@@ -21,6 +21,10 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
           <div
+            id="notifications"
+            className="absolute flex flex-col top-0 left-0"
+          ></div>
+          <div
             id="modals"
             className="absolute flex flex-col top-0 left-0"
           ></div>

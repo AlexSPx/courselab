@@ -3,7 +3,7 @@ import { Socket } from "socket.io";
 import { OnlineUser } from "../functions/online";
 import { getAllInDoc, joinDoc, leaveDoc } from "../functions/redisCaching";
 import { io, prismaClient } from "../";
-import { isAuth } from "../functions/auth";
+import { isAuth } from "../middlewares/auth";
 
 const router = Router();
 
@@ -57,11 +57,26 @@ router.get("/:id", isAuth, async (req, res) => {
     const document = await prismaClient.document.findFirst({
       where: {
         id: req.params.id,
-        members: {
-          some: {
-            user_id: req.session.user?.id,
+        OR: [
+          {
+            members: {
+              some: {
+                user_id: req.session.user?.id,
+              },
+            },
           },
-        },
+          {
+            courseDataModel: {
+              course: {
+                members: {
+                  some: {
+                    user_id: req.session.user?.id,
+                  },
+                },
+              },
+            },
+          },
+        ],
       },
       select: {
         id: true,
@@ -84,11 +99,33 @@ router.get("/:id", isAuth, async (req, res) => {
         },
         courseDataModel: {
           select: {
-            course_id: true,
+            course: {
+              select: {
+                name: true,
+                members: {
+                  select: {
+                    id: true,
+                    role: true,
+                    user: {
+                      select: {
+                        id: true,
+                        username: true,
+                        first_name: true,
+                        last_name: true,
+                        email: true,
+                      },
+                    },
+                    course_id: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
     });
+
+    console.log(document);
 
     return res.status(200).send(document);
   } catch (error) {

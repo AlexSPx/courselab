@@ -2,7 +2,7 @@ import { Router } from "express";
 import { createReadStream, statSync } from "fs";
 import { extname, join } from "path";
 import { prismaClient } from "../";
-import { isAuth } from "../functions/auth";
+import { isAuth } from "../middlewares/auth";
 import { uploadVideo } from "../settings/multer";
 
 const router = Router();

@@ -114,8 +114,6 @@ const RenderDay = ({
   };
 
   const renderFiles = day.map((data) => {
-    console.log(data);
-
     return (
       <RenderFile
         data={data}
@@ -184,8 +182,6 @@ const RenderFile = ({
 }) => {
   const menuRef = useRef(null);
   const [href, setHref] = useState<string>("");
-
-  console.log(data);
 
   const Icon = () => {
     if (data.type === "DOCUMENT") {

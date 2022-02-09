@@ -62,10 +62,12 @@ export default function useRequest() {
         if (error.response) {
           closeModal(ackey);
           if (onFail) onFail();
+          console.log(error);
+
           pushModal(
             <ErrorModal
               title="Error"
-              body={error.response.data}
+              body={error.response.statusText}
               key={Date.now()}
             />
           );
