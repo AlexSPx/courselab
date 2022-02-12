@@ -27,15 +27,22 @@ export interface CourseInterface {
   published: boolean;
   model: "WEEKLY" | "FREE";
   weeks?: number;
+  scheduleType: CourseScheduleType;
+  interval?: number;
+  scheduledDates: ScheduleDate[];
   details: {
     description: string;
   };
   dataModels: DataModelInterface[];
 }
 
+export type CourseScheduleType = "START_ON_JOIN" | "INTERVAL" | "SCHEDULE";
+
 export interface Enrollment {
   id: string;
   role: "STUDENT" | "ADMIN";
+  startingAt: Date;
+  assignedAt: Date;
   user: GeneralUserInformation;
   course_id: string;
   course?: CourseInterface;
@@ -76,10 +83,18 @@ export interface CourseGeneralInterface {
   details: {
     description: string;
   };
+  scheduleType: CourseScheduleType;
+  interval?: number;
+  scheduledDates: ScheduleDate[];
   videos: number;
   documents: number;
   quizzes: number;
   assignments: number;
+}
+
+export interface ScheduleDate {
+  startingAt: Date;
+  status: "finished" | "ongoing" | "upcoming";
 }
 
 export interface Sponsor {

@@ -1,8 +1,12 @@
 import Image from "next/image";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { CoursePublicRaw } from ".";
-import { CourseDetails, CourseGeneralInterface } from "../../../interfaces";
+import {
+  CourseDetails,
+  CourseGeneralInterface,
+  ScheduleDate,
+} from "../../../interfaces";
 import { baseurl } from "../../../lib/fetcher";
 import { withSize } from "../../../lib/withSize";
 import { formatRawData } from "../Page";
@@ -10,12 +14,22 @@ import dynamic from "next/dynamic";
 import TweetEmbed from "react-tweet-embed";
 import { BsStarFill } from "react-icons/bs";
 import { GiGraduateCap } from "react-icons/gi";
-import useEnroll from "../../../Hooks/useEnroll";
+import useEnroll from "../../../components/Modal/Menus/EnrollMenu";
+import NoSsr from "../../../components/NoSsr";
+import { useModals } from "../../../components/Modal";
+import EnrollMenu from "../../../components/Modal/Menus/EnrollMenu";
 
 const Description = dynamic(() => import("./Description"), { ssr: false });
 
 type Course = CourseGeneralInterface & {
   ExtendedDetails: CourseDetails;
+};
+
+const nextDate = (scheduledDates: ScheduleDate[] | undefined) => {
+  if (!scheduledDates) return;
+  return scheduledDates.filter((date) =>
+    new Date(date.startingAt).getTime() > new Date().getTime() ? date : null
+  );
 };
 
 export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
@@ -24,7 +38,21 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
     [courseRaw]
   );
 
-  const { enroll } = useEnroll({ courseName: course.name, course: courseRaw });
+  const [isEnrollEnabled, setIsEnrollEnabled] = useState(true);
+
+  const { pushModal, closeModal } = useModals();
+
+  const handleOpenEnroll = () => {
+    const mkey = Date.now();
+    pushModal(
+      <EnrollMenu
+        key={mkey}
+        onClose={() => closeModal(mkey)}
+        course={courseRaw}
+      />,
+      { timer: false }
+    );
+  };
 
   return (
     <div
@@ -71,7 +99,8 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
 
               <button
                 className="btn btn-info px-20 ml-3 font-medium text-white bg-blue-600 hover:bg-blue-700"
-                onClick={enroll}
+                onClick={handleOpenEnroll}
+                disabled={!isEnrollEnabled}
               >
                 Enroll
               </button>
@@ -79,6 +108,7 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
             <Description description={course.ExtendedDetails.description} />
+            <Schedule course={course} setIsEnrollEnabled={setIsEnrollEnabled} />
           </div>
         </div>
         {course.ExtendedDetails.sponsors.length > 0 && (
@@ -169,5 +199,73 @@ const Reviews = ({ reviews }: { reviews: String[] }) => {
       <div className="divider w-full">Reviews</div>
       <div className="flex flex-warp">{renderReviews}</div>
     </div>
+  );
+};
+
+const Schedule = ({
+  course,
+  setIsEnrollEnabled,
+}: {
+  course: Course;
+  setIsEnrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const upcommingDates = useMemo<ScheduleDate[]>(
+    () => nextDate(course.scheduledDates) as unknown as ScheduleDate[],
+    [course.scheduledDates]
+  );
+
+  const mapUpcommingDates = upcommingDates?.map((date) => {
+    if (!date) return;
+    return (
+      <tr key={date.startingAt.toString()}>
+        <td>
+          {new Date(date?.startingAt).toLocaleDateString(undefined, {
+            weekday: "long",
+            hour: "2-digit",
+            minute: "2-digit",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </td>
+      </tr>
+    );
+  });
+
+  useEffect(() => {
+    if (course.scheduleType === "SCHEDULE" && !upcommingDates.length)
+      setIsEnrollEnabled(false);
+  }, [course.scheduleType, setIsEnrollEnabled, upcommingDates]);
+
+  return (
+    <NoSsr>
+      <div className="flex flex-col p-4 bg-white border border-gray-100 shadow-sm rounded-xl items-center">
+        <p className="font-bold text-2xl w-full">Schedule</p>
+        {course.scheduleType === "START_ON_JOIN" && (
+          <div>You will start the course on join</div>
+        )}
+        {course.scheduleType === "INTERVAL" && <div></div>}
+        {course.scheduleType === "SCHEDULE" && (
+          <div className="overflow-x-auto w-full mt-1 mx-5 m-auto">
+            <table className="table w-full">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mapUpcommingDates ? (
+                  mapUpcommingDates
+                ) : (
+                  <tr>
+                    <td>There are no dates</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </NoSsr>
   );
 };

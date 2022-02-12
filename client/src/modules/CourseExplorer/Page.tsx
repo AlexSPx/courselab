@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { CourseGeneralRawInterface } from ".";
 import { CourseGeneralInterface, dataModelType } from "../../interfaces";
 import { Left, Right, Main } from "../Layouts/MainLayout";
@@ -21,7 +21,9 @@ export default function Page({
   return (
     <>
       <Left />
-      <Main>{mapCourses}</Main>
+      <Main>
+        <div className="flex flex-wrap h-full justify-center">{mapCourses}</div>
+      </Main>
       <Right />
     </>
   );

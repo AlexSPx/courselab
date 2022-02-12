@@ -12,7 +12,9 @@ router.get("/admin/:id", isAuth, async (req, res) => {
         id: req.params.id,
         members: {
           some: {
-            user_id: req.session.user?.id,
+            enrollment: {
+              user_id: req.session.user?.id,
+            },
             role: "ADMIN" || "EDITOR",
           },
         },
@@ -58,7 +60,9 @@ router.post("/save", isAuth, async (req, res) => {
         id: req.body.assignmentId,
         members: {
           some: {
-            user_id: req.session.user?.id,
+            enrollment: {
+              user_id: req.session.user?.id,
+            },
             role: "ADMIN" || "EDITOR",
           },
         },

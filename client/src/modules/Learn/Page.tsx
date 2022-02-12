@@ -2,6 +2,7 @@ import axios from "axios";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Countdown, { CountdownRendererFn } from "react-countdown";
 import useStructureData, { StructureData } from "../../Hooks/useStructureData";
 import { DataModelInterface, Enrollment } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
@@ -16,8 +17,11 @@ import {
 
 export default function Page({ enrollment }: { enrollment: Enrollment }) {
   const courseData = useStructureData(enrollment.course!);
-
   const router = useRouter();
+
+  const [available, setAvailable] = useState(
+    new Date(enrollment.startingAt).getTime() < new Date().getTime()
+  );
 
   useEffect(() => {
     courseData.setCurrentWeek(
@@ -27,7 +31,7 @@ export default function Page({ enrollment }: { enrollment: Enrollment }) {
 
   const renderDays = courseData
     .getWeek()
-    .map((day: DataModelInterface[], index: number) => (
+    ?.map((day: DataModelInterface[], index: number) => (
       <Day
         key={index}
         initialDay={day}
@@ -37,9 +41,59 @@ export default function Page({ enrollment }: { enrollment: Enrollment }) {
       />
     ));
 
+  const countdownRenderer: CountdownRendererFn = ({
+    days,
+    hours,
+    minutes,
+    seconds,
+    completed,
+  }) => {
+    if (completed)
+      return <div className="flex text-mono">The course is starting...</div>;
+
+    return (
+      <div className="grid grid-flow-col gap-5 place-items-end auto-cols-max font-mono text-2xl">
+        <div>
+          <span className="font-mono text-4xl">
+            <span>{days}</span>
+          </span>
+          days
+        </div>
+        <div>
+          <span className="font-mono text-4xl">
+            <span>{hours}</span>
+          </span>
+          hours
+        </div>
+        <div>
+          <span className="font-mono text-4xl">
+            <span>{minutes}</span>
+          </span>
+          min
+        </div>
+        <div>
+          <span className="font-mono text-4xl">
+            <span>{seconds}</span>
+          </span>
+          sec
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col items-center max-w-3xl w-full h-full p-1">
-      {renderDays}
+      {available ? (
+        <>{renderDays}</>
+      ) : (
+        <div className="flex w-full h-full items-center justify-center">
+          <Countdown
+            date={enrollment.startingAt}
+            onComplete={() => setAvailable(true)}
+            renderer={countdownRenderer}
+          />
+        </div>
+      )}
     </div>
   );
 }

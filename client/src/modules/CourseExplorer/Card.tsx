@@ -13,7 +13,7 @@ export default function Card({ course }: { course: CourseGeneralInterface }) {
 
   return (
     <Link href={`/course/${course.name}`}>
-      <a className="block md:w-3/4 xl:w-1/2 overflow-hidden bg-white shadow-xl rounded-2xl hover:bg-slate-50">
+      <a className="block md:w-3/4 xl:w-[45%] mx-3 mt-4 h-[34rem] overflow-hidden bg-white shadow-xl rounded-2xl hover:bg-slate-50">
         <div className="w-full h-48 relative">
           <Image
             src={url}
@@ -25,7 +25,6 @@ export default function Card({ course }: { course: CourseGeneralInterface }) {
         <div className="relative pt-20 text-center">
           <div
             className="
-          
             absolute
             w-24
             h-24
@@ -45,7 +44,7 @@ export default function Card({ course }: { course: CourseGeneralInterface }) {
               alt={`${course.public_name} banner`}
             />
           </div>
-          <div className="px-6 sm:px-12">
+          <div className="px-6 sm:px-12 max-h-[12rem]">
             <h5 className="text-xl font-bold text-gray-900">
               {course.public_name}
             </h5>

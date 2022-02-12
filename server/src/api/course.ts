@@ -11,7 +11,7 @@ import path from "path";
 import { existsSync, renameSync, unlinkSync } from "fs";
 import { initialDocData } from "./document";
 import { deleteCache, getOrSetCache } from "../functions/redisCaching";
-import { Sponsor, sponsorFiles } from "../functions/misc";
+import { Sponsor } from "../functions/misc";
 
 const router = Router();
 
@@ -104,6 +104,7 @@ router.post("/enroll", isAuth, async (req, res) => {
       where: {
         course_id: req.body.course,
         user_id: req.body.userId,
+        startingAt: req.body.startingAt,
       },
     });
 
@@ -114,6 +115,8 @@ router.post("/enroll", isAuth, async (req, res) => {
     await prismaClient.courseEnrollment.create({
       data: {
         role: "STUDENT",
+        AssignedAt: new Date(),
+        startingAt: req.body.startingAt,
         course: {
           connect: {
             name: req.body.course,
@@ -320,7 +323,7 @@ router.post("/details/desc/:course", isAuth, async (req, res) => {
       },
     });
 
-    res.sendStatus(200);
+    return res.sendStatus(200);
   } catch (error) {
     return res.status(400).send("Something went wrong");
   }
@@ -402,6 +405,9 @@ router.get("/fetchadmin/:name", isAuth, async (req, res) => {
           model: true,
           details: true,
           weeks: true,
+          scheduleType: true,
+          interval: true,
+          scheduledDates: true,
           dataModels: {
             select: {
               id: true,
@@ -458,6 +464,9 @@ router.post(
           details: {
             description: req.body.description,
           },
+          scheduleType: req.body.scheduleType,
+          interval: JSON.parse(req.body.interval),
+          scheduledDates: JSON.parse(req.body.scheduledDates),
         },
       });
 
@@ -489,6 +498,8 @@ router.post(
       deleteCache(`course?edit:${req.body.name}`);
       return res.sendStatus(201);
     } catch (err) {
+      console.log(err);
+
       return res.status(400).send("Something went wrong");
     }
   }
@@ -648,9 +659,9 @@ router.post("/coursedata", isAuth, async (req, res) => {
               members: {
                 create: [
                   {
-                    user: {
+                    enrollment: {
                       connect: {
-                        id: req.session.user?.id,
+                        user_id: req.session.user?.id,
                       },
                     },
                     role: "ADMIN",

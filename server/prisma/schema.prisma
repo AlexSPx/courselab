@@ -28,7 +28,6 @@ model User {
   courses        CourseEnrollment[]
   videoQuestions VideoQuestion[]
   documents      DocumentsOnUsers[]
-  assignments    AssignmentsOnUsers[]
 
   @@map("user")
 }
@@ -41,6 +40,10 @@ model Course {
 
   model ModelType @default(WEEKLY)
   weeks Int?
+
+  scheduleType ScheduleType @default(START_ON_JOIN)
+  interval Int?
+  scheduledDates Json[]
 
   // Relation Fields
   ExtendedDetails CourseExtendedDetails?
@@ -63,12 +66,17 @@ model CourseExtendedDetails {
 model CourseEnrollment {
   id   String   @id @default(uuid())
   role UserRole
+  AssignedAt DateTime @default(now())
+  startingAt DateTime @default(now())
 
   // Relation Fields
   user_id   String
   course_id String
   user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   course    Course @relation(fields: [course_id], references: [name], onDelete: Cascade)
+
+  assignments    AssignmentsOnUsers[]
+  quizzes QuizSubmit[]
 
   @@map("courseEnrollment")
 }
@@ -154,8 +162,8 @@ model Assignment {
 }
 
 model AssignmentsOnUsers {
-  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id       String
+  enrollment CourseEnrollment @relation(fields: [enrollment_id], references: [id], onDelete: Cascade)
+  enrollment_id String
   assignment    Assignment     @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
   assignment_id String
   role          AssignmentRole
@@ -163,15 +171,15 @@ model AssignmentsOnUsers {
   // relations
   submits AssignmentSubmits[]
 
-  @@id([user_id, assignment_id])
+  @@id([enrollment_id, assignment_id])
 }
 
 model AssignmentSubmits {
   id                 String              @id @default(uuid())
   dateOfSubmit       DateTime
   dateOfRemoval      DateTime?
-  AssignmentsOnUsers AssignmentsOnUsers? @relation(fields: [user_id, assignment_id], references: [user_id, assignment_id], onDelete: Cascade)
-  user_id            String?
+  AssignmentsOnUsers AssignmentsOnUsers? @relation(fields: [enrollment_id, assignment_id], references: [enrollment_id, assignment_id], onDelete: Cascade)
+  enrollment_id            String?
   assignment_id      String?
 }
 
@@ -181,6 +189,7 @@ model Quiz {
   description String?
 
   questions       QuizQuestion[]
+  submits QuizSubmit[]
   courseDataModel CourseDataModel?
 }
 
@@ -196,11 +205,27 @@ model QuizQuestion {
   quizz_id String
 }
 
+model QuizSubmit {
+  id String @id @default(uuid())
+  answers Json[]
+  
+  Quiz Quiz @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  quiz_id String
+  Enrollment CourseEnrollment @relation(fields: [enrollment_id], references: [id], onDelete: Cascade)
+  enrollment_id String
+}
+
 model Session {
   id        String   @id
   sid       String   @unique
   data      String
   expiresAt DateTime
+}
+
+enum ScheduleType {
+  START_ON_JOIN
+  INTERVAL
+  SCHEDULE
 }
 
 enum QuestionType {

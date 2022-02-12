@@ -1,7 +1,11 @@
 import axios from "axios";
 import { NextPage } from "next";
 import { GetServerSideProps } from "next";
-import { dataModelType } from "../../interfaces";
+import {
+  CourseScheduleType,
+  dataModelType,
+  ScheduleDate,
+} from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
 import { MainLayout } from "../Layouts/MainLayout";
@@ -15,6 +19,9 @@ export interface CourseGeneralRawInterface {
   name: string;
   public_name: string;
   weeks: number;
+  scheduleType: CourseScheduleType;
+  interval?: number;
+  scheduledDates: ScheduleDate[];
   details: {
     description: string;
   };

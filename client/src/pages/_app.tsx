@@ -8,17 +8,18 @@ import WebSocketProvider from "../contexts/SocketContext";
 import "../styles/globals.css";
 import "../styles/Calendar.css";
 import "../styles/DatePicker.css";
+import "react-datetime-picker/dist/DateTimePicker.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WebSocketProvider>
-      <ModalContextProvider>
-        <UserCtxProvider user={pageProps.user}>
-          <Layout isAuth={pageProps.user?.isAuth}>
+      <UserCtxProvider user={pageProps.user}>
+        <Layout isAuth={pageProps.user?.isAuth}>
+          <ModalContextProvider>
             <Component {...pageProps} />
-          </Layout>
-        </UserCtxProvider>
-      </ModalContextProvider>
+          </ModalContextProvider>
+        </Layout>
+      </UserCtxProvider>
     </WebSocketProvider>
   );
 }
