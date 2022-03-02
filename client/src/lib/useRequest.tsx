@@ -24,7 +24,7 @@ export default function useRequest() {
       loadingBody?: string;
       successTitle?: string;
       successBody?: string;
-      onSuccess?: Function;
+      onSuccess?: (data: AxiosResponse<any>) => void;
       onFail?: Function;
       successStatus?: number;
     } = {}
@@ -62,12 +62,10 @@ export default function useRequest() {
         if (error.response) {
           closeModal(ackey);
           if (onFail) onFail();
-          console.log(error);
-
           pushModal(
             <ErrorModal
               title="Error"
-              body={error.response.statusText}
+              body={JSON.stringify(error.response.data)}
               key={Date.now()}
             />
           );
@@ -81,7 +79,4 @@ export default function useRequest() {
   };
 
   return { executeQuery };
-}
-function isAxiosError(error: unknown) {
-  throw new Error("Function not implemented.");
 }

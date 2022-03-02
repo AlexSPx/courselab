@@ -5,8 +5,7 @@ import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
 import { MainLayout } from "../Layouts/MainLayout";
-
-const Page = dynamic(() => import("./Page"), { ssr: false });
+import Page from "./Page";
 
 type AssigmentEditorTypes = {
   assignment: AssignmentInterface;

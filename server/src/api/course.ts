@@ -59,6 +59,9 @@ router.post(
           details: {
             description,
           },
+          ExtendedDetails: {
+            create: {},
+          },
         },
       });
 
@@ -112,7 +115,7 @@ router.post("/enroll", isAuth, async (req, res) => {
       return res.status(400).send("You have already endolled in this course");
     }
 
-    await prismaClient.courseEnrollment.create({
+    const enrollment = await prismaClient.courseEnrollment.create({
       data: {
         role: "STUDENT",
         AssignedAt: new Date(),
@@ -128,6 +131,51 @@ router.post("/enroll", isAuth, async (req, res) => {
           },
         },
       },
+    });
+
+    const course = await prismaClient.course.findFirst({
+      where: {
+        name: req.body.course,
+      },
+      select: {
+        dataModels: true,
+      },
+    });
+
+    course?.dataModels.forEach(async (dm) => {
+      if (dm.assignment_id) {
+        await prismaClient.assignmentsOnUsers.create({
+          data: {
+            enrollment: {
+              connect: {
+                id: enrollment.id,
+              },
+            },
+            assignment: {
+              connect: {
+                id: dm.assignment_id,
+              },
+            },
+            role: "STUDENT",
+          },
+        });
+      } else if (dm.document_id) {
+        await prismaClient.documentsOnUsers.create({
+          data: {
+            user: {
+              connect: {
+                id: enrollment.id,
+              },
+            },
+            document: {
+              connect: {
+                id: dm.document_id,
+              },
+            },
+            role: "READER",
+          },
+        });
+      }
     });
 
     return res.sendStatus(200);
@@ -639,6 +687,14 @@ router.post("/coursedata", isAuth, async (req, res) => {
       deleteCache(`course?edit:${courseName}`);
       return res.status(201).send(dataModelVideo);
     } else if (type === "Assignment") {
+      const enrollment = await prismaClient.courseEnrollment.findFirst({
+        where: {
+          user_id: req.session.user?.id,
+          course_id: courseName,
+        },
+        select: { id: true },
+      });
+
       const dataModelAssignment = await prismaClient.courseDataModel.create({
         data: {
           name,
@@ -661,7 +717,7 @@ router.post("/coursedata", isAuth, async (req, res) => {
                   {
                     enrollment: {
                       connect: {
-                        user_id: req.session.user?.id,
+                        id: enrollment?.id,
                       },
                     },
                     role: "ADMIN",
@@ -704,6 +760,8 @@ router.post("/coursedata", isAuth, async (req, res) => {
       return res.status(201).send(true);
     }
   } catch (err) {
+    console.log(err);
+
     return res.status(400).send(err);
   }
 });
@@ -731,11 +789,34 @@ router.delete("/delete/:name", isAuth, async (req, res) => {
 
       unlinkSync(path.join(__dirname, `../../videos/${video.path}`));
     } else if (deletedData.type === "ASSIGNMENT") {
-      await prismaClient.assignment.delete({
+      const deleted = await prismaClient.assignment.delete({
         where: {
           id: deletedData.assignment_id!,
         },
+        include: {
+          members: {
+            include: {
+              submits: true,
+            },
+          },
+        },
       });
+
+      if (deleted.files.length) {
+        deleted.files.forEach((file: any) => {
+          console.log(file);
+
+          unlinkSync(path.join(__dirname + `../../../files/${file}`));
+        });
+      }
+
+      if (deleted.members) {
+        deleted.members.forEach((mmbr) => {
+          mmbr.submits.forEach((submit) => {
+            submit.attachments.forEach((att) => {});
+          });
+        });
+      }
     }
 
     deleteCache(`course?edit:${req.params.name}`);
@@ -858,6 +939,21 @@ router.post("/files/:course", isAuth, async (req, res) => {
     });
 
     return res.status(200).send(files);
+  } catch (error) {
+    return res.status(400).send("Someting went wrong");
+  }
+});
+
+router.delete("/leave/:course", isAuth, async (req, res) => {
+  try {
+    await prismaClient.courseEnrollment.deleteMany({
+      where: {
+        user_id: req.session.user?.id,
+        course_id: req.params.course,
+      },
+    });
+
+    return res.sendStatus(200);
   } catch (error) {
     return res.status(400).send("Someting went wrong");
   }

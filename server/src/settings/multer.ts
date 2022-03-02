@@ -64,6 +64,19 @@ const video_storage = multer.diskStorage({
   },
 });
 
+const file_uploader = multer.diskStorage({
+  destination: function (_req, _file, cb) {
+    cb(null, "files/");
+  },
+  filename: function (req, file, cb) {
+    const path = `${req.session.user?.username}###${Date.now()}###${
+      file.originalname
+    }`;
+    req.body.path = path;
+    cb(null, path);
+  },
+});
+
 const CourseSponsorFilter = (
   req: Request,
   _file: Express.Multer.File,
@@ -73,8 +86,6 @@ const CourseSponsorFilter = (
     __dirname,
     `../../images/courses/${req.params.course}-sponsor-${req.params.sponsor}.jpg`
   );
-
-  console.log(apath);
 
   if (existsSync(apath)) {
     req.body.skip = true;
@@ -92,3 +103,4 @@ export const uplaodCourseSponsorImages = multer({
   storage: coursedetails_sponsors_storage,
 });
 export const uploadVideo = multer({ storage: video_storage });
+export const uploadFile = multer({ storage: file_uploader });

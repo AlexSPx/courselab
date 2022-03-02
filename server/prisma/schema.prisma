@@ -155,6 +155,7 @@ model Assignment {
   id           String  @id @default(uuid())
   name         String
   content      String?
+  files String[]
   daysToSubmit Int?
 
   courseDataModel CourseDataModel?
@@ -176,8 +177,9 @@ model AssignmentsOnUsers {
 
 model AssignmentSubmits {
   id                 String              @id @default(uuid())
-  dateOfSubmit       DateTime
+  dateOfSubmit       DateTime @default(now())
   dateOfRemoval      DateTime?
+  attachments Json[]
   AssignmentsOnUsers AssignmentsOnUsers? @relation(fields: [enrollment_id, assignment_id], references: [enrollment_id, assignment_id], onDelete: Cascade)
   enrollment_id            String?
   assignment_id      String?

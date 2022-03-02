@@ -9,6 +9,7 @@ import SideBar, {
   SideBarButton,
 } from "../Layouts/SideBar";
 import useRequst from "../../lib/useRequest";
+import { AiOutlineContacts } from "react-icons/ai";
 
 type SideBarMenuProps = {
   name: string;
@@ -83,6 +84,11 @@ export const CourseEditorLayout: React.FC<SideBarMenuProps> = ({
           label="Course landing"
           icon={<IoIosLaptop size={31} />}
           href={`${path}/landing`}
+        />
+        <SideBarHref
+          label="Attendance"
+          icon={<AiOutlineContacts size={31} />}
+          href={`${path}/attendance`}
         />
         {published ? (
           <SideBarButton label="Unlist" func={handleUnlist} />

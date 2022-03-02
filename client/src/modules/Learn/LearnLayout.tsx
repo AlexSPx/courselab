@@ -1,8 +1,11 @@
+import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import useHasImage from "../../Hooks/useHasImage";
-import SideBar, { SideBarHref } from "../Layouts/SideBar";
+import { baseurl } from "../../lib/fetcher";
+import useRequest from "../../lib/useRequest";
+import SideBar, { SideBarButton, SideBarHref } from "../Layouts/SideBar";
 
 type LearnLayout = {
   weeks: number;
@@ -19,6 +22,7 @@ export const LearnLayout: React.FC<LearnLayout> = ({
   const { url } = useHasImage(name, { type: "course_logo" });
 
   const router = useRouter();
+  const { executeQuery } = useRequest();
 
   useEffect(() => {
     if (!router.query.week)
@@ -53,6 +57,31 @@ export const LearnLayout: React.FC<LearnLayout> = ({
         <span className="font-semibold my-2">{public_name}</span>
 
         {buttons}
+        <SideBarButton
+          key={"leave"}
+          label="Leave"
+          func={() =>
+            executeQuery(
+              async () => {
+                const res = await axios.delete(
+                  `${baseurl}/course/leave/${name}`,
+                  { withCredentials: true }
+                );
+
+                return res;
+              },
+              {
+                loadingTitle: "Leaving...",
+                loadingBody: "All progress will be lost",
+                successTitle: "Success",
+                successBody: "You have left the course",
+                onSuccess: () => {
+                  router.push("/home");
+                },
+              }
+            )
+          }
+        />
         {/* <SideBarSection label={"Something"} /> */}
       </SideBar>
       <div

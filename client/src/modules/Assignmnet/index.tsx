@@ -1,22 +1,22 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import { DocumentInterface } from "../../interfaces";
+import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
-import { MainLayout } from "../Layouts/MainLayout";
-import dynamic from "next/dynamic";
 import { withSession } from "../../lib/withSession";
+import { MainLayout } from "../Layouts/MainLayout";
+import Page from "./Page";
 
-const Page = dynamic(() => import("./Page"), { ssr: false });
-
-type DocumentPageProps = {
-  document: DocumentInterface;
+type AssignmentPageProps = {
+  assignment: AssignmentInterface;
 };
 
-export const Document: NextPage<DocumentPageProps> = ({ document }) => {
+export const AssignmentPage: NextPage<AssignmentPageProps> = ({
+  assignment,
+}) => {
   return (
-    <MainLayout css="sm:h-full">
-      {document ? (
-        <Page doc={document} />
+    <MainLayout>
+      {assignment ? (
+        <Page assignment={assignment} />
       ) : (
         <div className="flex w-full h-full items-center justify-center">
           <p className="font-semibold text-2xl uppercase">
@@ -31,35 +31,27 @@ export const Document: NextPage<DocumentPageProps> = ({ document }) => {
     </MainLayout>
   );
 };
+
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ query, req }) => {
-    const docId = typeof query.id === "string" ? query.id : "";
+  async ({ req, query }) => {
+    const assignmentId = typeof query.id === "string" ? query.id : "";
 
     try {
-      const res = await axios.get(`${baseurl}/doc/${docId}`, {
+      const res = await axios.get(`${baseurl}/assignment/${assignmentId}`, {
         withCredentials: true,
         headers: {
           cookie: req?.headers.cookie,
         },
       });
 
-      console.log(res.data);
-
       return {
         props: {
           user: req.user,
-          document: res.data,
+          assignment: res.data,
         },
       };
     } catch (error) {
-      console.log(error);
-
-      return {
-        props: {
-          user: undefined,
-          document: null,
-        },
-      };
+      return { props: { user: undefined, assignment: null } };
     }
   }
 );

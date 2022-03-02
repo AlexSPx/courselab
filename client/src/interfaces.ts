@@ -155,7 +155,37 @@ export interface AssignmentInterface {
   id: string;
   name: string;
   content: string;
+  files: string[];
   daysToSubmit: number;
+  members: AssignmentUsers[];
+  submitDate?: Date;
+}
+
+export interface AssignmentUsers {
+  enrollment_id: string;
+  assignment_id: string;
+  role: "ADMIN" | "USER" | "EDITOR";
+  submits: AssignmentSubmit[];
+}
+
+export interface AssignmentSubmit {
+  id: string;
+  dateOfSubmit: Date;
+  dateOfRemoval?: Date;
+  attachments: AssignmentSubmitAttachment[];
+  enrollment_id: string;
+  assignment_id: string;
+}
+
+export interface AssignmentSubmitAttachment {
+  type: "FILE" | "DOCUMENT" | "LINK" | "VIDEO";
+  path?: string;
+  doc?: {
+    type: "DOCUMENT" | "VIDEO";
+    name: string;
+    id: string;
+  };
+  link?: string;
 }
 
 export interface QuizInterface {

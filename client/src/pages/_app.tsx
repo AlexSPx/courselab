@@ -9,18 +9,20 @@ import "../styles/globals.css";
 import "../styles/Calendar.css";
 import "../styles/DatePicker.css";
 import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <WebSocketProvider>
-      <UserCtxProvider user={pageProps.user}>
+    <UserCtxProvider user={pageProps.user}>
+      <WebSocketProvider user={pageProps.user}>
         <Layout isAuth={pageProps.user?.isAuth}>
           <ModalContextProvider>
             <Component {...pageProps} />
           </ModalContextProvider>
         </Layout>
-      </UserCtxProvider>
-    </WebSocketProvider>
+      </WebSocketProvider>
+    </UserCtxProvider>
   );
 }
 export default MyApp;

@@ -1,26 +1,18 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import FIleAdder from "../../components/FIleAdder";
-import {
-  ErrorModal,
-  LoadingModal,
-  SuccessModal,
-  useModals,
-} from "../../components/Modal";
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { Left, Main, Right } from "../Layouts/MainLayout";
-import Quill from "quill";
 import useRequest from "../../lib/useRequest";
+import { Quill } from "quill";
 
-const TOOLBAR_OPTIONS = [
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-  [{ font: [] }],
-  [{ list: "ordered" }, { list: "bullet" }],
-  ["bold", "italic", "underline"],
-  [{ align: [] }],
-  ["image", "blockquote", "code-block"],
-];
+import dynamic from "next/dynamic";
+const DescriptionSection = dynamic(() => import("./DescriptionSection"), {
+  ssr: false,
+});
+
+const re = /^[1-9\b]+$/;
 
 export default function Page({
   assignment,
@@ -28,33 +20,13 @@ export default function Page({
   assignment: AssignmentInterface;
 }) {
   const [name, setName] = useState<string>(assignment.name);
+  const [daysToSubmit, setDaysToSubmit] = useState<string | undefined>(
+    assignment.daysToSubmit ? assignment.daysToSubmit.toString() : undefined
+  );
 
   const [quill, setQuill] = useState<Quill>();
 
   const { executeQuery } = useRequest();
-
-  useEffect(() => {
-    if (!quill) return;
-
-    quill.setContents(JSON.parse(assignment.content));
-  }, [assignment.content, quill]);
-
-  const wrapperRef = useCallback((wrapper: HTMLDivElement) => {
-    if (typeof window === "undefined") return;
-    if (wrapper === null) return;
-
-    wrapper.innerHTML = "";
-    const editor = document.createElement("div");
-    wrapper.append(editor);
-    const q = new Quill(editor, {
-      theme: "bubble",
-      placeholder: "Type here...",
-      modules: {
-        toolbar: TOOLBAR_OPTIONS,
-      },
-    });
-    setQuill(q);
-  }, []);
 
   const handleSaveChanges = async () => {
     executeQuery(
@@ -64,7 +36,8 @@ export default function Page({
           {
             assignmentId: assignment.id,
             name,
-            content: JSON.stringify(quill?.getContents()),
+            daysToSubmit,
+            content: quill?.getContents(),
           },
           { withCredentials: true }
         );
@@ -98,6 +71,32 @@ export default function Page({
     );
   };
 
+  const mapFiles = assignment.files.map((file) => {
+    const download = async () => {
+      const res = await axios.post(
+        `${baseurl}/assignment/download`,
+        { name: file },
+        { withCredentials: true, responseType: "blob" }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", file);
+      document.body.appendChild(link);
+      link.click();
+    };
+    return (
+      <div
+        className="flex px-3 py-2 m-1 font-mono rounded border border-gray-900 hover:bg-gray-900 hover:text-white cursor-pointer"
+        key={file}
+        onClick={download}
+      >
+        {file}
+      </div>
+    );
+  });
+
   return (
     <>
       <Left></Left>
@@ -109,15 +108,31 @@ export default function Page({
             setName(e.target.value);
           }}
         />
-        <div
-          ref={wrapperRef}
-          className="w-full h-full min-h-[10em] border border-gray-800 rounded-md mt-2"
-        ></div>
-
+        <DescriptionSection
+          quill={quill}
+          setQuill={setQuill}
+          contents={assignment.content}
+        />
+        <div className="flex flex-wrap">{mapFiles}</div>
         <p className="divider w-full text-lg font-semibold my-8">
-          Attach a File
+          Days to submit
         </p>
-        <FIleAdder type="" />
+
+        <input
+          type="text"
+          className="input input-bordered w-[24rem] py-3"
+          placeholder="Input number in days"
+          value={daysToSubmit}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+            if (e.target.value === "" || re.test(e.target.value)) {
+              setDaysToSubmit(e.target.value);
+            }
+          }}
+        />
+        <p className="divider w-full text-lg font-semibold my-8">
+          Attach files
+        </p>
+        <FIleAdder type="upload" assignmentId={assignment.id} />
 
         <div className="flex flex-row">
           <button

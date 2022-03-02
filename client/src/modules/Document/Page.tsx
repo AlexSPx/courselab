@@ -25,6 +25,7 @@ const TOOLBAR_OPTIONS = [
 export default function Page({ doc }: { doc: DocumentInterface }) {
   const [quill, setQuill] = useState<Quill>();
   const [cursors, setCursors] = useState<QuillCursors>();
+  const [readOnly, setReadOnly] = useState(true);
 
   const [usersInDoc, setUsersInDoc] = useState<GeneralUserInformation[]>([]);
 
@@ -45,6 +46,13 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
 
     quill.setContents(JSON.parse(doc.file as any));
 
+    if (
+      doc.members.some(
+        (mmbr) => mmbr.user.id === userData?.user?.id && mmbr.role !== "READER"
+      )
+    )
+      setReadOnly(false);
+
     const autoSave = setInterval(() => {
       const value = quill.getContents();
 
@@ -59,7 +67,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
     }, 5000);
 
     return () => clearInterval(autoSave);
-  }, [quill, socket, doc.id, doc.file]);
+  }, [quill, socket, doc.id, doc.file, doc.members, userData?.user?.id]);
 
   useEffect(() => {
     if (!socket) return;
@@ -153,34 +161,39 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
   }, [quill, doc.id, socket, cursors]);
 
   // Editor setup
-  const wrapperRef = useCallback((wrapper: HTMLDivElement) => {
-    if (typeof window === "undefined") return;
-    if (wrapper === null) return;
+  const wrapperRef = useCallback(
+    (wrapper: HTMLDivElement) => {
+      if (typeof window === "undefined") return;
+      if (wrapper === null) return;
 
-    Quill.register("modules/cursors", QuillCursors);
+      Quill.register("modules/cursors", QuillCursors);
 
-    wrapper.innerHTML = "";
-    const editor = document.createElement("div");
-    wrapper.append(editor);
-    const q = new Quill(editor, {
-      theme: "snow",
-      placeholder: "Type here...",
-      modules: {
-        toolbar: TOOLBAR_OPTIONS,
-        cursors: {
-          transformOnTextChange: true,
+      wrapper.innerHTML = "";
+      const editor = document.createElement("div");
+      wrapper.append(editor);
+      const q = new Quill(editor, {
+        theme: "snow",
+        placeholder: "Type here...",
+        readOnly: readOnly,
+        modules: {
+          toolbar: !readOnly && TOOLBAR_OPTIONS,
+          cursors: {
+            transformOnTextChange: true,
+          },
         },
-      },
-    });
-    setCursors(q.getModule("cursors"));
-    setQuill(q);
-  }, []);
+      });
+
+      setCursors(q.getModule("cursors"));
+      setQuill(q);
+    },
+    [readOnly]
+  );
 
   return (
     <>
       <Left></Left>
       <div className="divider divider-vertical sticky top-0"></div>
-      <Main css="items-center w-screen">
+      <Main css="items-center w-screen sm:min-h-[32rem]">
         <div
           style={{ width: "85%" }}
           ref={wrapperRef}

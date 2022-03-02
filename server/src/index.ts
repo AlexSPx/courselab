@@ -24,7 +24,9 @@ import resizingMiddleware from "./middlewares/resizeMiddleware";
 
 require("dotenv").config();
 
-export const prismaClient = new PrismaClient();
+export const prismaClient = new PrismaClient({
+  log: ["error", "info", "warn"],
+});
 
 const app = express();
 const httpServer = createServer(app);
@@ -46,9 +48,9 @@ export const io = new Server(httpServer, {
     },
     secret: process.env.SESSION_SECRET!,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: new PrismaSessionStore(prismaClient, {
-      // logger: true,
+      logger: console,
       checkPeriod: 2 * 60 * 1000, //ms
       dbRecordIdIsSessionId: true,
       dbRecordIdFunction: undefined,
@@ -83,24 +85,30 @@ export const io = new Server(httpServer, {
 
     const rooms = io.sockets.adapter.socketRooms(socket.id);
     socket.on("disconnect", async () => {
-      // Disconect from all rooms
-      if (rooms && socket.handshake.sessionID && socket.handshake.session) {
-        await leaveDoc(Array.from(rooms), socket.handshake.sessionID);
-        socket.to(Array.from(rooms)).emit("leave-document", {
-          whoLeft: socket.handshake.session.user,
-        });
-      }
+      try {
+        // Disconect from all rooms
+        if (rooms && socket.handshake.sessionID && socket.handshake.session) {
+          await leaveDoc(Array.from(rooms), socket.handshake.sessionID);
+          socket.to(Array.from(rooms)).emit("leave-document", {
+            whoLeft: socket.handshake.session.user,
+          });
+        }
 
-      // Make offline
-      if (socket.handshake.session?.user?.connections) {
-        socket.handshake.session.user.connections =
-          socket.handshake.session.user.connections.filter(
-            (conn) => conn !== socket.id
-          );
-        socket.handshake.session.save();
+        // Make offline
+        if (socket.handshake.session?.user?.connections) {
+          const updateConnections =
+            socket.handshake.session.user.connections.filter(
+              (conn) => conn !== socket.id
+            );
+          socket.handshake.session.user.connections = updateConnections;
 
-        if (socket.handshake.session.user.connections.length === 0)
-          await removeUser(socket.handshake.sessionID!);
+          socket.handshake.session.save();
+
+          if (socket.handshake.session.user.connections.length === 0)
+            await removeUser(socket.handshake.sessionID!);
+        }
+      } catch (error) {
+        console.log(error);
       }
     });
   });
