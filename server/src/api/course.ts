@@ -12,6 +12,7 @@ import { existsSync, renameSync, unlinkSync } from "fs";
 import { initialDocData } from "./document";
 import { deleteCache, getOrSetCache } from "../functions/redisCaching";
 import { Sponsor } from "../functions/misc";
+import { deleteAttachments } from "../functions/courseHelpers";
 
 const router = Router();
 
@@ -157,22 +158,6 @@ router.post("/enroll", isAuth, async (req, res) => {
               },
             },
             role: "STUDENT",
-          },
-        });
-      } else if (dm.document_id) {
-        await prismaClient.documentsOnUsers.create({
-          data: {
-            user: {
-              connect: {
-                id: enrollment.id,
-              },
-            },
-            document: {
-              connect: {
-                id: dm.document_id,
-              },
-            },
-            role: "READER",
           },
         });
       }
@@ -570,8 +555,6 @@ router.post(
       deleteCache(`course?edit:${req.body.name}`);
       return res.sendStatus(201);
     } catch (err) {
-      console.log(err);
-
       return res.status(400).send("Something went wrong");
     }
   }
@@ -974,6 +957,19 @@ router.post("/files/:course", isAuth, async (req, res) => {
 
 router.delete("/leave/:course", isAuth, async (req, res) => {
   try {
+    const submits = await prismaClient.assignmentSubmits.findMany({
+      where: {
+        AssignmentsOnUsers: {
+          enrollment: {
+            user_id: req.session.user?.id,
+            course_id: req.params.course,
+          },
+        },
+      },
+    });
+
+    await deleteAttachments(submits);
+
     await prismaClient.courseEnrollment.deleteMany({
       where: {
         user_id: req.session.user?.id,

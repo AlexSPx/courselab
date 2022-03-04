@@ -32,11 +32,20 @@ router.post(
   }
 );
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", isAuth, async (req, res) => {
   try {
-    const video = await prismaClient.video.findUnique({
+    const video = await prismaClient.video.findFirst({
       where: {
         id: req.params.id,
+        courseDataModel: {
+          course: {
+            members: {
+              some: {
+                user_id: req.session.user?.id,
+              },
+            },
+          },
+        },
       },
       include: {
         questions: {

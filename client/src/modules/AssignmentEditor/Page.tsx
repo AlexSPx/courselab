@@ -72,28 +72,15 @@ export default function Page({
   };
 
   const mapFiles = assignment.files.map((file) => {
-    const download = async () => {
-      const res = await axios.post(
-        `${baseurl}/assignment/download`,
-        { name: file },
-        { withCredentials: true, responseType: "blob" }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", file);
-      document.body.appendChild(link);
-      link.click();
-    };
     return (
-      <div
+      <a
         className="flex px-3 py-2 m-1 font-mono rounded border border-gray-900 hover:bg-gray-900 hover:text-white cursor-pointer"
         key={file}
-        onClick={download}
+        href={`${baseurl}/assignment/download/${file}`}
+        download
       >
         {file}
-      </div>
+      </a>
     );
   });
 

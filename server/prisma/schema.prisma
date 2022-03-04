@@ -7,7 +7,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["filterJson"]
 
 }
@@ -41,8 +41,8 @@ model Course {
   model ModelType @default(WEEKLY)
   weeks Int?
 
-  scheduleType ScheduleType @default(START_ON_JOIN)
-  interval Int?
+  scheduleType   ScheduleType @default(START_ON_JOIN)
+  interval       Int?
   scheduledDates Json[]
 
   // Relation Fields
@@ -59,13 +59,13 @@ model CourseExtendedDetails {
   reviews     String[]
 
 
-  course Course @relation(fields: [courseName], references: [name], onDelete: Cascade)
+  course     Course @relation(fields: [courseName], references: [name], onDelete: Cascade)
   courseName String @id
 }
 
 model CourseEnrollment {
-  id   String   @id @default(uuid())
-  role UserRole
+  id         String   @id @default(uuid())
+  role       UserRole
   AssignedAt DateTime @default(now())
   startingAt DateTime @default(now())
 
@@ -75,8 +75,8 @@ model CourseEnrollment {
   user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   course    Course @relation(fields: [course_id], references: [name], onDelete: Cascade)
 
-  assignments    AssignmentsOnUsers[]
-  quizzes QuizSubmit[]
+  assignments AssignmentsOnUsers[]
+  quizzes     QuizSubmit[]
 
   @@map("courseEnrollment")
 }
@@ -145,17 +145,17 @@ model VideoQuestion {
   parentQuestion   VideoQuestion?  @relation("VideoQuestionToVideoQuestion", fields: [parentQuestionId], references: [id], onDelete: Cascade)
   parentQuestionId String?
   VideoAnswers     VideoQuestion[] @relation("VideoQuestionToVideoQuestion")
-  video_id  String
-  video     Video  @relation(fields: [video_id], references: [id], onDelete: Cascade)
-  author_id String
-  author    User   @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  video_id         String
+  video            Video           @relation(fields: [video_id], references: [id], onDelete: Cascade)
+  author_id        String
+  author           User            @relation(fields: [author_id], references: [id], onDelete: Cascade)
 }
 
 model Assignment {
-  id           String  @id @default(uuid())
+  id           String   @id @default(uuid())
   name         String
   content      String?
-  files String[]
+  files        String[]
   daysToSubmit Int?
 
   courseDataModel CourseDataModel?
@@ -163,9 +163,9 @@ model Assignment {
 }
 
 model AssignmentsOnUsers {
-  enrollment CourseEnrollment @relation(fields: [enrollment_id], references: [id], onDelete: Cascade)
+  enrollment    CourseEnrollment @relation(fields: [enrollment_id], references: [id], onDelete: Cascade)
   enrollment_id String
-  assignment    Assignment     @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
+  assignment    Assignment       @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
   assignment_id String
   role          AssignmentRole
 
@@ -177,11 +177,13 @@ model AssignmentsOnUsers {
 
 model AssignmentSubmits {
   id                 String              @id @default(uuid())
-  dateOfSubmit       DateTime @default(now())
+  dateOfSubmit       DateTime            @default(now())
   dateOfRemoval      DateTime?
-  attachments Json[]
+  attachments        Json[]
+  returned           Boolean             @default(false)
+  comment            String?
   AssignmentsOnUsers AssignmentsOnUsers? @relation(fields: [enrollment_id, assignment_id], references: [enrollment_id, assignment_id], onDelete: Cascade)
-  enrollment_id            String?
+  enrollment_id      String?
   assignment_id      String?
 }
 
@@ -191,7 +193,7 @@ model Quiz {
   description String?
 
   questions       QuizQuestion[]
-  submits QuizSubmit[]
+  submits         QuizSubmit[]
   courseDataModel CourseDataModel?
 }
 
@@ -208,12 +210,12 @@ model QuizQuestion {
 }
 
 model QuizSubmit {
-  id String @id @default(uuid())
+  id      String @id @default(uuid())
   answers Json[]
-  
-  Quiz Quiz @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
-  quiz_id String
-  Enrollment CourseEnrollment @relation(fields: [enrollment_id], references: [id], onDelete: Cascade)
+
+  Quiz          Quiz             @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  quiz_id       String
+  Enrollment    CourseEnrollment @relation(fields: [enrollment_id], references: [id], onDelete: Cascade)
   enrollment_id String
 }
 

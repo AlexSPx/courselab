@@ -12,6 +12,7 @@ import ReactDateTime from "react-datetime-picker/dist/entry.nostyle";
 import ImageSelector from "../../../components/Inputs/ImageSelector";
 import useRequest from "../../../lib/useRequest";
 import NoSsr from "../../../components/NoSsr";
+import formatDate from "../../../lib/dateFormater";
 
 export default function GeneralSettings({
   course,
@@ -65,7 +66,11 @@ export default function GeneralSettings({
         successTitle: `Changes: ${course.public_name}`,
         successBody: "Changes have been saved",
         successStatus: 201,
-        onSuccess: () => router.push(name),
+        onSuccess: () => {
+          router.push({
+            query: { name },
+          });
+        },
       }
     );
   };
@@ -140,9 +145,12 @@ export default function GeneralSettings({
           setScheduledDates={setScheduledDates}
         />
       </div>
-      <a className="btn max-w-2xl w-full mt-3" onClick={() => saveChanges()}>
+      <button
+        className="btn max-w-2xl w-full mt-3"
+        onClick={() => saveChanges()}
+      >
         Save Chanes
-      </a>
+      </button>
     </div>
   );
 }
@@ -168,16 +176,7 @@ const CourseSchedule = ({
     return (
       <tr key={index}>
         <th>{index + 1}</th>
-        <td>
-          {new Date(date.startingAt).toLocaleDateString(undefined, {
-            weekday: "long",
-            hour: "2-digit",
-            minute: "2-digit",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </td>
+        <td>{formatDate(date.startingAt)}</td>
         <td>{date.status}</td>
         <td>
           <button

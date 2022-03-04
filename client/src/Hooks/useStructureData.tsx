@@ -59,7 +59,10 @@ export default function useStructureData(
   };
 
   const createWeek = () => {
-    if (!data) setData([[[], [], [], [], [], [], []]]);
+    if (!data) {
+      setData([[[], [], [], [], [], [], []]]);
+      return;
+    }
     setData((prev: Data) => [...prev!, [[], [], [], [], [], [], []]]);
   };
 

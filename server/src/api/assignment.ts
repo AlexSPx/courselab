@@ -184,9 +184,9 @@ router.post(
   }
 );
 
-router.post("/download", isAuth, async (req, res) => {
+router.get("/download/:name", isAuth, async (req, res) => {
   try {
-    const file = path.join(__dirname + `../../../files/${req.body.name}`);
+    const file = path.join(__dirname + `../../../files/${req.params.name}`);
     return res.download(file);
   } catch (error) {
     return res.status(400).send(error);
@@ -346,6 +346,24 @@ router.post("/submits/details", isAuth, async (req, res) => {
 
     const { submitted, missing } = submitsDitribution(submits);
     return res.status(200).send({ submitted, missing });
+  } catch (error) {
+    return res.status(400).send(JSON.stringify(error));
+  }
+});
+
+router.post("/return", isAuth, async (req, res) => {
+  try {
+    await prismaClient.assignmentSubmits.update({
+      where: {
+        id: req.body.id,
+      },
+      data: {
+        returned: true,
+        comment: req.body.comment,
+      },
+    });
+
+    return res.sendStatus(200);
   } catch (error) {
     return res.status(400).send(JSON.stringify(error));
   }

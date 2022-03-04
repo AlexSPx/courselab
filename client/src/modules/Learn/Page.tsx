@@ -145,7 +145,11 @@ const Day = ({
       );
       courseData.addFile(res.data);
       setCooldown(true);
-      setTimeout(() => setCooldown(false), 25000);
+      const timer = setTimeout(() => setCooldown(false), 25000);
+
+      return () => {
+        clearTimeout(timer);
+      };
     };
     if (dropdown && !cooldown && isUnlocked) fetchData();
   }, [

@@ -14,7 +14,7 @@ const avatar_storage = multer.diskStorage({
     cb(null, "images/avatars");
   },
   filename: function (req, _file, cb) {
-    cb(null, req.body.username + "-org.jpg");
+    cb(null, req.body.username.toLowerCase() + "-org.jpg");
   },
 });
 
@@ -72,7 +72,7 @@ const file_uploader = multer.diskStorage({
     cb(null, "files/");
   },
   filename: function (req, file, cb) {
-    const path = `${req.session.user?.username.toLowerCase()}###${Date.now()}###${file.originalname.toLowerCase()}`;
+    const path = `${req.session.user?.username.toLowerCase()}{-divide-}${Date.now()}{-divide-}${file.originalname.toLowerCase()}`;
     req.body.path = path;
     cb(null, path);
   },

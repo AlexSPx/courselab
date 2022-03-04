@@ -1,5 +1,6 @@
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Field } from "../components/Inputs/Field";
 import ImageSelector from "../components/Inputs/ImageSelector";
@@ -21,7 +22,8 @@ export default function Register() {
   const [password, setPassword] = useState<string>();
   const [cpassword, setCpassword] = useState<string>();
 
-  const { pushModal, closeModal, closeAll } = useModals();
+  const { pushModal, closeModal } = useModals();
+  const { push } = useRouter();
 
   const handleRegister = async () => {
     if (
@@ -88,6 +90,10 @@ export default function Register() {
             value: 3000,
           }
         );
+
+        setTimeout(() => {
+          push("/login");
+        }, 2000);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

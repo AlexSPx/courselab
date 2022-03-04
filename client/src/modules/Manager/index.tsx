@@ -4,7 +4,7 @@ import CourseDraftCard from "../../components/cards/CourseDraftCard";
 import { CourseGeneralInterface, CourseInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
-import { Main, MainLayout } from "../Layouts/MainLayout";
+import { Left, Main, MainLayout, Right } from "../Layouts/MainLayout";
 
 type CourseManagerTypes = {
   courses: CourseInterface[] | null;
@@ -21,7 +21,7 @@ export const Manager: NextPage<CourseManagerTypes> = ({ courses }) => {
     <MainLayout>
       <Main>
         {courses?.length ? (
-          <>{mapCourses}</>
+          <div className="w-full flex flex-wrap">{mapCourses}</div>
         ) : (
           <div className="flex items-center justify-center">
             <p className="text-2xl font-mono mt-3">There is nothing here</p>

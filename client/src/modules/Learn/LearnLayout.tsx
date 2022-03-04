@@ -82,7 +82,6 @@ export const LearnLayout: React.FC<LearnLayout> = ({
             )
           }
         />
-        {/* <SideBarSection label={"Something"} /> */}
       </SideBar>
       <div
         className="flex flex-col w-full h-full items-center overflow-auto"

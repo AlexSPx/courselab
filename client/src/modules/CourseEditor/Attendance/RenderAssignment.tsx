@@ -126,7 +126,7 @@ const Submited = ({
           key={`attc#${index}`}
           className="truncate hover:text-ellipsis max-w-[10rem]"
         >
-          {attc.path!.split("###")[2]}
+          {attc.path!.split("{-divide-}")[2]}
         </p>
       );
     return <p key={`attc#${index}`}>{attc.type}</p>;
