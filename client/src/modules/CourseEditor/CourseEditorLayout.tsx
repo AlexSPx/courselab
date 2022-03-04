@@ -97,7 +97,10 @@ export const CourseEditorLayout: React.FC<SideBarMenuProps> = ({
         )}
       </SideBar>
 
-      <div className="flex flex-col w-full h-full items-center overflow-auto">
+      <div
+        className="flex flex-col w-full h-full items-center overflow-auto"
+        id="journal-scroll"
+      >
         {children}
       </div>
     </div>

@@ -39,6 +39,7 @@ export default function FIleAdder({
 }) {
   const [dropdown, setDropdown] = useState(false);
   const [files, setFiles] = useState<Attachment[]>();
+  const [links, setLinks] = useState<string>();
 
   useEffect(() => {
     if (!setOutsideData) return;
@@ -112,7 +113,11 @@ export default function FIleAdder({
           <p className="font-[600] uppercase">Add or attach a file</p>
         </div>
         {dropdown && (
-          <FileOptions onClose={() => setDropdown(false)} setFiles={setFiles} />
+          <FileOptions
+            onClose={() => setDropdown(false)}
+            setFiles={setFiles}
+            setLinks={setLinks}
+          />
         )}
       </div>
       <div
@@ -138,9 +143,11 @@ export default function FIleAdder({
 const FileOptions = ({
   onClose,
   setFiles,
+  setLinks,
 }: {
   onClose: () => void;
   setFiles: React.Dispatch<SetStateAction<Attachment[] | undefined>>;
+  setLinks: Dispatch<SetStateAction<string | undefined>>;
 }) => {
   const ref = useRef(null);
 
@@ -202,3 +209,5 @@ const FileOptions = ({
     </div>
   );
 };
+
+const AddLink = () => {};

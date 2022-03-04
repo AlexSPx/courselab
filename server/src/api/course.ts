@@ -429,6 +429,30 @@ router.get("/mydrafts", isAuth, async (req, res) => {
   }
 });
 
+router.get("/mycourses/admin", isAuth, async (req, res) => {
+  try {
+    const courses = await prismaClient.course.findMany({
+      where: {
+        published: true,
+        members: {
+          some: {
+            role: `ADMIN`,
+            user: {
+              id: req.session.user?.id,
+            },
+          },
+        },
+      },
+    });
+
+    console.log(courses);
+
+    return res.status(200).json(courses);
+  } catch (err) {
+    return res.status(400).send("Somethin went wrong");
+  }
+});
+
 router.get("/fetchadmin/:name", isAuth, async (req, res) => {
   try {
     const name = req.params.name;
@@ -571,6 +595,8 @@ router.post("/publish", isAuth, async (req, res) => {
     });
 
     deleteCache(`course?edit:${req.body.name}`);
+    deleteCache(`drafts?userId=${req.session.user?.id}`);
+
     return res.sendStatus(200);
   } catch (error) {
     return res.status(400).send("Something went wrong");
@@ -595,6 +621,8 @@ router.post("/unlist", isAuth, async (req, res) => {
     });
 
     deleteCache(`course?edit:${req.body.name}`);
+    deleteCache(`drafts?userId=${req.session.user?.id}`);
+
     return res.sendStatus(200);
   } catch (error) {
     return res.status(400).send("Something went wrong");
@@ -954,6 +982,98 @@ router.delete("/leave/:course", isAuth, async (req, res) => {
     });
 
     return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send("Someting went wrong");
+  }
+});
+
+router.get("/progression/:coursename", isAuth, async (req, res) => {
+  try {
+    const enrollmet = await prismaClient.courseEnrollment.findFirst({
+      where: {
+        user_id: req.session.user?.id,
+        course_id: req.params.coursename,
+        role: "STUDENT",
+      },
+      include: {
+        course: {
+          select: {
+            weeks: true,
+          },
+        },
+      },
+    });
+
+    let progression = 0;
+
+    function isWhatPercentOf(numA: number, numB: number) {
+      return (numA / numB) * 100;
+    }
+
+    const startingDate = new Date(enrollmet?.startingAt!);
+    const finishDate = new Date(startingDate);
+    finishDate.setDate(finishDate.getDate() + enrollmet?.course.weeks! * 7);
+
+    const today = new Date();
+    const difference = Math.ceil(
+      (finishDate.getTime() - new Date(today).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (difference > 0)
+      progression = isWhatPercentOf(enrollmet?.course.weeks!, difference);
+    else progression = 100;
+
+    return res.status(200).json(progression);
+  } catch (error) {
+    return res.status(400).send("Someting went wrong");
+  }
+});
+
+router.get("/today/:coursename", isAuth, async (req, res) => {
+  try {
+    const enrollmet = await prismaClient.courseEnrollment.findFirst({
+      where: {
+        user_id: req.session.user?.id,
+        course_id: req.params.coursename,
+        role: "STUDENT",
+      },
+      include: {
+        course: {
+          select: {
+            weeks: true,
+          },
+        },
+      },
+    });
+
+    const startingDate = new Date(enrollmet?.startingAt!);
+
+    const today = new Date();
+    const difference = Math.ceil(
+      (new Date(today).getTime() - startingDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+
+    const todo = await prismaClient.courseDataModel.findMany({
+      where: {
+        course_id: req.params.coursename,
+        AND: [
+          {
+            props: {
+              path: ["day"],
+              equals: (difference % 7) - 1,
+            },
+          },
+          {
+            props: {
+              path: ["week"],
+              equals: Math.floor(difference / 7),
+            },
+          },
+        ],
+      },
+    });
+
+    return res.status(200).send(todo);
   } catch (error) {
     return res.status(400).send("Someting went wrong");
   }

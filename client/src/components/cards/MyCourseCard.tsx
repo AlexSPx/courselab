@@ -1,6 +1,10 @@
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import useHasImage from "../../Hooks/useHasImage";
+import { DataModelInterface } from "../../interfaces";
+import { baseurl } from "../../lib/fetcher";
 import { MyCourseInterface } from "../../modules/Home";
 import { Heart } from "../../svg/small";
 
@@ -10,6 +14,32 @@ export default function MyCourseCard({
   course: MyCourseInterface;
 }) {
   const { url } = useHasImage(course.course.name, { type: "course_logo" });
+
+  const [progression, setProgression] = useState(0);
+  const [todoToday, setTodoToday] = useState<DataModelInterface[]>([]);
+
+  useEffect(() => {
+    const fetchProgression = async () => {
+      const progression = await axios.get(
+        `${baseurl}/course/progression/${course.course.name}`,
+        { withCredentials: true }
+      );
+
+      setProgression(progression.data);
+    };
+
+    const fetchToday = async () => {
+      const progression = await axios.get(
+        `${baseurl}/course/today/${course.course.name}`,
+        { withCredentials: true }
+      );
+
+      setTodoToday(progression.data);
+    };
+
+    fetchToday();
+    fetchProgression();
+  }, [course.course.name]);
 
   return (
     <Link href={`/learn/${course.course.name}`}>
@@ -36,18 +66,19 @@ export default function MyCourseCard({
           </div>
           <div className="flex flex-col items-start mt-2 md:m-0">
             <div className="flex">
-              Course Progress - <p className="text-gray-900 italic">50%</p>
+              Course Progress-
+              <p className="text-gray-900 italic">{Math.floor(progression)}%</p>
             </div>
             <progress
               className="progress progress-primary mt-2"
-              value="50"
+              value={progression}
               max="100"
             />
             <div className="flex w-full rounded-xl border mt-2 text-center justify-center overflow-hidden">
               <p className="px-3">Today</p>
               <div className="border border-r-1 bg-gray-700"></div>
               <div className="text-center hover:bg-gray-100 w-full">
-                Linear transformations and matrices
+                {todoToday.length ? todoToday[0].name : "Nothing to do today"}
               </div>
             </div>
           </div>

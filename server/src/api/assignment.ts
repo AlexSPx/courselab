@@ -5,6 +5,7 @@ import { isAuth } from "../middlewares/auth";
 import { uploadFile } from "../settings/multer";
 import { unlinkSync } from "fs";
 import path from "path";
+import { submitsDitribution } from "../functions/assignmentHelpers";
 
 const router = Router();
 
@@ -313,7 +314,7 @@ router.post("/submits/count", isAuth, async (req, res) => {
 
 router.post("/submits/details", isAuth, async (req, res) => {
   try {
-    const submitted = await prismaClient.assignmentsOnUsers.findMany({
+    const submits = await prismaClient.assignmentsOnUsers.findMany({
       where: {
         assignment_id: req.body.assignmentId,
         enrollment: {
@@ -321,22 +322,12 @@ router.post("/submits/details", isAuth, async (req, res) => {
           startingAt: req.body.startingDate,
         },
         role: "STUDENT",
-        submits: {
-          some: {
-            dateOfRemoval: null,
-          },
-        },
       },
       include: {
         _count: {
           select: { submits: true },
         },
-        submits: {
-          orderBy: {
-            dateOfSubmit: "desc",
-          },
-          take: 1,
-        },
+        submits: true,
         enrollment: {
           select: {
             user: {
@@ -353,35 +344,7 @@ router.post("/submits/details", isAuth, async (req, res) => {
       },
     });
 
-    const missing = await prismaClient.assignmentsOnUsers.findMany({
-      where: {
-        assignment_id: req.body.assignmentId,
-        enrollment: {
-          course_id: req.body.course,
-          startingAt: req.body.startingDate,
-        },
-        role: "STUDENT",
-        submits: {
-          none: {},
-        },
-      },
-      include: {
-        enrollment: {
-          select: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                first_name: true,
-                last_name: true,
-                email: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
+    const { submitted, missing } = submitsDitribution(submits);
     return res.status(200).send({ submitted, missing });
   } catch (error) {
     return res.status(400).send(JSON.stringify(error));

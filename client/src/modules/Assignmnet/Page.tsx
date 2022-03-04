@@ -164,17 +164,19 @@ export default function Page({
           </p>
 
           <div className="flex flex-col relative w-full h-full mt-4 items-center">
-            <div className="flex flex-col items-center">
-              <p className="font-semibold text-lg">Already Submitted</p>
-              <div
-                className="flex flex-wrap w-full h-full max-h-[20rem] items-center justify-center overflow-auto mb-3"
-                id="journal-scroll"
-              >
-                {mapSubmited}
+            {submit && (
+              <div className="flex flex-col items-center">
+                <p className="font-semibold text-lg">Already Submitted</p>
+                <div
+                  className="flex flex-wrap w-full h-full max-h-[20rem] items-center justify-center overflow-auto mb-3"
+                  id="journal-scroll"
+                >
+                  {mapSubmited}
+                </div>
               </div>
-            </div>
+            )}
 
-            {submit?.dateOfRemoval && (
+            {(!submit || submit.dateOfRemoval) && (
               <div className="flex flex-col items-center">
                 <p className="font-semibold text-lg">New Attachments</p>
                 <FIleAdder
@@ -187,7 +189,7 @@ export default function Page({
               </div>
             )}
           </div>
-          {!submit?.dateOfRemoval ? (
+          {submit && !submit.dateOfRemoval ? (
             <button
               className="btn btn-outline w-full my-3"
               onClick={handleUnSubmit}

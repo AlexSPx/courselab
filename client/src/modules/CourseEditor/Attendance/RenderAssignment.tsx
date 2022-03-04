@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { baseurl } from "../../../lib/fetcher";
 import { AssignmentSubmit, GeneralUserInformation } from "../../../interfaces";
 import formatDate from "../../../lib/dateFormater";
+import { useModals } from "../../../components/Modal";
+import GradeAssignment from "../../../components/Modal/Menus/GradeAssignment";
 
-interface AttendanceInterface {
+export interface AttendanceInterface {
   assignment_id: string;
   enrollment_id: string;
   enrollment: {
@@ -51,34 +53,7 @@ const RenderAssignment = ({
   }, [courseName, id, startingDate]);
 
   const mapSubmitted = submitted?.map((submit, index) => {
-    const mapAttachments = submit.submits[0].attachments.map((attc, index) => {
-      if (attc.type === "FILE")
-        return (
-          <p
-            key={`attc#${index}`}
-            className="truncate hover:text-ellipsis max-w-[10rem]"
-          >
-            {attc.path!.split("###")[2]}
-          </p>
-        );
-      return <p key={`attc#${index}`}>{attc.type}</p>;
-    });
-    return (
-      <tr key={`submit#${index}`}>
-        <th>{index}</th>
-        <th>
-          {submit.enrollment.user.first_name} {submit.enrollment.user.last_name}
-        </th>
-        <th className="hidden md:table-cell">
-          @{submit.enrollment.user.username}
-        </th>
-        <th className="hidden md:table-cell">
-          {formatDate(submit.submits[0].dateOfSubmit)}
-        </th>
-        <th className="hidden md:table-cell">{submit._count.submits}</th>
-        <th>{mapAttachments}</th>
-      </tr>
-    );
+    return <Submited submit={submit} index={index} key={`submit#${index}`} />;
   });
 
   const mapMissing = missing?.map((submit, index) => {
@@ -118,6 +93,63 @@ const RenderAssignment = ({
         <tbody>{mapMissing}</tbody>
       </table>
     </div>
+  );
+};
+
+const Submited = ({
+  submit,
+  index,
+}: {
+  submit: AttendanceInterface;
+  index: number;
+}) => {
+  const { pushModal, closeModal } = useModals();
+
+  const handleOpen = () => {
+    const akey = `greade#${new Date()}`;
+    pushModal(
+      <GradeAssignment
+        onClose={() => closeModal(akey)}
+        key={akey}
+        submit={submit}
+      />,
+      {
+        timer: false,
+      }
+    );
+  };
+
+  const mapAttachments = submit.submits[0].attachments.map((attc, index) => {
+    if (attc.type === "FILE")
+      return (
+        <p
+          key={`attc#${index}`}
+          className="truncate hover:text-ellipsis max-w-[10rem]"
+        >
+          {attc.path!.split("###")[2]}
+        </p>
+      );
+    return <p key={`attc#${index}`}>{attc.type}</p>;
+  });
+  return (
+    <tr
+      key={`submit#${index}`}
+      className="hover cursor-pointer"
+      onClick={handleOpen}
+    >
+      <th>{index}</th>
+      <th>
+        {submit.enrollment.user.first_name} {submit.enrollment.user.last_name}
+      </th>
+      <th className="hidden md:table-cell">
+        @{submit.enrollment.user.username}
+      </th>
+      <th className="hidden md:table-cell">
+        {formatDate(submit.submits[0].dateOfSubmit)}
+      </th>
+      <th className="hidden md:table-cell">{submit._count.submits}</th>
+      <th>{mapAttachments}</th>
+    </tr>
   );
 };
 

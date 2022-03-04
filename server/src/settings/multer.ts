@@ -7,7 +7,7 @@ const avatar_storage = multer.diskStorage({
   destination: function (req, _file, cb) {
     const apath = path.join(
       __dirname,
-      `../images/avatars/${req.body.username}`
+      `../images/avatars/${req.body.username.toLowerCase()}`
     );
 
     if (existsSync(apath)) unlinkSync(apath);
@@ -22,14 +22,14 @@ const courseimg_storage = multer.diskStorage({
   destination: function (req, _file, cb) {
     const apath = path.join(
       __dirname,
-      `../images/courseImage/${req.body.name}`
+      `../images/courseImage/${req.body.name.toLowerCase()}`
     );
 
     if (existsSync(apath)) unlinkSync(apath);
     cb(null, "images/courseImage");
   },
   filename: function (req, _file, cb) {
-    cb(null, req.body.name + "-org.jpg");
+    cb(null, req.body.name.toLowerCase() + "-org.jpg");
   },
 });
 
@@ -38,7 +38,7 @@ const coursedetails_storage = multer.diskStorage({
     cb(null, "images/courses");
   },
   filename: function (_req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    cb(null, `${Date.now()}-${file.originalname.toLowerCase()}`);
   },
 });
 
@@ -49,7 +49,10 @@ const coursedetails_sponsors_storage = multer.diskStorage({
     cb(null, "images/courses");
   },
   filename: function (req, _file, cb) {
-    cb(null, `${req.params.course}-sponsor-${req.params.sponsor}.jpg`);
+    cb(
+      null,
+      `${req.params.course.toLowerCase()}-sponsor-${req.params.sponsor.toLowerCase()}.jpg`
+    );
   },
 });
 
@@ -58,7 +61,7 @@ const video_storage = multer.diskStorage({
     cb(null, "videos/");
   },
   filename: function (req, file, cb) {
-    const path = `${Date.now()}-${file.originalname}`;
+    const path = `${Date.now()}-${file.originalname.toLowerCase()}`;
     req.body.path = path;
     cb(null, path);
   },
@@ -69,9 +72,7 @@ const file_uploader = multer.diskStorage({
     cb(null, "files/");
   },
   filename: function (req, file, cb) {
-    const path = `${req.session.user?.username}###${Date.now()}###${
-      file.originalname
-    }`;
+    const path = `${req.session.user?.username.toLowerCase()}###${Date.now()}###${file.originalname.toLowerCase()}`;
     req.body.path = path;
     cb(null, path);
   },
@@ -84,7 +85,7 @@ const CourseSponsorFilter = (
 ) => {
   const apath = path.join(
     __dirname,
-    `../../images/courses/${req.params.course}-sponsor-${req.params.sponsor}.jpg`
+    `../../images/courses/${req.params.course.toLowerCase()}-sponsor-${req.params.sponsor.toLowerCase()}.jpg`
   );
 
   if (existsSync(apath)) {

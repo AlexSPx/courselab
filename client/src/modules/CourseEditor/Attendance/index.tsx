@@ -40,8 +40,6 @@ export const getServerSideProps: GetServerSideProps = withSession(
         },
       };
     } catch (error) {
-      console.log(error);
-
       return {
         props: {
           user: undefined,

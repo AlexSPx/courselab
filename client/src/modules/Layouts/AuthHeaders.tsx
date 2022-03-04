@@ -19,7 +19,7 @@ export default function AuthHeader() {
         <div className="flex-1 hidden px-2 mx-2 lg:flex">
           <span className="text-lg font-bold">CourseLab</span>
         </div>
-        <div className="items-stretch hidden lg:flex">
+        <div className="items-stretch hidden lg:flex mx-2">
           <Link href="/home">
             <a className="btn btn-ghost btn-sm rounded-btn">Home</a>
           </Link>
@@ -27,7 +27,9 @@ export default function AuthHeader() {
           <Link href="/courses">
             <a className="btn btn-ghost btn-sm rounded-btn">Explorer</a>
           </Link>
-          <a className="btn btn-ghost btn-sm rounded-btn">Contact</a>
+          <Link href="/manager">
+            <a className="btn btn-ghost btn-sm rounded-btn">Manager</a>
+          </Link>
         </div>
         <div className="flex-1 lg:flex-none">
           <div className="form-control">
