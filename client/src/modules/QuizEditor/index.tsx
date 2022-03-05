@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import Error401 from "../../components/Error401";
 import { QuizInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
@@ -13,7 +14,7 @@ type QuizEditorProps = {
 export const QuizEditor: NextPage<QuizEditorProps> = ({ quiz }) => {
   return (
     <MainLayout css="overflow-auto bg-gray-50">
-      <Page quiz={quiz} />
+      {quiz ? <Page quiz={quiz} /> : <Error401 />}
     </MainLayout>
   );
 };

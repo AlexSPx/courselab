@@ -121,7 +121,7 @@ export default function FIleAdder({
         )}
       </div>
       <div
-        className={`flex flex-wrap w-full h-full max-h-[20rem] items-center justify-center overflow-auto mb-3 ${
+        className={`flex flex-wrap w-full h-full max-h-[14rem] items-center justify-center overflow-auto mb-3 ${
           style === "bottom" ? "order-last" : "order-first"
         }`}
         id="journal-scroll"

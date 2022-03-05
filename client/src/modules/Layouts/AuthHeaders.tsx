@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Link from "next/link";
 import Avatar from "../../components/Avatar";
 import { UserContext } from "../../contexts/UserContext";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { baseurl } from "../../lib/fetcher";
 import { ErrorModal, useModals } from "../../components/Modal";
 import { useRouter } from "next/router";
+import useOnOutsideClick from "../../Hooks/useOnOutsideClick";
 
 export default function AuthHeader() {
   const { userData } = useContext(UserContext);
@@ -83,7 +84,9 @@ export default function AuthHeader() {
             >
               <Avatar />
             </div>
-            {dropdown && <Menu user={userData} />}
+            {dropdown && (
+              <Menu user={userData} close={() => setDropdown(false)} />
+            )}
           </div>
         </div>
       </div>
@@ -91,9 +94,18 @@ export default function AuthHeader() {
   );
 }
 
-const Menu = ({ user }: { user: UserDataInterface | null }) => {
+const Menu = ({
+  user,
+  close,
+}: {
+  user: UserDataInterface | null;
+  close: Function;
+}) => {
   const { pushModal } = useModals();
   const router = useRouter();
+
+  const wrapperRef = useRef(null);
+  useOnOutsideClick(wrapperRef, close);
 
   const handleLogout = async () => {
     try {
@@ -108,7 +120,10 @@ const Menu = ({ user }: { user: UserDataInterface | null }) => {
   };
 
   return (
-    <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20">
+    <div
+      className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20"
+      ref={wrapperRef}
+    >
       <div className="py-3 px-4 text-gray-900 dark:text-white">
         <span className="block text-sm">
           {user?.user?.first_name} {user?.user?.last_name}

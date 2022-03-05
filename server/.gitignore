@@ -5,7 +5,11 @@ node_modules
 package-lock.json
 
 dist
-images
-videos
 
 prisma/migrations
+
+images/avatars
+images/courseImages
+images/courses
+files/
+videos/

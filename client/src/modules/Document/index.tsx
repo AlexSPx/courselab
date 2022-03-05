@@ -5,6 +5,7 @@ import { baseurl } from "../../lib/fetcher";
 import { MainLayout } from "../Layouts/MainLayout";
 import dynamic from "next/dynamic";
 import { withSession } from "../../lib/withSession";
+import Error401 from "../../components/Error401";
 
 const Page = dynamic(() => import("./Page"), { ssr: false });
 
@@ -15,19 +16,7 @@ type DocumentPageProps = {
 export const Document: NextPage<DocumentPageProps> = ({ document }) => {
   return (
     <MainLayout css="sm:h-full">
-      {document ? (
-        <Page doc={document} />
-      ) : (
-        <div className="flex w-full h-full items-center justify-center">
-          <p className="font-semibold text-2xl uppercase">
-            <p className="text-center text-8xl">401</p>
-            {`Either the document does not exist or`}
-            <br />
-            {` you don't have
-              permissions to access it`}
-          </p>
-        </div>
-      )}
+      {document ? <Page doc={document} /> : <Error401 />}
     </MainLayout>
   );
 };

@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface LayoutProps {
   css?: string;
@@ -28,7 +28,7 @@ export const Left: React.FC<LayoutProps> = ({ children, css }) => {
 export const Main: React.FC<LayoutProps> = ({ children, css }) => {
   return (
     <div
-      className={`order-3 sm:order-none flex w-full h-full sm:min-h-screen sm:w-4/5 lg:w-1/2 p-1 flex-col ${css}`}
+      className={`order-3 sm:order-none flex w-full h-full sm:w-4/5 lg:w-1/2 p-1 flex-col ${css}`}
     >
       {children}
     </div>

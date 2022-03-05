@@ -172,6 +172,8 @@ export interface AssignmentSubmit {
   id: string;
   dateOfSubmit: Date;
   dateOfRemoval?: Date;
+  returned: boolean;
+  comment?: string;
   attachments: AssignmentSubmitAttachment[];
   enrollment_id: string;
   assignment_id: string;

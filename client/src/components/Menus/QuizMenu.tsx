@@ -1,10 +1,10 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { BsFillQuestionCircleFill } from "react-icons/bs";
 import { IoIosAdd } from "react-icons/io";
 import useRightClickContext from "../../contexts/RightClickMenuContext";
 import { QuizzQuestionInterface } from "../../interfaces";
-import ClosedQuestionModal from "../../modules/quizz/ClosedQuestionModal";
-import OpenedQuestionModal from "../../modules/quizz/OpenedQuestionModal";
+import ClosedQuestionModal from "../../modules/QuizEditor/ClosedQuestionModal";
+import OpenedQuestionModal from "../../modules/QuizEditor/OpenedQuestionModal";
 import { useModals } from "../Modal";
 
 export default function QuizMenu({

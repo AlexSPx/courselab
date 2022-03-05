@@ -15,7 +15,12 @@ export default function GradeAssignment({
   onClose: Function;
   submit: AttendanceInterface;
 }) {
-  const [comment, setComment] = useState<string>();
+  const [submitIndex, setSubmitIndex] = useState(submit.submits.length - 1);
+  const [comment, setComment] = useState<string | undefined>(
+    submit.submits[submitIndex].comment
+  );
+
+  console.log(submit.submits[submitIndex]);
 
   const { executeQuery } = useRequest();
 
@@ -28,7 +33,7 @@ export default function GradeAssignment({
         const res = await axios.post(
           `${baseurl}/assignment/return`,
           {
-            id: submit.submits[0].id,
+            id: submit.submits[submitIndex].id,
             comment,
           },
           { withCredentials: true }
@@ -44,7 +49,7 @@ export default function GradeAssignment({
     );
   };
 
-  const mapAttachments = submit.submits[0].attachments.map((att) => {
+  const mapAttachments = submit.submits[submitIndex].attachments.map((att) => {
     const handleOpen = () => {
       if (att.type === "FILE") {
       } else if (att.type === "DOCUMENT") {
@@ -96,7 +101,7 @@ export default function GradeAssignment({
           <div className="flex flex-col p-3 font-mono">
             <div className="mb-2">
               <p className="font-semibold">Latest submit:</p>
-              {formatDate(submit.submits[0].dateOfSubmit)}
+              {formatDate(submit.submits[submitIndex].dateOfSubmit)}
             </div>
             <div className="my-2">
               <p className="font-semibold">Attachments:</p>
@@ -110,10 +115,11 @@ export default function GradeAssignment({
                 onChange={(e) => {
                   setComment(e.target.value);
                 }}
+                value={comment}
               />
             </div>
             <button className="btn btn-outline my-3" onClick={handleReturn}>
-              Return
+              {submit.submits[submitIndex].returned && "Update"} Return
             </button>
           </div>
         </div>

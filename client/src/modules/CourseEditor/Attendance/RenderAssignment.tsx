@@ -45,7 +45,6 @@ const RenderAssignment = ({
         { assignmentId: id, course: courseName, startingDate },
         { withCredentials: true }
       );
-
       setSubmitted(res.data.submitted);
       setMissing(res.data.missing);
     };
@@ -60,18 +59,18 @@ const RenderAssignment = ({
     return (
       <tr
         key={`submit#${index}`}
-        className="table-compact text-rose-700 hover cursor-pointer"
+        className="table-compact font-semibold text-rose-700 hover cursor-pointer"
       >
-        <th>{index}</th>
-        <th>
+        <td>{index}</td>
+        <td>
           {submit.enrollment.user.first_name} {submit.enrollment.user.last_name}
-        </th>
-        <th className="hidden md:table-cell">
+        </td>
+        <td className="hidden md:table-cell">
           @{submit.enrollment.user.username}
-        </th>
-        <th className="hidden md:table-cell">-</th>
-        <th className="hidden md:table-cell">-</th>
-        <th>-</th>
+        </td>
+        <td className="hidden md:table-cell">-</td>
+        <td className="hidden md:table-cell">-</td>
+        <td>-</td>
       </tr>
     );
   });
@@ -103,6 +102,8 @@ const Submited = ({
   submit: AttendanceInterface;
   index: number;
 }) => {
+  const [submitIndex, setSubmitIndex] = useState(submit.submits.length - 1);
+
   const { pushModal, closeModal } = useModals();
 
   const handleOpen = () => {
@@ -119,36 +120,40 @@ const Submited = ({
     );
   };
 
-  const mapAttachments = submit.submits[0].attachments.map((attc, index) => {
-    if (attc.type === "FILE")
-      return (
-        <p
-          key={`attc#${index}`}
-          className="truncate hover:text-ellipsis max-w-[10rem]"
-        >
-          {attc.path!.split("{-divide-}")[2]}
-        </p>
-      );
-    return <p key={`attc#${index}`}>{attc.type}</p>;
-  });
+  const mapAttachments = submit.submits[submitIndex].attachments.map(
+    (attc, index) => {
+      if (attc.type === "FILE")
+        return (
+          <p
+            key={`attc#${index}`}
+            className="truncate hover:text-ellipsis max-w-[10rem]"
+          >
+            {attc.path!.split("{-divide-}")[2]}
+          </p>
+        );
+      return <p key={`attc#${index}`}>{attc.type}</p>;
+    }
+  );
   return (
     <tr
       key={`submit#${index}`}
-      className="hover cursor-pointer"
+      className="hover cursor-pointer font-semibold"
       onClick={handleOpen}
     >
-      <th>{index}</th>
-      <th>
+      <td>{index}</td>
+      <td>
         {submit.enrollment.user.first_name} {submit.enrollment.user.last_name}
-      </th>
-      <th className="hidden md:table-cell">
+        <br />
+        {submit.submits[submitIndex].returned && "returned"}
+      </td>
+      <td className="hidden md:table-cell">
         @{submit.enrollment.user.username}
-      </th>
-      <th className="hidden md:table-cell">
-        {formatDate(submit.submits[0].dateOfSubmit)}
-      </th>
-      <th className="hidden md:table-cell">{submit._count.submits}</th>
-      <th>{mapAttachments}</th>
+      </td>
+      <td className="hidden md:table-cell">
+        {formatDate(submit.submits[submitIndex].dateOfSubmit)}
+      </td>
+      <td className="hidden md:table-cell">{submit._count.submits}</td>
+      <td>{mapAttachments}</td>
     </tr>
   );
 };

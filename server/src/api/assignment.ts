@@ -343,7 +343,6 @@ router.post("/submits/details", isAuth, async (req, res) => {
         },
       },
     });
-
     const { submitted, missing } = submitsDitribution(submits);
     return res.status(200).send({ submitted, missing });
   } catch (error) {
