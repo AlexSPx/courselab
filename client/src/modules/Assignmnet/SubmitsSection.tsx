@@ -4,8 +4,8 @@ import FIleAdder, {
   Attachment,
   CustomRendererProps,
 } from "../../components/FIleAdder";
+import FormatDate from "../../components/FormatDate";
 import { AssignmentInterface, AssignmentSubmit } from "../../interfaces";
-import formatDate from "../../lib/dateFormater";
 import { baseurl } from "../../lib/fetcher";
 import useRequest from "../../lib/useRequest";
 import { File } from "./Attachments";
@@ -132,7 +132,7 @@ export default function SubmitsSection({
         <div className="font-bold text-2xl w-full">
           Submit
           <p className="text-lg font-semibold">
-            ({formatDate(submit?.dateOfSubmit)})
+            <FormatDate date={submit?.dateOfSubmit} />
           </p>
         </div>
 

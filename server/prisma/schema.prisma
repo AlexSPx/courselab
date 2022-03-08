@@ -203,6 +203,7 @@ model QuizQuestion {
   question   String
   options    String[]
   answer     String[]
+  points Int?
   orderIndex Int
 
   Quizz    Quiz   @relation(fields: [quizz_id], references: [id], onDelete: Cascade)
@@ -212,6 +213,10 @@ model QuizQuestion {
 model QuizSubmit {
   id      String @id @default(uuid())
   answers Json[]
+  returned Boolean @default(false)
+  points Int 
+  maxPoints Int
+  dateOfSubmit DateTime @default(now())
 
   Quiz          Quiz             @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
   quiz_id       String

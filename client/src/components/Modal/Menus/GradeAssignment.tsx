@@ -2,11 +2,11 @@ import axios from "axios";
 import React, { useRef, useState } from "react";
 import Modal, { useModals } from "..";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
-import formatDate from "../../../lib/dateFormater";
 import { baseurl } from "../../../lib/fetcher";
 import useRequest from "../../../lib/useRequest";
 import { File } from "../../../modules/Assignmnet/Attachments";
 import { AttendanceInterface } from "../../../modules/CourseEditor/Attendance/RenderAssignment";
+import FormatDate from "../../FormatDate";
 
 export default function GradeAssignment({
   onClose,
@@ -19,8 +19,6 @@ export default function GradeAssignment({
   const [comment, setComment] = useState<string | undefined>(
     submit.submits[submitIndex].comment
   );
-
-  console.log(submit.submits[submitIndex]);
 
   const { executeQuery } = useRequest();
 
@@ -101,7 +99,7 @@ export default function GradeAssignment({
           <div className="flex flex-col p-3 font-mono">
             <div className="mb-2">
               <p className="font-semibold">Latest submit:</p>
-              {formatDate(submit.submits[submitIndex].dateOfSubmit)}
+              <FormatDate date={submit.submits[submitIndex].dateOfSubmit} />
             </div>
             <div className="my-2">
               <p className="font-semibold">Attachments:</p>

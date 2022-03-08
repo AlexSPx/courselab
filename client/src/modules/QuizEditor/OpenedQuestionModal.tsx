@@ -2,8 +2,11 @@ import { uniqueId } from "lodash";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { BsFillQuestionCircleFill } from "react-icons/bs";
 import Modal from "../../components/Modal";
+import useOnOutsideClick from "../../Hooks/useOnOutsideClick";
 import { QuizzQuestionInterface } from "../../interfaces";
 import { CloseIcon } from "../../svg/small";
+
+const onlyNumbers = /^[0-9\b]+$/;
 
 export default function OpenedQuestionModal({
   onClose,
@@ -16,8 +19,11 @@ export default function OpenedQuestionModal({
 }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [answer, setAnswer] = useState<string | null>();
+  const [points, setPoints] = useState(editData?.points ? editData?.points : 0);
 
   const wrapperRef = useRef(null);
+  useOnOutsideClick(wrapperRef, () => onClose());
+
   useEffect(() => {
     if (!editData) return;
     setQuestion(editData.question);
@@ -31,6 +37,7 @@ export default function OpenedQuestionModal({
       const t: QuizzQuestionInterface = {
         id: editData ? editData.id : uniqueId(),
         question,
+        points,
         answer: [answer],
         options: [],
         type: "OPENED",
@@ -69,6 +76,19 @@ export default function OpenedQuestionModal({
               className="textarea textarea-bordered"
               value={question || ""}
               onChange={(e) => setQuestion(e.target.value)}
+            />
+            <span className="label-text mt-1">Points</span>
+            <input
+              type="text"
+              className="input input-sm input-bordered mt-1"
+              value={points}
+              onChange={(e) => {
+                if (e.target.value === "" || onlyNumbers.test(e.target.value)) {
+                  setPoints(parseInt(e.target.value));
+                } else {
+                  setPoints(0);
+                }
+              }}
             />
             <label className="label pt-0 mt-2 flex justify-between">
               <span className="label-text">Answer</span>

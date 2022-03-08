@@ -47,7 +47,9 @@ export default function Login() {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         closeModal(key);
-        pushModal(<ErrorModal title="Error" body={`${error.message}`} />);
+        pushModal(
+          <ErrorModal title="Error" body={`${error.response?.data}`} />
+        );
       }
     }
   };
@@ -88,7 +90,7 @@ export default function Login() {
                   </span>
                   <input
                     type="password"
-                    id="sign-in-email"
+                    id="sign-in-password"
                     className=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Your password"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>

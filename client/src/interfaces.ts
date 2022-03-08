@@ -203,5 +203,23 @@ export interface QuizzQuestionInterface {
   type: "CLOSED" | "OPENED";
   answer: string[];
   options: string[];
+  points: number;
   orderIndex: number;
+}
+
+export interface QuizSubmit {
+  id: string;
+  Enrollment: Enrollment;
+  Quiz: QuizInterface;
+  points: number;
+  maxPoints: number;
+  returned: boolean;
+  dateOfSubmit: Date;
+  answers: QuizGivenAnswer[];
+}
+
+export interface QuizGivenAnswer {
+  question: string;
+  correct: boolean;
+  option: string;
 }

@@ -1,6 +1,6 @@
 import { NextRouter, useRouter } from "next/dist/client/router";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import StructureMenu from "../../../components/Menus/StructureMenu";
 import { useModals } from "../../../components/Modal";
 import StructureCreateFile, { CreateFile } from "./StructureCreateFile";
@@ -19,6 +19,7 @@ import {
   UpArrow,
   VideoIcon,
 } from "../../../svg/small";
+import NoSsr from "../../../components/NoSsr";
 
 export default function Structure({ course }: { course: CourseInterface }) {
   const structureData = useStructureData(course);
@@ -181,40 +182,49 @@ const RenderFile = ({
   onDelete: (dataModelId: DataModelInterface) => void;
 }) => {
   const menuRef = useRef(null);
-  const [href, setHref] = useState<string>("");
+  const [href, setHref] = useState<string>();
 
-  const Icon = () => {
+  useEffect(() => {
     if (data.type === "DOCUMENT") {
       setHref(`${router.basePath}/doc/${data.document_id}`);
-      return <DocumentIcon />;
     } else if (data.type === "VIDEO") {
       setHref(`${router.basePath}/video/${data.video_id}`);
-      return <VideoIcon />;
     } else if (data.type === "ASSIGNMENT") {
       setHref(`${router.basePath}/assignment/${data.assignment_id}/edit`);
-      return <AssignmentIcon />;
     } else if (data.type === "QUIZ") {
       setHref(`${router.basePath}/quiz/${data.quiz_id}/edit`);
-      return <QuizzIcon />;
-    } else {
-      return <></>;
     }
-  };
+  }, [
+    data.assignment_id,
+    data.document_id,
+    data.quiz_id,
+    data.type,
+    data.video_id,
+    router.basePath,
+  ]);
 
   return (
-    <>
-      <Link href={href}>
+    <NoSsr>
+      <Link href={href ? href : ""}>
         <a
           target="_blank"
           className="flex rounded bg-gray-200 h-12 my-1 items-center justify-center cursor-pointer hover:bg-gray-300 transition duration-200"
           ref={menuRef}
         >
-          <Icon />
+          {data.type === "DOCUMENT" ? (
+            <DocumentIcon />
+          ) : data.type === "VIDEO" ? (
+            <VideoIcon />
+          ) : data.type === "ASSIGNMENT" ? (
+            <AssignmentIcon />
+          ) : (
+            <QuizzIcon />
+          )}
           <p className="s font-mono">{data.name}</p>
         </a>
       </Link>
       <StructureMenu outerRef={menuRef} dataModel={data} onDelete={onDelete} />
-    </>
+    </NoSsr>
   );
 };
 

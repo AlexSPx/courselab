@@ -134,6 +134,10 @@ router.post("/login", async (req, res) => {
       connections: [],
     };
 
+    req.session.save();
+
+    console.log(req.session);
+
     return res.sendStatus(200);
   } catch (err) {
     console.log(err);
@@ -185,21 +189,30 @@ router.post("/search", isAuth, async (req, res) => {
 });
 
 router.get("/auth", (req, res) => {
-  if (req.session.user) {
-    return res.status(200).json({ isAuth: true, user: req.session.user });
-  } else {
+  try {
+    if (req.session.user) {
+      return res.status(200).json({ isAuth: true, user: req.session.user });
+    } else {
+      return res.status(200).json({ isAuth: false });
+    }
+  } catch (error) {
+    console.log(error);
     return res.status(200).json({ isAuth: false });
   }
 });
 
 router.get("/logout", async (req, res) => {
-  await removeUser(req.session.id);
-  req.session.destroy((err) => {
-    if (err) {
-      return res.sendStatus(500);
-    }
-    return res.clearCookie("connect.sid").sendStatus(200);
-  });
+  try {
+    await removeUser(req.session.id);
+    req.session.destroy((err) => {
+      if (err) {
+        return res.sendStatus(500);
+      }
+      return res.clearCookie("connect.sid").sendStatus(200);
+    });
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 });
 
 export default router;

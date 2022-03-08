@@ -38,6 +38,8 @@ export function withSession<
       };
     }
 
+    console.log(user);
+
     if (user) context.req.user = { isAuth, user };
 
     return handler(context);

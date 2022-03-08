@@ -9,7 +9,7 @@ import { CoursePublicRaw } from "../../../modules/CourseExplorer/Course";
 import { CloseIcon } from "../../../svg/small";
 import useHasImage from "../../../Hooks/useHasImage";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
-import formatDate from "../../../lib/dateFormater";
+import FormatDate from "../../FormatDate";
 
 export default function EnrollMenu({
   course,
@@ -62,7 +62,7 @@ export default function EnrollMenu({
       if (sdate < new Date()) return;
       return (
         <option value={`${date.startingAt}`} key={index}>
-          {formatDate(sdate)}
+          <FormatDate date={sdate} />
         </option>
       );
     });

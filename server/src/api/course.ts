@@ -442,6 +442,8 @@ router.get("/fetchadmin/:name", isAuth, async (req, res) => {
   try {
     const name = req.params.name;
 
+    console.log(req.session.user?.id);
+
     const course = await getOrSetCache(`course?edit:${name}`, async () => {
       const data = await prismaClient.course.findFirst({
         where: {
@@ -486,6 +488,8 @@ router.get("/fetchadmin/:name", isAuth, async (req, res) => {
 
     return res.status(200).json(course);
   } catch (err) {
+    console.log(err);
+
     return res.status(400).send("Someting went wrong");
   }
 });

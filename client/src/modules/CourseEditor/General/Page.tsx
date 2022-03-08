@@ -12,7 +12,7 @@ import ReactDateTime from "react-datetime-picker/dist/entry.nostyle";
 import ImageSelector from "../../../components/Inputs/ImageSelector";
 import useRequest from "../../../lib/useRequest";
 import NoSsr from "../../../components/NoSsr";
-import formatDate from "../../../lib/dateFormater";
+import FormatDate from "../../../components/FormatDate";
 
 export default function GeneralSettings({
   course,
@@ -176,7 +176,9 @@ const CourseSchedule = ({
     return (
       <tr key={index}>
         <th>{index + 1}</th>
-        <td>{formatDate(date.startingAt)}</td>
+        <td>
+          <FormatDate date={date.startingAt} />
+        </td>
         <td>{date.status}</td>
         <td>
           <button

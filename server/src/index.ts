@@ -2,9 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import express from "express";
 import expressSession, { Session, SessionData } from "express-session";
 import { createServer } from "http";
-import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import cors from "cors";
 import bodyParser from "body-parser";
+import connectRedis from "connect-redis";
 
 import user from "./api/user";
 import course from "./api/course";
@@ -17,8 +17,8 @@ import path from "path";
 import sharp from "sharp";
 import { Server, Socket } from "socket.io";
 import sharedsession from "express-socket.io-session";
-import { addUser, leaveDoc, removeUser } from "./functions/redisCaching";
-import { OnlineUser } from "./functions/online";
+import redisClient, { leaveDoc } from "./functions/redisCaching";
+import { addUser, OnlineUser, removeUser } from "./functions/online";
 
 import resizingMiddleware from "./middlewares/resizeMiddleware";
 
@@ -36,10 +36,13 @@ export const io = new Server(httpServer, {
     credentials: true,
   },
 });
+
 (async () => {
   const PORT = process.env.PORT;
 
   sharp.cache(false);
+
+  const RedisStore = connectRedis(expressSession);
 
   const sessionMiddleware = expressSession({
     cookie: {
@@ -49,12 +52,7 @@ export const io = new Server(httpServer, {
     secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
-    store: new PrismaSessionStore(prismaClient, {
-      logger: console,
-      checkPeriod: 2 * 60 * 1000, //ms
-      dbRecordIdIsSessionId: true,
-      dbRecordIdFunction: undefined,
-    }),
+    store: new RedisStore({ client: redisClient }),
   });
 
   app.use(sessionMiddleware);
@@ -105,7 +103,7 @@ export const io = new Server(httpServer, {
           socket.handshake.session.save();
 
           if (socket.handshake.session.user.connections.length === 0)
-            await removeUser(socket.handshake.sessionID!);
+            removeUser(socket.handshake.sessionID!);
         }
       } catch (error) {
         console.log(error);

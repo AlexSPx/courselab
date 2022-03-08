@@ -95,7 +95,7 @@ export default function FIleAdder({
         key={file.fakeId}
         onClick={remove}
       >
-        {file.fakeId}
+        {file.type === "FILE" && file.file?.name}
       </div>
     );
   });

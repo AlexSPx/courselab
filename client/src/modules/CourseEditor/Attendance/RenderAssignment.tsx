@@ -2,9 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { baseurl } from "../../../lib/fetcher";
 import { AssignmentSubmit, GeneralUserInformation } from "../../../interfaces";
-import formatDate from "../../../lib/dateFormater";
 import { useModals } from "../../../components/Modal";
 import GradeAssignment from "../../../components/Modal/Menus/GradeAssignment";
+import FormatDate from "../../../components/FormatDate";
 
 export interface AttendanceInterface {
   assignment_id: string;
@@ -150,7 +150,7 @@ const Submited = ({
         @{submit.enrollment.user.username}
       </td>
       <td className="hidden md:table-cell">
-        {formatDate(submit.submits[submitIndex].dateOfSubmit)}
+        <FormatDate date={submit.submits[submitIndex].dateOfSubmit} />
       </td>
       <td className="hidden md:table-cell">{submit._count.submits}</td>
       <td>{mapAttachments}</td>

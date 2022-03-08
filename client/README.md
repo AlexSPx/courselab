@@ -1,4 +1,3 @@
 TO-DO:
 
-1.Make a decent Layout system (preferably to support mobile)
-2.Put the user context into use
+1. Make some sort of timer for the quiz while taking it. Autosubmit

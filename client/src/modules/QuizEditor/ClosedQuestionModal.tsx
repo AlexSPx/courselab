@@ -6,6 +6,8 @@ import useOnOutsideClick from "../../Hooks/useOnOutsideClick";
 import { QuizzQuestionInterface } from "../../interfaces";
 import { CloseIcon } from "../../svg/small";
 
+const onlyNumbers = /^[0-9\b]+$/;
+
 export default function ClosedQuestionModal({
   onClose,
   setQuestions,
@@ -17,7 +19,7 @@ export default function ClosedQuestionModal({
 }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [options, setOptions] = useState<string[] | null>(null);
-
+  const [points, setPoints] = useState(editData?.points ? editData?.points : 0);
   const [answer, setAnswer] = useState<string[]>([]);
 
   useEffect(() => {
@@ -58,6 +60,7 @@ export default function ClosedQuestionModal({
         options,
         answer: answer,
         type: "CLOSED",
+        points,
         orderIndex: editData ? editData.orderIndex : questions.length,
       };
       if (!questions) return [t];
@@ -93,6 +96,19 @@ export default function ClosedQuestionModal({
               className="textarea textarea-bordered"
               value={question || ""}
               onChange={(e) => setQuestion(e.target.value)}
+            />
+            <span className="label-text mt-1">Points</span>
+            <input
+              type="text"
+              className="input input-sm input-bordered mt-1"
+              value={points}
+              onChange={(e) => {
+                if (e.target.value === "" || onlyNumbers.test(e.target.value)) {
+                  setPoints(parseInt(e.target.value));
+                } else {
+                  setPoints(0);
+                }
+              }}
             />
             {mapOptions}
             <button

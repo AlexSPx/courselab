@@ -3,9 +3,9 @@ import Link from "next/link";
 import { NextRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import FormatDate from "../../../components/FormatDate";
 import useStructureData from "../../../Hooks/useStructureData";
 import { CourseInterface, DataModelInterface } from "../../../interfaces";
-import formatDate from "../../../lib/dateFormater";
 import { baseurl } from "../../../lib/fetcher";
 import {
   UpArrow,
@@ -16,6 +16,7 @@ import {
   VideoIcon,
 } from "../../../svg/small";
 import RenderAssignment from "./RenderAssignment";
+import RenderQuiz from "./RenderQuiz";
 
 export default function Schedules({ course }: { course: CourseInterface }) {
   const [date, setDate] = useState<Date>();
@@ -27,7 +28,7 @@ export default function Schedules({ course }: { course: CourseInterface }) {
         key={JSON.stringify(d.startingAt)}
         onClick={() => setDate(d.startingAt)}
       >
-        {formatDate(d.startingAt)}
+        <FormatDate date={d.startingAt} />
         <BsArrowRight className="mx-2" size={21} />
       </div>
     );
@@ -109,7 +110,9 @@ const RenderDate = ({
         className="absolute left-0 top-1 rounded cursor-pointer hover:bg-gray-300"
         onClick={goBack}
       />
-      <p className="font-bold text-2xl">{formatDate(date)}</p>
+      <p className="font-bold text-2xl">
+        <FormatDate date={date} />
+      </p>
       <WeekSelector />
       <Week />
     </div>
@@ -181,7 +184,10 @@ const Day = ({
       >
         <div className="font-mono font-semibold px-3">
           Day {index + 1}(
-          {isUnlocked?.unlockingAt && formatDate(isUnlocked?.unlockingAt)})
+          {isUnlocked?.unlockingAt && (
+            <FormatDate date={isUnlocked?.unlockingAt} />
+          )}
+          )
           <p className="text-sm">
             {!isUnlocked?.isUnlocked && "Not yet unlocked"}
           </p>
@@ -270,7 +276,13 @@ const File = ({
         ) : file.type === "VIDEO" ? (
           "VID"
         ) : (
-          file.type === "QUIZ" && "Quiz"
+          file.type === "QUIZ" && (
+            <RenderQuiz
+              id={file.quiz_id!}
+              courseName={courseName}
+              startingDate={startingDate}
+            />
+          )
         ))}
     </>
   );
