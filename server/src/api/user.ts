@@ -136,12 +136,8 @@ router.post("/login", async (req, res) => {
 
     req.session.save();
 
-    console.log(req.session);
-
     return res.sendStatus(200);
   } catch (err) {
-    console.log(err);
-
     return res.status(400).send("Somethin went wrong");
   }
 });
@@ -151,7 +147,6 @@ router.post("/online", isAuth, async (req, res) => {
     const whoIsOnline = await getAllOnline(req.body.ids);
     return res.status(200).send(whoIsOnline);
   } catch (error) {
-    console.log(error);
     return res.status(400).send("Somethin went wrong");
   }
 });
@@ -196,7 +191,6 @@ router.get("/auth", (req, res) => {
       return res.status(200).json({ isAuth: false });
     }
   } catch (error) {
-    console.log(error);
     return res.status(200).json({ isAuth: false });
   }
 });

@@ -113,8 +113,6 @@ router.get("/take/:id", isAuth, async (req, res) => {
       },
     });
 
-    console.log(submit);
-
     if (submit) {
       return res.status(200).json({ submit, quiz: null });
     }

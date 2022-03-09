@@ -44,8 +44,6 @@ const coursedetails_storage = multer.diskStorage({
 
 const coursedetails_sponsors_storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    console.log(_file);
-
     cb(null, "images/courses");
   },
   filename: function (req, _file, cb) {

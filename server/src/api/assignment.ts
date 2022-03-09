@@ -117,8 +117,6 @@ router.delete("/:id", isAuth, async (req, res) => {
 
     return res.sendStatus(200);
   } catch (error) {
-    console.log(error);
-
     return res.status(400).send("Something went wrong");
   }
 });
@@ -178,7 +176,6 @@ router.post(
 
       return res.sendStatus(200);
     } catch (error) {
-      console.log(error);
       return res.status(400).send("Something went wrong");
     }
   }
@@ -259,8 +256,6 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
 
     return res.status(200).send(submit);
   } catch (error) {
-    console.log(error);
-
     return res.status(400).send(JSON.stringify(error));
   }
 });

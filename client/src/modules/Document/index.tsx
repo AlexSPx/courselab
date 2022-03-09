@@ -6,6 +6,7 @@ import { MainLayout } from "../Layouts/MainLayout";
 import dynamic from "next/dynamic";
 import { withSession } from "../../lib/withSession";
 import Error401 from "../../components/Error401";
+import Head from "next/head";
 
 const Page = dynamic(() => import("./Page"), { ssr: false });
 
@@ -16,6 +17,14 @@ type DocumentPageProps = {
 export const Document: NextPage<DocumentPageProps> = ({ document }) => {
   return (
     <MainLayout css="sm:h-full">
+      <Head>
+        <title>CourseLab | Document - {document.name || ""}</title>
+        <meta name="description" content={`A shared document`} />
+        <meta
+          name="og:title"
+          content={`CourseLab | Document - ${document.name || ""}`}
+        />
+      </Head>
       {document ? <Page doc={document} /> : <Error401 />}
     </MainLayout>
   );

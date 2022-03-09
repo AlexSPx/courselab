@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import React from "react";
 import { CourseInterface } from "../../../interfaces";
 import { baseurl } from "../../../lib/fetcher";
@@ -16,6 +17,17 @@ export const CourseAttendance: NextPage<CourseAttendanceProps> = ({
 }) => {
   return (
     <CourseEditorLayout name={course.name} published={course.published}>
+      <Head>
+        <title>CourseLab | Attendance | {course.public_name}</title>
+        <meta
+          name="description"
+          content={`The place to check the attendance of your course`}
+        />
+        <meta
+          name="og:title"
+          content={`CourseLab | Attendance | ${course.public_name}`}
+        />
+      </Head>
       <Page course={course} />
     </CourseEditorLayout>
   );

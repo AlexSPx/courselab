@@ -127,8 +127,6 @@ router.get("/:id", isAuth, async (req, res) => {
 
     return res.status(200).send(document);
   } catch (error) {
-    console.log(error);
-
     return res.status(400).send("Someting went wrong");
   }
 });

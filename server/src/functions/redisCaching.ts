@@ -12,8 +12,6 @@ export function getOrSetCache(key: string, cb: Function) {
   return new Promise(async (resolve, reject) => {
     try {
       const data = await redisClient.get(key);
-      console.log(data);
-
       if (data) return resolve(JSON.parse(data));
 
       const newData = await cb();

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import dynamic from "next/dynamic";
+import Head from "next/head";
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
@@ -14,10 +14,20 @@ type AssigmentEditorTypes = {
 export const AssignmentEditor: NextPage<AssigmentEditorTypes> = ({
   assignment,
 }) => {
-  console.log(assignment);
-
   return (
     <MainLayout css="overflow-auto">
+      <Head>
+        <title>
+          CourseLab | Assignment edtior - {assignment.name || "Error"}
+        </title>
+        <meta name="description" content="Assignment editor" />
+        <meta
+          name="og:title"
+          content={`CourseLab | Assignmnet editor - ${
+            assignment.name || "Error"
+          }`}
+        />
+      </Head>
       <Page assignment={assignment} />
     </MainLayout>
   );

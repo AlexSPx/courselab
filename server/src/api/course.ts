@@ -430,8 +430,6 @@ router.get("/mycourses/admin", isAuth, async (req, res) => {
       },
     });
 
-    console.log(courses);
-
     return res.status(200).json(courses);
   } catch (err) {
     return res.status(400).send("Somethin went wrong");
@@ -441,8 +439,6 @@ router.get("/mycourses/admin", isAuth, async (req, res) => {
 router.get("/fetchadmin/:name", isAuth, async (req, res) => {
   try {
     const name = req.params.name;
-
-    console.log(req.session.user?.id);
 
     const course = await getOrSetCache(`course?edit:${name}`, async () => {
       const data = await prismaClient.course.findFirst({
@@ -488,8 +484,6 @@ router.get("/fetchadmin/:name", isAuth, async (req, res) => {
 
     return res.status(200).json(course);
   } catch (err) {
-    console.log(err);
-
     return res.status(400).send("Someting went wrong");
   }
 });
@@ -775,8 +769,6 @@ router.post("/coursedata", isAuth, async (req, res) => {
       return res.status(201).send(true);
     }
   } catch (err) {
-    console.log(err);
-
     return res.status(400).send(err);
   }
 });
@@ -819,8 +811,6 @@ router.delete("/delete/:name", isAuth, async (req, res) => {
 
       if (deleted.files.length) {
         deleted.files.forEach((file: any) => {
-          console.log(file);
-
           unlinkSync(path.join(__dirname + `../../../files/${file}`));
         });
       }
@@ -858,6 +848,24 @@ router.get(`/explore/:alg`, async (_req, res) => {
     });
 
     return res.status(200).send(courses);
+  } catch (error) {
+    return res.status(400).send("Someting went wrong");
+  }
+});
+
+router.get("/mostpopular", async (req, res) => {
+  try {
+    const mostpopular = await prismaClient.course.findMany({
+      where: {
+        published: true,
+      },
+      select: {
+        name: true,
+      },
+      take: 10,
+    });
+
+    return res.status(200).json(mostpopular);
   } catch (error) {
     return res.status(400).send("Someting went wrong");
   }

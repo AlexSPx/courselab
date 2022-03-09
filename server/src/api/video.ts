@@ -25,8 +25,6 @@ router.post(
 
       return res.sendStatus(200);
     } catch (error) {
-      console.log(error);
-
       return res.status(400).send("Somethin went wrong");
     }
   }
@@ -118,7 +116,6 @@ router.get("/stream/:path", isAuth, async (req, res) => {
 
     return res.status(206).header(headers);
   } catch (error) {
-    console.log(error);
     return res.status(400).send("Somethin went wrong");
   }
 });

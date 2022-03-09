@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
@@ -15,6 +16,14 @@ export const AssignmentPage: NextPage<AssignmentPageProps> = ({
 }) => {
   return (
     <MainLayout>
+      <Head>
+        <title>CourseLab | Assignment - {assignment.name || "Error"}</title>
+        <meta name="description" content="assignment page" />
+        <meta
+          name="og:title"
+          content={`CourseLab | assignment - ${assignment.name || "Error"}`}
+        />
+      </Head>
       {assignment ? (
         <Page assignment={assignment} />
       ) : (

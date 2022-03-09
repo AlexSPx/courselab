@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import CourseDraftCard from "../../components/cards/CourseDraftCard";
 import { CourseGeneralInterface, CourseInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
@@ -19,6 +20,11 @@ export const Manager: NextPage<CourseManagerTypes> = ({ courses }) => {
 
   return (
     <MainLayout>
+      <Head>
+        <title>CourseLab | Manager</title>
+        <meta name="description" content="The place to manage your courses" />
+        <meta name="og:title" content={`CourseLab | Manager`} />
+      </Head>
       <Main>
         {courses?.length ? (
           <div className="w-full flex flex-wrap">{mapCourses}</div>

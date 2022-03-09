@@ -1,5 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+import { UserDataInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
 import { MainLayout } from "../Layouts/MainLayout";
@@ -7,6 +9,7 @@ import Page from "./Page";
 
 type Courses = {
   courses: MyCourseInterface[];
+  user: UserDataInterface;
 };
 
 export interface MyCourseInterface {
@@ -17,9 +20,20 @@ export interface MyCourseInterface {
   };
 }
 
-export const Home: NextPage<Courses> = ({ courses }) => {
+export const Home: NextPage<Courses> = ({ courses, user }) => {
   return (
     <MainLayout>
+      <Head>
+        <title>CourseLab | Home Page | @{user.user?.username}</title>
+        <meta
+          name="description"
+          content={`CourseLab home page for ${user.user?.username}`}
+        />
+        <meta
+          name="og:title"
+          content={`CourseLab | Home Page | ${user.user?.username}`}
+        />
+      </Head>
       <Page courses={courses} />
     </MainLayout>
   );

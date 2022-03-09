@@ -1,7 +1,8 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import useSWR from "swr";
-import { CourseInterface } from "../../interfaces";
+import { CourseInterface, UserDataInterface } from "../../interfaces";
 import { baseurl, fetcher } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
 import { MainLayout } from "../Layouts/MainLayout";
@@ -9,10 +10,12 @@ import Page from "./Page";
 
 interface CreateCoursePageProps {
   drafts: CourseInterface[];
+  user: UserDataInterface;
 }
 
 export const CreateCoursePage: NextPage<CreateCoursePageProps> = ({
   drafts,
+  user,
 }) => {
   const { data } = useSWR(`${baseurl}/course/mydrafts`, fetcher, {
     fallbackData: drafts,
@@ -20,6 +23,17 @@ export const CreateCoursePage: NextPage<CreateCoursePageProps> = ({
 
   return (
     <MainLayout>
+      <Head>
+        <title>CourseLab | Create Course {"&"} drafts</title>
+        <meta
+          name="description"
+          content={`Create course page & drafts for ${user.user?.username}`}
+        />
+        <meta
+          name="og:title"
+          content={`CourseLab | Create Course & Drafts | ${user.user?.username}`}
+        />
+      </Head>
       <Page drafts={data || drafts} />
     </MainLayout>
   );

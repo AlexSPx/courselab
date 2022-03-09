@@ -1,5 +1,6 @@
 import axios from "axios";
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, GetStaticPaths, NextPage } from "next";
+import Head from "next/head";
 import { CourseGeneralRawInterface } from "..";
 import { CourseDetails } from "../../../interfaces";
 import { baseurl } from "../../../lib/fetcher";
@@ -13,7 +14,19 @@ export type CoursePublicRaw = CourseGeneralRawInterface & {
 export const CoursePage: NextPage<{ course: CoursePublicRaw }> = ({
   course,
 }) => {
-  return <Page courseRaw={course} />;
+  return (
+    <>
+      <Head>
+        <title>CourseLab | {course.public_name}</title>
+        <meta
+          name="description"
+          content={`Course page for ${course.public_name} | ${course.name}`}
+        />
+        <meta name="og:title" content={`CourseLab | ${course.public_name}`} />
+      </Head>
+      <Page courseRaw={course} />
+    </>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(

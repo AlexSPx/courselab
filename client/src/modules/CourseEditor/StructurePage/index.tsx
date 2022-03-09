@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import { CourseInterface } from "../../../interfaces";
 import { baseurl } from "../../../lib/fetcher";
 import { withSession } from "../../../lib/withSession";
@@ -15,6 +16,17 @@ export const CourseStructurePage: NextPage<CourseEditorPageProps> = ({
 }) => {
   return (
     <CourseEditorLayout name={course.name} published={course.published}>
+      <Head>
+        <title>CourseLab | Structure | {course.public_name}</title>
+        <meta
+          name="description"
+          content={`The structure settings for your course`}
+        />
+        <meta
+          name="og:title"
+          content={`CourseLab | Structure | ${course.public_name}`}
+        />
+      </Head>
       <Page course={course} />
     </CourseEditorLayout>
   );

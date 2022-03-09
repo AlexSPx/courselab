@@ -1,5 +1,6 @@
 import axios from "axios";
 import { NextPage, GetServerSideProps } from "next";
+import Head from "next/head";
 import { useState } from "react";
 import Error401 from "../../components/Error401";
 import { Enrollment, QuizInterface, QuizSubmit } from "../../interfaces";
@@ -27,6 +28,14 @@ export const QuizPage: NextPage<QuizPageProps> = ({ quiz, submitInit }) => {
 
   return (
     <MainLayout css="overflow-auto bg-gray-50">
+      <Head>
+        <title>CourseLab | Quiz - {quiz?.name || "Error"}</title>
+        <meta name="description" content="Quiz page" />
+        <meta
+          name="og:title"
+          content={`CourseLab | Quiz page - ${quiz?.name || "Error"}`}
+        />
+      </Head>
       {submit ? (
         <SubmitDone submit={submit} />
       ) : quiz ? (

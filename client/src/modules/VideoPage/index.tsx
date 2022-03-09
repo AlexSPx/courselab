@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import useSWR from "swr";
 import { VideoInterface } from "../../interfaces";
 import { baseurl, fetcher } from "../../lib/fetcher";
@@ -18,6 +19,14 @@ export const Video: NextPage<VideoPageProps> = ({ video }) => {
 
   return (
     <MainLayout css="overflow-auto">
+      <Head>
+        <title>CourseLab | Video - {video.name || "Error"}</title>
+        <meta name="description" content="Video player page" />
+        <meta
+          name="og:title"
+          content={`CourseLab | Video player - ${video.name || "Error"}`}
+        />
+      </Head>
       <Page video={data || video} mutate={mutate} />
     </MainLayout>
   );

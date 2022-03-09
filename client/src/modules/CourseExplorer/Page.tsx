@@ -36,7 +36,7 @@ export const formatRawData = (courses: CourseGeneralRawInterface[]) => {
       quizzes = 0,
       assignments = 0;
 
-    course.dataModels.forEach((dm) => {
+    course.dataModels?.forEach((dm) => {
       if (dm.type === "DOCUMENT") documents++;
       else if (dm.type === "VIDEO") videos++;
       else if ((dm.type = "QUIZ")) quizzes++;
