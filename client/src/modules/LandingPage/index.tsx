@@ -1,17 +1,16 @@
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
+import SeoTags from "../../components/SeoTags";
 import { withSession } from "../../lib/withSession";
 import Landing from "../../svg/Landing";
 
 export const LandingPage: NextPage = () => {
   return (
     <div>
-      <Head>
-        <title>CourseLab | Online Courses</title>
-        <meta name="description" content="CourseLab landing page" />
-        <meta name="og:title" content="CourseLab | Online Courses" />
-      </Head>
+      <SeoTags
+        title="CourseLab | Online courses"
+        description="CourseLab landing page"
+      />
       <div className="container mx-auto h-full mt-56 md:mt-8 px-2">
         <div className="flex flex-col-reverse md:flex-row items-center h-1/2 w-full font-thin">
           <div className="flex flex-col w-2/3 md:w-1/2 justify-center text-left">

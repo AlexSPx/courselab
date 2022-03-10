@@ -93,7 +93,11 @@ export default function TextDetails({
           <QuillSection quill={quill} toInsert={Summary} check="Summary" />
           <QuillSection quill={quill} toInsert={AboutUs} check="About us" />
         </div>
-        <button className="btn btn-outline w-full" onClick={handleSaveChanges}>
+        <button
+          className="btn btn-outline w-full"
+          onClick={handleSaveChanges}
+          aria-label="save changes"
+        >
           Save Changes
         </button>
       </div>
@@ -136,7 +140,11 @@ const QuillSection = ({
 
   return (
     <div className="flex flex-row items-center">
-      <button className="btn btn-outline btn-sm" onClick={handleInsertPreq}>
+      <button
+        className="btn btn-outline btn-sm"
+        onClick={handleInsertPreq}
+        aria-label="Insert"
+      >
         Insert
       </button>
       <label className="cursor-pointer label">

@@ -11,18 +11,35 @@ import "../styles/DatePicker.css";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
+import Script from "next/script";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <UserCtxProvider user={pageProps.user}>
-      <WebSocketProvider user={pageProps.user}>
-        <Layout isAuth={pageProps.user?.isAuth}>
-          <ModalContextProvider>
-            <Component {...pageProps} />
-          </ModalContextProvider>
-        </Layout>
-      </WebSocketProvider>
-    </UserCtxProvider>
+    <>
+      <Script
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-LP109PS804"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+        window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-LP109PS804');
+          `}
+      </Script>
+
+      <UserCtxProvider user={pageProps.user}>
+        <WebSocketProvider user={pageProps.user}>
+          <Layout isAuth={pageProps.user?.isAuth}>
+            <ModalContextProvider>
+              <Component {...pageProps} />
+            </ModalContextProvider>
+          </Layout>
+        </WebSocketProvider>
+      </UserCtxProvider>
+    </>
   );
 }
 export default MyApp;

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
+import SeoTags from "../../../components/SeoTags";
 import { CourseDetails } from "../../../interfaces";
 import { baseurl } from "../../../lib/fetcher";
 import { withSession } from "../../../lib/withSession";
@@ -19,17 +19,10 @@ export const CourseLandingPage: NextPage<CourseEditorPageProps> = ({
       name={details.courseName}
       published={details.course.published}
     >
-      <Head>
-        <title>CourseLab | Landing Page | {details.course.public_name}</title>
-        <meta
-          name="description"
-          content={`The landing page settings for your course`}
-        />
-        <meta
-          name="og:title"
-          content={`CourseLab | Landing Page | ${details.course.public_name}`}
-        />
-      </Head>
+      <SeoTags
+        title={`CourseLab | Landing Page | ${details.course.public_name}`}
+        description={`The landing page settings for your course`}
+      />
       <Page details={details} />
     </CourseEditorLayout>
   );

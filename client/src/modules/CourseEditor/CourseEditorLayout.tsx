@@ -91,9 +91,17 @@ export const CourseEditorLayout: React.FC<SideBarMenuProps> = ({
           href={`${path}/attendance`}
         />
         {published ? (
-          <SideBarButton label="Unlist" func={handleUnlist} />
+          <SideBarButton
+            label="Unlist"
+            aria-label="unlist"
+            func={handleUnlist}
+          />
         ) : (
-          <SideBarButton label="Publish" func={handlePublish} />
+          <SideBarButton
+            label="Publish"
+            aria-label="publish"
+            func={handlePublish}
+          />
         )}
       </SideBar>
 

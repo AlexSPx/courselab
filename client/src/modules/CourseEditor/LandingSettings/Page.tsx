@@ -251,7 +251,11 @@ const ImagesSection = ({
           <p>Drag and drop some files here, or click to select files</p>
         </div>
         {hasChanges && (
-          <button className="btn btn-outline mt-2" onClick={handleSaveImages}>
+          <button
+            className="btn btn-outline mt-2"
+            onClick={handleSaveImages}
+            aria-label="upload images"
+          >
             Update Images
           </button>
         )}
@@ -324,7 +328,11 @@ const SponsorSection = ({
   return (
     <div className="flex flex-col w-[95%] mt-2 mb-4 relative items-center justify-center">
       <div className="flex flex-row">{mapSponsors}</div>
-      <button className="btn btn-outline mt-2" onClick={openCreateMenu}>
+      <button
+        className="btn btn-outline mt-2"
+        onClick={openCreateMenu}
+        aria-label="add a sponsor"
+      >
         Add a sponsor
       </button>
     </div>
@@ -386,12 +394,14 @@ const ReviewsSection = ({
         <button
           className="btn btn-outline mt-2 mb-6 mx-1"
           onClick={openAddTweetMenu}
+          aria-label="add a tweet"
         >
           Add a Tweet
         </button>
         <button
           className="btn btn-outline mt-2 mb-6 mx-1"
           onClick={handleSaveTweets}
+          aria-label="save tweets"
         >
           Save Tweets
         </button>

@@ -60,6 +60,7 @@ export default function Structure({ course }: { course: CourseInterface }) {
           <button
             className="btn btn-sm btn-outline lg:h-full my-2 "
             onClick={() => structureData.saveWeeks()}
+            aria-label="save changes"
           >
             Save <br />
             changes
@@ -75,6 +76,7 @@ export default function Structure({ course }: { course: CourseInterface }) {
         <button
           className="btn btn-outline my-2"
           onClick={() => structureData.createWeek()}
+          aria-label="add a week"
         >
           <PlusCircle /> Add week
         </button>
@@ -141,6 +143,7 @@ const RenderDay = ({
           <button
             className="btn btn-outline btn-sm h-auto w-full md:w-3/4 my-1"
             onClick={() => createFile("Video")}
+            aria-label="Create a video"
           >
             <VideoIcon />
             New video
@@ -148,6 +151,7 @@ const RenderDay = ({
           <button
             className="btn btn-outline btn-sm h-auto w-full md:w-3/4 my-1"
             onClick={() => createFile("Document")}
+            aria-label="Create a document"
           >
             <DocumentIcon />
             New Document
@@ -155,6 +159,7 @@ const RenderDay = ({
           <button
             className="btn btn-outline btn-sm h-auto w-full md:w-3/4 my-1"
             onClick={() => createFile("Assignment")}
+            aria-label="Create an assignment"
           >
             <AssignmentIcon />
             New Assignemnt
@@ -162,6 +167,7 @@ const RenderDay = ({
           <button
             className="btn btn-outline btn-sm h-auto w-full md:w-3/4 my-1"
             onClick={() => createFile("Quiz")}
+            aria-label="Create a quiz"
           >
             <QuizzIcon />
             New Quizz

@@ -100,10 +100,10 @@ export default function Page({
           setQuill={setQuill}
           contents={assignment.content}
         />
-        <div className="flex flex-wrap">{mapFiles}</div>
-        <p className="divider w-full text-lg font-semibold my-8">
+        <section className="flex flex-wrap">{mapFiles}</section>
+        <h3 className="divider w-full text-lg font-semibold my-8">
           Days to submit
-        </p>
+        </h3>
 
         <input
           type="text"
@@ -116,25 +116,27 @@ export default function Page({
             }
           }}
         />
-        <p className="divider w-full text-lg font-semibold my-8">
+        <h3 className="divider w-full text-lg font-semibold my-8">
           Attach files
-        </p>
+        </h3>
         <FIleAdder type="upload" assignmentId={assignment.id} />
 
-        <div className="flex flex-row">
+        <section className="flex flex-row">
           <button
             className="mt-8 btn btn-outline mx-2 w-96"
             onClick={handleSaveChanges}
+            aria-label="Save changes"
           >
             Save Changes
           </button>
           <button
             className="mt-8 btn btn-outline border-red-500 text-red-500 hover:bg-red-50 hover:text-red-500 hover:border-red-500 mx-2 w-64"
             onClick={handleDeleteAssignment}
+            aria-label="delete assignment"
           >
             Delete Assignment
           </button>
-        </div>
+        </section>
       </Main>
       <Right></Right>
     </>

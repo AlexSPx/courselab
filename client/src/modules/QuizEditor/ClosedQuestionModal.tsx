@@ -119,10 +119,15 @@ export default function ClosedQuestionModal({
                   return [...opts, ""];
                 })
               }
+              aria-label="add an option"
             >
               Add an option
             </button>
-            <button className="btn btn-sm mt-2" onClick={handleCreate}>
+            <button
+              className="btn btn-sm mt-2"
+              onClick={handleCreate}
+              aria-label={!editData ? "Create" : "Edit"}
+            >
               {!editData ? "Create" : "Edit"}
             </button>
           </div>

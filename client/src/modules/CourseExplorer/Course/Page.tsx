@@ -101,6 +101,7 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
                 className="btn btn-info px-20 ml-3 font-medium text-white bg-blue-600 hover:bg-blue-700"
                 onClick={handleOpenEnroll}
                 disabled={!isEnrollEnabled}
+                aria-label="enroll"
               >
                 Enroll
               </button>

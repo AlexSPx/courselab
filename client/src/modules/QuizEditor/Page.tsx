@@ -225,12 +225,14 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
             <button
               className="btn btn-outline my-4 mx-1 w-[45%]"
               onClick={handleGeneralSettings}
+              aria-label="save general settings"
             >
               Save General Settings
             </button>
             <button
               className="btn btn-outline my-4 mx-1 w-[45%] border-red-500 text-red-500 hover:bg-red-100 hover:text-red-500 hover:border-red-500"
               onClick={handleDelete}
+              aria-label="delete quiz"
             >
               Delete Quiz
             </button>
@@ -264,6 +266,7 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
             <button
               className="btn btn-outline my-1"
               onClick={handleSaveChanges}
+              aria-label="save changes"
             >
               Save Changes
             </button>
@@ -326,6 +329,7 @@ const MultiChoiceQuestion = ({
             type="button"
             className="absolute top-0 right-0 items-center justify-center hidden w-5 h-5 mt-3 mr-2 text-gray-500 rounded hover:bg-gray-500 hover:text-white group-hover:flex"
             onClick={() => handleEdit()}
+            aria-label="edit"
           >
             <AiOutlineEdit />
           </button>
@@ -372,6 +376,7 @@ const OpenEndedQuestion = ({
             type="button"
             className="absolute top-0 right-0 items-center justify-center hidden w-5 h-5 mt-3 mr-2 text-gray-500 rounded hover:bg-gray-500 hover:text-white group-hover:flex"
             onClick={() => handleEdit()}
+            aria-label="edit"
           >
             <AiOutlineEdit />
           </button>

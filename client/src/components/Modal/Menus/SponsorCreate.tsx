@@ -112,6 +112,7 @@ export default function SponsorCreate({
             <button
               className="btn btn-outline my-2"
               onClick={handleAddASponsor}
+              aria-label="Add a sponsor"
             >
               Create
             </button>

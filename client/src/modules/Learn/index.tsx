@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
+import SeoTags from "../../components/SeoTags";
 import { Enrollment } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
@@ -18,19 +18,12 @@ export const LearnHome: NextPage<EnrollmentType> = ({ enrollment }) => {
       name={enrollment.course!.name}
       public_name={enrollment.course!.public_name}
     >
-      <Head>
-        <title>CourseLab | {enrollment.course?.public_name || "Error"}</title>
-        <meta
-          name="description"
-          content={`Your main hub for the ${
-            enrollment.course?.public_name || "Error"
-          } course`}
-        />
-        <meta
-          name="og:title"
-          content={`CourseLab | ${enrollment.course?.public_name || "Error"}`}
-        />
-      </Head>
+      <SeoTags
+        title={`CourseLab | ${enrollment.course?.public_name || "Error"}`}
+        description={`Your main hub for the ${
+          enrollment.course?.public_name || "Error"
+        } course`}
+      />
       <Page enrollment={enrollment} />
     </LearnLayout>
   );

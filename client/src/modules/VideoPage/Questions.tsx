@@ -101,6 +101,7 @@ export default function Questions({
           <button
             className="flex flex-row items-center justify-center text-sm my-1 mb-2 border-b hover:border-b-gray-800 hover:text-gray-900"
             onClick={handleAddTimestamp}
+            aria-label="add a timestamp"
           >
             <IoMdTime />
             Timestamp
@@ -135,6 +136,7 @@ export default function Questions({
         <button
           className="btn btn-sm btn-outline mt-1"
           onClick={handleAskQuestion}
+          aria-label="ask a question"
         >
           Ask a question
         </button>
@@ -260,6 +262,7 @@ const QuestionBlock = ({
             <button
               className="absolute top-0 right-0 items-center justify-center hidden w-5 h-5 mt-3 mr-2 text-gray-500 rounded hover:bg-gray-200 hover:text-gray-700 group-hover:flex"
               onClick={() => setMenu(!menu)}
+              aria-label="quetion options"
             >
               <BiDotsVerticalRounded />
             </button>
@@ -334,6 +337,7 @@ const QuestionBlock = ({
             <button
               className="btn btn-sm btn-outline"
               onClick={() => setShowReplay(!showReplay)}
+              aria-label="post a replay"
             >
               Post a replay
               {showReplay ? (
@@ -350,6 +354,7 @@ const QuestionBlock = ({
                     <button
                       className="flex flex-row items-center justify-center text-sm my-1 mb-2 border-b hover:border-b-gray-800 hover:text-gray-900"
                       onClick={handleAddTimestamp}
+                      aria-label="add a timestamp"
                     >
                       <IoMdTime />
                       Timestamp
@@ -450,7 +455,10 @@ const Response = ({
   return (
     <div className="relative flex flex-col items-start p-4 mt-3 w-full bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-gray-50">
       {response.author.id === currentUser && (
-        <button className="absolute top-0 right-0 items-center justify-center hidden w-5 h-5 mt-3 mr-2 text-gray-500 rounded hover:bg-gray-200 hover:text-gray-700 group-hover:flex">
+        <button
+          className="absolute top-0 right-0 items-center justify-center hidden w-5 h-5 mt-3 mr-2 text-gray-500 rounded hover:bg-gray-200 hover:text-gray-700 group-hover:flex"
+          aria-label="response options"
+        >
           <BiDotsVerticalRounded />
         </button>
       )}
@@ -482,6 +490,7 @@ const Response = ({
               <button
                 className="flex mx-2 border-b-2 hover:text-gray-800 hover:border-gray-800"
                 onClick={handleMarkAsAnswer}
+                aria-label="mark as answer"
               >
                 Mark as answer
               </button>

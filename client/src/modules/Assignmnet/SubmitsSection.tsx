@@ -129,14 +129,14 @@ export default function SubmitsSection({
   return (
     <>
       <div className="flex flex-col p-4 w-full h-full items-center justify-center bg-white border border-gray-100 shadow-sm rounded-xl">
-        <div className="font-bold text-2xl w-full">
+        <section className="font-bold text-2xl w-full">
           Submit
           <p className="text-lg font-semibold">
             <FormatDate date={submit?.dateOfSubmit} />
           </p>
-        </div>
+        </section>
 
-        <div className="flex flex-col relative w-full h-full mt-4 items-center">
+        <section className="flex flex-col relative w-full h-full mt-4 items-center">
           {submit && (
             <div className="flex flex-col items-center">
               <p className="font-semibold text-lg">Already Submitted</p>
@@ -161,11 +161,12 @@ export default function SubmitsSection({
               />
             </div>
           )}
-        </div>
+        </section>
         {submit && !submit.dateOfRemoval ? (
           <button
             className="btn btn-outline w-full my-3"
             onClick={handleUnSubmit}
+            aria-label="ussubmit assignment"
           >
             Unsubmit
           </button>
@@ -173,6 +174,7 @@ export default function SubmitsSection({
           <button
             className="btn btn-outline w-full my-3"
             onClick={handleSubmit}
+            aria-label="submit assignment"
           >
             Submit
           </button>

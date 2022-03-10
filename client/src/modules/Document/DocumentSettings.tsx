@@ -95,6 +95,7 @@ export default function DocumentSettings({
             <button
               className="btn btn-sm btn-outline w-full h-2"
               onClick={addMember}
+              aria-label="add a member"
             >
               Add Member
             </button>

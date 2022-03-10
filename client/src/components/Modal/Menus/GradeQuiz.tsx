@@ -130,7 +130,11 @@ export default function GradeQuiz({
             <div className="flex flex-col w-full justify-center">
               <p className="font-semibold">Add a comment:</p>
             </div>
-            <button className="btn btn-outline my-3" onClick={handleReturn}>
+            <button
+              className="btn btn-outline my-3"
+              onClick={handleReturn}
+              aria-label="Return a quizz"
+            >
               {submit.quizzes[0].returned && "Update"} Return
             </button>
           </div>
@@ -169,6 +173,7 @@ const OpenedQuestion = ({
         <button
           className="btn btn-sm btn-outline mt-1"
           onClick={() => changeAnswer(false)}
+          aria-label="Take off points"
         >
           Take Points
         </button>
@@ -176,6 +181,7 @@ const OpenedQuestion = ({
         <button
           className="btn btn-sm btn-outline mt-1"
           onClick={() => changeAnswer(true)}
+          aria-label="Give points"
         >
           Give Points
         </button>
@@ -223,6 +229,7 @@ const ClosedQuestion = ({
         <button
           className="btn btn-sm btn-outline mt-1"
           onClick={() => changeAnswer(false)}
+          aria-label="Take off points"
         >
           Take Points
         </button>
@@ -230,6 +237,7 @@ const ClosedQuestion = ({
         <button
           className="btn btn-sm btn-outline mt-1"
           onClick={() => changeAnswer(true)}
+          aria-label="Give points"
         >
           Give Points
         </button>

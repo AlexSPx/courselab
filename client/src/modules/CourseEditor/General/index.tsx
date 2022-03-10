@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
+import SeoTags from "../../../components/SeoTags";
 import { CourseInterface } from "../../../interfaces";
 import { baseurl } from "../../../lib/fetcher";
 import { withSession } from "../../../lib/withSession";
@@ -16,17 +16,10 @@ export const CourseGeneralSettings: NextPage<CourseEditorPageProps> = ({
 }) => {
   return (
     <CourseEditorLayout name={course.name} published={course.published}>
-      <Head>
-        <title>CourseLab | General Settings | {course.public_name}</title>
-        <meta
-          name="description"
-          content={`The general settings for your course`}
-        />
-        <meta
-          name="og:title"
-          content={`CourseLab | General Settings | ${course.public_name}`}
-        />
-      </Head>
+      <SeoTags
+        title={`CourseLab | General Settings | ${course.public_name}`}
+        description={`The general settings for your course`}
+      />
       <Page course={course} />
     </CourseEditorLayout>
   );

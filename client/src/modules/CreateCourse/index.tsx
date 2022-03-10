@@ -1,7 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import useSWR from "swr";
+import SeoTags from "../../components/SeoTags";
 import { CourseInterface, UserDataInterface } from "../../interfaces";
 import { baseurl, fetcher } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
@@ -23,17 +23,10 @@ export const CreateCoursePage: NextPage<CreateCoursePageProps> = ({
 
   return (
     <MainLayout>
-      <Head>
-        <title>CourseLab | Create Course {"&"} drafts</title>
-        <meta
-          name="description"
-          content={`Create course page & drafts for ${user.user?.username}`}
-        />
-        <meta
-          name="og:title"
-          content={`CourseLab | Create Course & Drafts | ${user.user?.username}`}
-        />
-      </Head>
+      <SeoTags
+        title={`CourseLab | Create Course & Drafts | ${user.user?.username}`}
+        description={`Create course page & drafts for ${user.user?.username}`}
+      />
       <Page drafts={data || drafts} />
     </MainLayout>
   );

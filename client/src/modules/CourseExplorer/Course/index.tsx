@@ -1,7 +1,7 @@
 import axios from "axios";
-import { GetServerSideProps, GetStaticPaths, NextPage } from "next";
-import Head from "next/head";
+import { GetServerSideProps, NextPage } from "next";
 import { CourseGeneralRawInterface } from "..";
+import SeoTags from "../../../components/SeoTags";
 import { CourseDetails } from "../../../interfaces";
 import { baseurl } from "../../../lib/fetcher";
 import { withSession } from "../../../lib/withSession";
@@ -16,14 +16,10 @@ export const CoursePage: NextPage<{ course: CoursePublicRaw }> = ({
 }) => {
   return (
     <>
-      <Head>
-        <title>CourseLab | {course.public_name}</title>
-        <meta
-          name="description"
-          content={`Course page for ${course.public_name} | ${course.name}`}
-        />
-        <meta name="og:title" content={`CourseLab | ${course.public_name}`} />
-      </Head>
+      <SeoTags
+        title={`CourseLab | ${course.public_name}`}
+        description={`Course page for ${course.public_name} | ${course.name}`}
+      />
       <Page courseRaw={course} />
     </>
   );

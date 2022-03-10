@@ -43,7 +43,10 @@ export default function AuthHeader() {
         </div>
 
         <div className="flex-none">
-          <button className="hidden sm:flex btn btn-square btn-ghost">
+          <button
+            className="hidden sm:flex btn btn-square btn-ghost"
+            aria-label="search"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -60,7 +63,10 @@ export default function AuthHeader() {
           </button>
         </div>
         <div className="flex-none">
-          <button className="btn btn-square btn-ghost">
+          <button
+            className="btn btn-square btn-ghost"
+            aria-label="notifications"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

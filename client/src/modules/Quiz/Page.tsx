@@ -138,6 +138,7 @@ export default function Page({
           <button
             className="btn btn-outline w-full my-3"
             onClick={handleSubmit}
+            aria-label="submit the quiz"
           >
             Submit
           </button>

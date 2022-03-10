@@ -1,7 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import React from "react";
+import SeoTags from "../../../components/SeoTags";
 import { CourseInterface } from "../../../interfaces";
 import { baseurl } from "../../../lib/fetcher";
 import { withSession } from "../../../lib/withSession";
@@ -17,17 +17,10 @@ export const CourseAttendance: NextPage<CourseAttendanceProps> = ({
 }) => {
   return (
     <CourseEditorLayout name={course.name} published={course.published}>
-      <Head>
-        <title>CourseLab | Attendance | {course.public_name}</title>
-        <meta
-          name="description"
-          content={`The place to check the attendance of your course`}
-        />
-        <meta
-          name="og:title"
-          content={`CourseLab | Attendance | ${course.public_name}`}
-        />
-      </Head>
+      <SeoTags
+        title={`CourseLab | Attendance | ${course.public_name}`}
+        description={`The place to check the attendance of your course`}
+      />
       <Page course={course} />
     </CourseEditorLayout>
   );

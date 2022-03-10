@@ -46,6 +46,7 @@ export const SideBarButton = ({
     <button
       className="w-5/6 btn btn-outline btn-sm rounded-btn my-1 justify-center"
       onClick={func}
+      aria-label={label}
     >
       <div className="mx-1">{icon}</div>
       {label}

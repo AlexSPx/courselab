@@ -1,11 +1,11 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import CourseDraftCard from "../../components/cards/CourseDraftCard";
-import { CourseGeneralInterface, CourseInterface } from "../../interfaces";
+import SeoTags from "../../components/SeoTags";
+import { CourseInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
-import { Left, Main, MainLayout, Right } from "../Layouts/MainLayout";
+import { Main, MainLayout } from "../Layouts/MainLayout";
 
 type CourseManagerTypes = {
   courses: CourseInterface[] | null;
@@ -20,11 +20,10 @@ export const Manager: NextPage<CourseManagerTypes> = ({ courses }) => {
 
   return (
     <MainLayout>
-      <Head>
-        <title>CourseLab | Manager</title>
-        <meta name="description" content="The place to manage your courses" />
-        <meta name="og:title" content={`CourseLab | Manager`} />
-      </Head>
+      <SeoTags
+        title="CourseLab | Manager"
+        description="The place to manage your courses"
+      />
       <Main>
         {courses?.length ? (
           <div className="w-full flex flex-wrap">{mapCourses}</div>

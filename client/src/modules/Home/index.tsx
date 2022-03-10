@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
+import SeoTags from "../../components/SeoTags";
 import { UserDataInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
@@ -23,17 +23,10 @@ export interface MyCourseInterface {
 export const Home: NextPage<Courses> = ({ courses, user }) => {
   return (
     <MainLayout>
-      <Head>
-        <title>CourseLab | Home Page | @{user.user?.username}</title>
-        <meta
-          name="description"
-          content={`CourseLab home page for ${user.user?.username}`}
-        />
-        <meta
-          name="og:title"
-          content={`CourseLab | Home Page | ${user.user?.username}`}
-        />
-      </Head>
+      <SeoTags
+        title={`CourseLab | Home Page | @${user.user?.username}`}
+        description={`CourseLab home page for ${user.user?.username}`}
+      />
       <Page courses={courses} />
     </MainLayout>
   );

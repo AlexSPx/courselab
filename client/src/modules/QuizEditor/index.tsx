@@ -1,7 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import Error401 from "../../components/Error401";
+import SeoTags from "../../components/SeoTags";
 import { QuizInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
@@ -15,14 +15,10 @@ type QuizEditorProps = {
 export const QuizEditor: NextPage<QuizEditorProps> = ({ quiz }) => {
   return (
     <MainLayout css="overflow-auto bg-gray-50">
-      <Head>
-        <title>CourseLab | Quiz edtior - {quiz.name || "Error"}</title>
-        <meta name="description" content="Quiz editor" />
-        <meta
-          name="og:title"
-          content={`CourseLab | Quiz editor - ${quiz.name || "Error"}`}
-        />
-      </Head>
+      <SeoTags
+        title={`CourseLab | Quiz editor - ${quiz.name || "Error"}`}
+        description="Quiz editor"
+      />
       {quiz ? <Page quiz={quiz} /> : <Error401 />}
     </MainLayout>
   );

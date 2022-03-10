@@ -47,6 +47,7 @@ export default function Header() {
           <button
             className="lg:hidden flex flex-col ml-4"
             onClick={() => setDropdown(!dropdown)}
+            aria-label="Header dropdown"
           >
             <BurgerMenu />
           </button>
@@ -96,7 +97,7 @@ const Location = ({
   active: boolean;
 }) => {
   return (
-    <Link href={to}>
+    <Link href={to} passHref={true}>
       <a
         className={`py-2 px-6 flex hover:text-indigo-500 ${
           active && "text-indigo-500 border-b-2 border-indigo-500"
@@ -118,7 +119,7 @@ const LocationMobile = ({
   active: boolean;
 }) => {
   return (
-    <Link href={to}>
+    <Link href={to} passHref={true}>
       <a
         className={`py-2 px-6 flex hover:text-indigo-500 justify-center ${
           active && "text-indigo-500 border-b-2 border-indigo-500"

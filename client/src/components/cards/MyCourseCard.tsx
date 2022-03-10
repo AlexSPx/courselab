@@ -60,7 +60,10 @@ export default function MyCourseCard({
         <div className="flex flex-col w-full">
           <div className="flex items-start justify-between text-gray-700 dark:text-white my-2 md:m-0">
             <p className="text-xl leading-5">{course.course.public_name}</p>
-            <button className="text-red-400 hover:text-red-600">
+            <button
+              className="text-red-400 hover:text-red-600"
+              aria-label="Heart a course"
+            >
               <Heart />
             </button>
           </div>

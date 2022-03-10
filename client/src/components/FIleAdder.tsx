@@ -120,18 +120,19 @@ export default function FIleAdder({
           />
         )}
       </div>
-      <div
+      <section
         className={`flex flex-wrap w-full h-full max-h-[14rem] items-center justify-center overflow-auto mb-3 ${
           style === "bottom" ? "order-last" : "order-first"
         }`}
         id="journal-scroll"
       >
         {mapFiles}
-      </div>
+      </section>
       {type === "upload" && (
         <button
           className="btn btn-outline btn-sm mt-3 w-64"
           onClick={handleFileSave}
+          aria-label="Upload Files"
         >
           Upload Files
         </button>

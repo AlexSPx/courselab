@@ -1,6 +1,5 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -12,6 +11,7 @@ import {
   SuccessModal,
   ErrorModal,
 } from "../../components/Modal";
+import SeoTags from "../../components/SeoTags";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
 
@@ -109,11 +109,10 @@ export const RegisterPage: NextPage = () => {
         if (e.key === "Enter") handleRegister();
       }}
     >
-      <Head>
-        <title>CourseLab | Register</title>
-        <meta name="description" content="CourseLab register page" />
-        <meta name="og:title" content="CourseLab | Register" />
-      </Head>
+      <SeoTags
+        title="CourseLab | Register"
+        description="CourseLab register page"
+      />
       <div className="flex flex-col max-w-md px-4 py-8 bg-white rounded-lg shadow dark:bg-gray-800 sm:px-6 md:px-8 lg:px-10">
         <div className="self-center mb-2 text-xl font-light text-gray-800 sm:text-2xl dark:text-white">
           Create a new account
@@ -180,6 +179,7 @@ export const RegisterPage: NextPage = () => {
                 onClick={() => {
                   handleRegister();
                 }}
+                aria-label="register"
               >
                 Register
               </button>

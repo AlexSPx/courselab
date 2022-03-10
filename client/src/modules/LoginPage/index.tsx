@@ -10,6 +10,7 @@ import {
   SuccessModal,
   ErrorModal,
 } from "../../components/Modal";
+import SeoTags from "../../components/SeoTags";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
 import { EmailIcon, PasswordIcon } from "../../svg/small";
@@ -62,11 +63,7 @@ export const LoginPage: NextPage = () => {
         if (e.key === "Enter") handleLogin();
       }}
     >
-      <Head>
-        <title>CourseLab | Login</title>
-        <meta name="description" content="CourseLab login page" />
-        <meta name="og:title" content="CourseLab | Login" />
-      </Head>
+      <SeoTags title="CourseLab | Login" description="CourseLab login page" />
       <div className="flex flex-col w-full max-w-md px-4 py-8 bg-white rounded-lg shadow dark:bg-gray-800 sm:px-6 md:px-8 lg:px-10">
         <h1 className="self-center mb-6 text-xl font-light text-gray-600 sm:text-2xl dark:text-white">
           Login To Your Account
@@ -118,6 +115,7 @@ export const LoginPage: NextPage = () => {
               <button
                 onClick={() => handleLogin()}
                 className="btn btn-primary w-full"
+                aria-label="login"
               >
                 Login
               </button>

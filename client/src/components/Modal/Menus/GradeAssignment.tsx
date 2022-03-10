@@ -116,7 +116,11 @@ export default function GradeAssignment({
                 value={comment}
               />
             </div>
-            <button className="btn btn-outline my-3" onClick={handleReturn}>
+            <button
+              className="btn btn-outline my-3"
+              onClick={handleReturn}
+              aria-label="Return an assignment"
+            >
               {submit.submits[submitIndex].returned && "Update"} Return
             </button>
           </div>

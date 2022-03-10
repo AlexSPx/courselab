@@ -148,6 +148,7 @@ export default function GeneralSettings({
       <button
         className="btn max-w-2xl w-full mt-3"
         onClick={() => saveChanges()}
+        aria-label="save changes"
       >
         Save Chanes
       </button>
@@ -188,6 +189,7 @@ const CourseSchedule = ({
                 dts?.filter((dt) => dt.startingAt !== date.startingAt)
               )
             }
+            aria-label="remove a date"
           >
             Remove
           </button>
@@ -243,6 +245,7 @@ const CourseSchedule = ({
                 <button
                   className="btn btn-outline mt-2"
                   onClick={handleAddaDate}
+                  aria-label="add a date"
                 >
                   Add a date
                 </button>

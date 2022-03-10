@@ -5,4 +5,8 @@ module.exports = {
   },
   swcMinify: true,
   experimental: { optimizeCss: true },
+  i18n: {
+    locales: ["en"],
+    defaultLocale: "en",
+  },
 };

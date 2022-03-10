@@ -78,7 +78,11 @@ export default function AddATweet({
                 Error: {error}
               </div>
             )}
-            <button className="btn btn-outline my-2" onClick={handleAddATweet}>
+            <button
+              className="btn btn-outline my-2"
+              onClick={handleAddATweet}
+              aria-label="Add a tweet"
+            >
               Create
             </button>
           </div>

@@ -121,6 +121,7 @@ export default function EnrollMenu({
               <button
                 className="btn btn-info px-20 mt-3 font-medium text-white bg-blue-600 hover:bg-blue-700"
                 onClick={handleEndroll}
+                aria-label="Enroll into a course"
               >
                 Enroll
               </button>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextPage } from "next";
 import { GetServerSideProps } from "next";
-import Head from "next/head";
+import SeoTags from "../../components/SeoTags";
 import {
   CourseScheduleType,
   dataModelType,
@@ -34,11 +34,7 @@ export interface CourseGeneralRawInterface {
 export const CourseExplorer: NextPage<CourseExplorerProps> = ({ courses }) => {
   return (
     <MainLayout>
-      <Head>
-        <title>CourseLab | Explore</title>
-        <meta name="description" content="Explore courses" />
-        <meta name="og:title" content="CourseLab | Explore courses" />
-      </Head>
+      <SeoTags title="CourseLab | Explore" description="Explore courses" />
       <Page coursesRaw={courses} />
     </MainLayout>
   );

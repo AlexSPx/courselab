@@ -131,6 +131,7 @@ const SearchBarUserDisplay = ({
         <button
           className={`btn btn-sm btn-outline ${loading && "loading"}`}
           onClick={() => addUser()}
+          aria-label="add"
         >
           {typeof isSuccess !== "undefined" &&
             (isSuccess ? <CheckIcon /> : <CloseIcon />)}

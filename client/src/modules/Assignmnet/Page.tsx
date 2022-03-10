@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useMemo } from "react";
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
@@ -39,20 +40,25 @@ export default function Page({
 const FileSection = ({ files }: { files: string[] }) => {
   const mapFiles = files?.map((file) => {
     return (
-      <a
-        className="flex px-3 py-2 m-1 font-mono rounded border border-gray-900 hover:bg-gray-900 hover:text-white cursor-pointer"
-        key={file}
+      <Link
         href={`${baseurl}/assignment/download/${file}`}
+        key={file}
+        passHref={true}
       >
-        {file}
-      </a>
+        <a
+          className="flex px-3 py-2 m-1 font-mono rounded border border-gray-900 hover:bg-gray-900 hover:text-white cursor-pointer"
+          key={file}
+        >
+          {file}
+        </a>
+      </Link>
     );
   });
 
   return (
-    <div className="block p-4 bg-white border border-gray-100 shadow-sm rounded-xl my-2">
+    <section className="block p-4 bg-white border border-gray-100 shadow-sm rounded-xl my-2">
       <span className="font-bold text-2xl ">Attached Files</span>
       {mapFiles}
-    </div>
+    </section>
   );
 };
