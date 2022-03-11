@@ -38,7 +38,15 @@ export function withSession<
       };
     }
 
-    console.log(user);
+    if (!requiresAuth && isAuth) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/home",
+        },
+        props: { user: { isAuth, user } },
+      };
+    }
 
     if (user) context.req.user = { isAuth, user };
 

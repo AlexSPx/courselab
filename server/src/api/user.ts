@@ -204,7 +204,7 @@ router.get("/logout", async (req, res) => {
       }
       return res.clearCookie("connect.sid").sendStatus(200);
     });
-    return res.status(400).send("Something went wrong");
+    return;
   } catch (error) {
     return res.status(400).send(error);
   }
