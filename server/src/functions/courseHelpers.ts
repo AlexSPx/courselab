@@ -1,5 +1,5 @@
 import { AssignmentSubmits } from "@prisma/client";
-import { unlinkSync } from "fs";
+import { unlink } from "fs/promises";
 import path from "path";
 
 const basepath = (fileName: string) =>
@@ -12,7 +12,7 @@ export const deleteAttachments = async (submits: AssignmentSubmits[]) => {
       if (!attachment) return;
 
       if (attachment.hasOwnProperty("path")) {
-        unlinkSync(basepath((attachment as any).path));
+        unlink(basepath((attachment as any).path));
       } else if (attachment.hasOwnProperty("doc")) {
       }
     });

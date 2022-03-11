@@ -1,12 +1,12 @@
 import { compare, hash } from "bcrypt";
 import { Router } from "express";
-import { unlinkSync } from "fs";
 import path from "path";
 import sharp from "sharp";
 import { isAuth } from "../middlewares/auth";
 import { getAllOnline, removeUser } from "../functions/redisCaching";
 import { prismaClient } from "../index";
 import { uploadAvatar } from "../settings/multer";
+import { unlink } from "fs/promises";
 
 const router = Router();
 
@@ -80,7 +80,7 @@ router.post("/register", uploadAvatar.single("avatar"), async (req, res) => {
             .replace("-org", "")
         );
 
-      unlinkSync(avatar_path);
+      unlink(avatar_path);
     }
 
     await prismaClient.user.create({ data: user });
@@ -204,6 +204,7 @@ router.get("/logout", async (req, res) => {
       }
       return res.clearCookie("connect.sid").sendStatus(200);
     });
+    return res.status(400).send("Something went wrong");
   } catch (error) {
     return res.status(400).send(error);
   }

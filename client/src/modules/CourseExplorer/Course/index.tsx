@@ -28,28 +28,14 @@ export const CoursePage: NextPage<{ course: CoursePublicRaw }> = ({
 export const getServerSideProps: GetServerSideProps = withSession(
   async ({ query, req }) => {
     const course = typeof query.name === "string" ? query.name : "";
-    try {
-      const { data } = await axios.get(`${baseurl}/course/${course}`, {
-        withCredentials: true,
-        headers: {
-          cookie: req?.headers.cookie,
-        },
-      });
+    const { data } = await axios.get(`${baseurl}/course/${course}`);
 
-      return {
-        props: {
-          course: data,
-          user: req.user || null,
-        },
-      };
-    } catch (error) {
-      return {
-        props: {
-          course,
-          user: undefined || null,
-        },
-      };
-    }
+    return {
+      props: {
+        course: data || null,
+        user: req.user || null,
+      },
+    };
   },
   { requiresAuth: false }
 );

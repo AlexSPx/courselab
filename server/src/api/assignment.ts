@@ -3,9 +3,9 @@ import { deleteCache } from "../functions/redisCaching";
 import { prismaClient } from "../";
 import { isAuth } from "../middlewares/auth";
 import { uploadFile } from "../settings/multer";
-import { unlinkSync } from "fs";
 import path from "path";
 import { submitsDitribution } from "../functions/assignmentHelpers";
+import { unlink } from "fs/promises";
 
 const router = Router();
 
@@ -226,13 +226,13 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
 
       if (tbr.type === "FILE") {
         attachments = attachments.filter((att) => att.path !== tbr.path);
-        unlinkSync(path.join(__dirname + `../../../files/${tbr.path}`));
+        unlink(path.join(__dirname + `../../../files/${tbr.path}`));
         return;
       }
     };
 
     if (Array.isArray(req.body.toBeRemoved)) {
-      req.body.toBeRemoved.forEach((tbr_string: string) =>
+      req.body.toBeRemoved.forEach(async (tbr_string: string) =>
         removeFunc(tbr_string)
       );
     }
@@ -309,6 +309,40 @@ router.post("/submits/count", isAuth, async (req, res) => {
 
 router.post("/submits/details", isAuth, async (req, res) => {
   try {
+    if (!req.body.startingDate) {
+      const submits = await prismaClient.assignmentsOnUsers.findMany({
+        where: {
+          assignment_id: req.body.assignmentId,
+          enrollment: {
+            course_id: req.body.course,
+          },
+          role: "STUDENT",
+        },
+        include: {
+          _count: {
+            select: { submits: true },
+          },
+          submits: true,
+          enrollment: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  first_name: true,
+                  last_name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      const { submitted, missing } = submitsDitribution(submits);
+
+      return res.status(200).send({ submitted, missing });
+    }
+
     const submits = await prismaClient.assignmentsOnUsers.findMany({
       where: {
         assignment_id: req.body.assignmentId,

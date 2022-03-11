@@ -23,7 +23,7 @@ export default function RenderQuiz({
 }: {
   id: string;
   courseName: string;
-  startingDate: Date;
+  startingDate: Date | null;
 }) {
   const [submitted, setSubmitted] = useState<QuizSubmitType[]>();
   const [missing, setMissing] = useState<QuizSubmitType[]>();

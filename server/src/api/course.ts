@@ -8,11 +8,12 @@ import {
 } from "../settings/multer";
 import sharp from "sharp";
 import path from "path";
-import { existsSync, renameSync, unlinkSync } from "fs";
+import { existsSync, renameSync } from "fs";
 import { initialDocData } from "./document";
 import { deleteCache, getOrSetCache } from "../functions/redisCaching";
 import { Sponsor } from "../functions/misc";
 import { deleteAttachments } from "../functions/courseHelpers";
+import { unlink } from "fs/promises";
 
 const router = Router();
 
@@ -50,7 +51,7 @@ router.post(
               .replace("-org", "")
           );
 
-        unlinkSync(image_path);
+        unlink(image_path);
       }
 
       const course = await prismaClient.course.create({
@@ -249,7 +250,7 @@ router.post(
             }`
         );
 
-        unlinkSync(apath);
+        unlink(apath);
 
         const updatedSponsors = sponsors?.filter(
           (sp: any) => sp.name !== req.params.sponsor
@@ -322,7 +323,7 @@ router.post(
           if (!req.body.removed.includes(image)) {
             return image;
           }
-          unlinkSync(apath(image));
+          unlink(apath(image));
           return;
         });
 
@@ -547,7 +548,7 @@ router.post(
               .replace("-org", "")
           );
 
-        unlinkSync(image_path);
+        unlink(image_path);
       }
 
       deleteCache(`course?edit:${req.body.name}`);
@@ -794,7 +795,7 @@ router.delete("/delete/:name", isAuth, async (req, res) => {
         },
       });
 
-      unlinkSync(path.join(__dirname, `../../videos/${video.path}`));
+      unlink(path.join(__dirname, `../../videos/${video.path}`));
     } else if (deletedData.type === "ASSIGNMENT") {
       const deleted = await prismaClient.assignment.delete({
         where: {
@@ -811,7 +812,7 @@ router.delete("/delete/:name", isAuth, async (req, res) => {
 
       if (deleted.files.length) {
         deleted.files.forEach((file: any) => {
-          unlinkSync(path.join(__dirname + `../../../files/${file}`));
+          unlink(path.join(__dirname + `../../../files/${file}`));
         });
       }
 

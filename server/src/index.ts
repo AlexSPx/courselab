@@ -21,6 +21,9 @@ import redisClient, { leaveDoc } from "./functions/redisCaching";
 import { addUser, OnlineUser, removeUser } from "./functions/online";
 
 import resizingMiddleware from "./middlewares/resizeMiddleware";
+import compression from "compression";
+import helmet from "helmet";
+import { debug } from "console";
 
 require("dotenv").config();
 
@@ -42,6 +45,8 @@ export const io = new Server(httpServer, {
 
   sharp.cache(false);
 
+  debug("env level: " + process.env.NODE_ENV);
+
   const RedisStore = connectRedis(expressSession);
 
   const sessionMiddleware = expressSession({
@@ -56,7 +61,6 @@ export const io = new Server(httpServer, {
   });
 
   app.use(sessionMiddleware);
-
   app.use(
     cors({
       origin: ["http://localhost:3000"],
@@ -65,6 +69,8 @@ export const io = new Server(httpServer, {
   );
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
   app.use(bodyParser.json({ limit: "50mb" }));
+  app.use(compression());
+  app.use(helmet());
 
   // Sockets
   io.use(sharedsession(sessionMiddleware, { autoSave: true }));
@@ -106,7 +112,7 @@ export const io = new Server(httpServer, {
             removeUser(socket.handshake.sessionID!);
         }
       } catch (error) {
-        console.log(error);
+        debug(error);
       }
     });
   });
@@ -137,7 +143,7 @@ export const io = new Server(httpServer, {
 
   app.use("/(*_\\d+x\\d+.(jpe?g|png))", resizingMiddleware);
 
-  httpServer.listen(PORT, () => console.log(`running on port ${PORT}`));
+  httpServer.listen(PORT, () => debug(`running on port ${PORT}`));
 })();
 
 declare module "express-session" {

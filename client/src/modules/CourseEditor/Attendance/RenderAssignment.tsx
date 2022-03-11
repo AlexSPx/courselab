@@ -33,7 +33,7 @@ const RenderAssignment = ({
 }: {
   id: string;
   courseName: string;
-  startingDate: Date;
+  startingDate: Date | null;
 }) => {
   const [submitted, setSubmitted] = useState<AttendanceInterface[]>();
   const [missing, setMissing] = useState<Missing[]>();

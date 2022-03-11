@@ -1,16 +1,17 @@
-import e, { Request } from "express";
-import { existsSync, unlinkSync } from "fs";
+import { Request } from "express";
+import { existsSync } from "fs";
+import { unlink } from "fs/promises";
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
 
 const avatar_storage = multer.diskStorage({
-  destination: function (req, _file, cb) {
+  destination: async function (req, _file, cb) {
     const apath = path.join(
       __dirname,
       `../images/avatars/${req.body.username.toLowerCase()}`
     );
 
-    if (existsSync(apath)) unlinkSync(apath);
+    if (existsSync(apath)) await unlink(apath);
     cb(null, "images/avatars");
   },
   filename: function (req, _file, cb) {
@@ -19,13 +20,13 @@ const avatar_storage = multer.diskStorage({
 });
 
 const courseimg_storage = multer.diskStorage({
-  destination: function (req, _file, cb) {
+  destination: async function (req, _file, cb) {
     const apath = path.join(
       __dirname,
       `../images/courseImage/${req.body.name.toLowerCase()}`
     );
 
-    if (existsSync(apath)) unlinkSync(apath);
+    if (existsSync(apath)) unlink(apath);
     cb(null, "images/courseImage");
   },
   filename: function (req, _file, cb) {
