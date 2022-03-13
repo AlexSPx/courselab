@@ -7,6 +7,43 @@ import { uploadVideo } from "../settings/multer";
 
 const router = Router();
 
+router.post("/create", isAuth, async (req, res) => {
+  try {
+    const video = await prismaClient.video.create({
+      data: {
+        name: `New Video - @${req.session.user?.username}`,
+        users: {
+          create: {
+            user_id: req.session.user?.id!,
+            role: "ADMIN",
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return res.status(201).send(video.id);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+router.delete("/:id", isAuth, async (req, res) => {
+  try {
+    await prismaClient.video.delete({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
 router.post(
   "/upload",
   isAuth,
@@ -35,15 +72,29 @@ router.get("/:id", isAuth, async (req, res) => {
     const video = await prismaClient.video.findFirst({
       where: {
         id: req.params.id,
-        courseDataModel: {
-          course: {
-            members: {
+        OR: [
+          {
+            courseDataModel: {
+              course: {
+                members: {
+                  some: {
+                    user_id: req.session.user?.id,
+                  },
+                },
+              },
+            },
+          },
+          {
+            users: {
               some: {
                 user_id: req.session.user?.id,
               },
             },
           },
-        },
+          {
+            public: true,
+          },
+        ],
       },
       include: {
         questions: {

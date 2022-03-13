@@ -26,8 +26,7 @@ export default function useHasImage(
   if (type === "course_logo") CourseLogoCheck(name, setUrl);
 
   if (width && height) {
-    return { url };
-    // return { url: withSize(url, { width, height }) };
+    return { url: withSize(url, { width, height }) };
   }
   return { url };
 }

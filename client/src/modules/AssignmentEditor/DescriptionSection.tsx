@@ -24,8 +24,6 @@ export default function DescriptionSection({
 }) {
   useEffect(() => {
     if (!quill) return;
-    console.log(JSON.parse(contents));
-
     quill.setContents(JSON.parse(contents));
   }, [contents, quill]);
 

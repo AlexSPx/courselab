@@ -28,6 +28,7 @@ model User {
   courses        CourseEnrollment[]
   videoQuestions VideoQuestion[]
   documents      DocumentsOnUsers[]
+  videos         VideoOnUser[]
 
   @@map("user")
 }
@@ -124,13 +125,24 @@ model DocumentsOnUsers {
 }
 
 model Video {
-  id   String  @id @default(uuid())
-  name String
-  path String?
+  id     String  @id @default(uuid())
+  name   String
+  path   String?
+  public Boolean @default(false)
 
   // Relations
   questions       VideoQuestion[]
+  users           VideoOnUser[]
   courseDataModel CourseDataModel?
+}
+
+model VideoOnUser {
+  id       String   @id @default(uuid())
+  role     FileRole
+  user     User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id  String
+  video_id String
+  video    Video    @relation(fields: [video_id], references: [id], onDelete: Cascade)
 }
 
 model VideoQuestion {
@@ -203,7 +215,7 @@ model QuizQuestion {
   question   String
   options    String[]
   answer     String[]
-  points Int?
+  points     Int?
   orderIndex Int
 
   Quizz    Quiz   @relation(fields: [quizz_id], references: [id], onDelete: Cascade)
@@ -211,11 +223,11 @@ model QuizQuestion {
 }
 
 model QuizSubmit {
-  id      String @id @default(uuid())
-  answers Json[]
-  returned Boolean @default(false)
-  points Int 
-  maxPoints Int
+  id           String   @id @default(uuid())
+  answers      Json[]
+  returned     Boolean  @default(false)
+  points       Int
+  maxPoints    Int
   dateOfSubmit DateTime @default(now())
 
   Quiz          Quiz             @relation(fields: [quiz_id], references: [id], onDelete: Cascade)

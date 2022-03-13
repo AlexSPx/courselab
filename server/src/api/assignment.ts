@@ -163,13 +163,25 @@ router.post(
         (f: Express.Multer.File) => f.filename
       );
 
+      let toPush: any[] = [];
+      if (files) toPush = [...files];
+
+      const links = req.body.links;
+      if (typeof links === "string")
+        toPush.push(`link{-divide-}${Date.now()}{-divide-}${links}`);
+      if (Array.isArray(links)) {
+        links.forEach((link) =>
+          toPush.push(`link{-divide-}${Date.now()}{-divide-}${link}`)
+        );
+      }
+
       await prismaClient.assignment.update({
         where: {
           id: req.body.assigment_id,
         },
         data: {
           files: {
-            push: files,
+            push: toPush,
           },
         },
       });
@@ -180,6 +192,106 @@ router.post(
     }
   }
 );
+
+router.post("/file/attach", isAuth, async (req, res) => {
+  try {
+    await prismaClient.assignment.update({
+      where: {
+        id: req.body.assignment_id,
+      },
+      data: {
+        files: {
+          push: req.body.id.replace("username", req.session.user?.username),
+        },
+      },
+    });
+
+    const str = req.body.id.split("{-divide-}");
+    if (str[0] === "doc") {
+      await prismaClient.document.update({
+        where: {
+          id: str[2],
+        },
+        data: {
+          courseDataModel: {
+            connect: {
+              assignment_id: req.body.assignment_id,
+            },
+          },
+        },
+      });
+    }
+    if (str[0] === "video") {
+      await prismaClient.video.update({
+        where: {
+          id: str[2],
+        },
+        data: {
+          courseDataModel: {
+            connect: {
+              assignment_id: req.body.assignment_id,
+            },
+          },
+        },
+      });
+    }
+
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+router.get("/files/:id", isAuth, async (req, res) => {
+  try {
+    const files = await prismaClient.assignment.findFirst({
+      where: {
+        id: req.params.id,
+      },
+      select: {
+        files: true,
+      },
+    });
+
+    return res.status(200).send(files);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+router.get("/file/name/:type/:id", isAuth, async (req, res) => {
+  try {
+    if (req.params.type === "doc") {
+      const name = await prismaClient.document.findFirst({
+        where: {
+          id: req.params.id,
+        },
+        select: {
+          name: true,
+        },
+      });
+
+      return res.status(200).send(name);
+    }
+
+    if (req.params.type === "video") {
+      const name = await prismaClient.video.findFirst({
+        where: {
+          id: req.params.id,
+        },
+        select: {
+          name: true,
+        },
+      });
+
+      return res.status(200).send(name);
+    }
+
+    return;
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
 
 router.get("/download/:name", isAuth, async (req, res) => {
   try {
@@ -196,27 +308,63 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
       type: string;
       path?: string;
       link?: string;
-      doc?: { type: "DOCUMENT" | "VIDEO"; name: string; id: string };
+      doc?: { type: "DOCUMENT" | "VIDEO"; id: string };
     }[] = [];
     (req.files as Express.Multer.File[] | undefined)?.map(
       (f: Express.Multer.File) =>
         attachments.push({ type: "FILE", path: f.filename })
     );
-    req.body.links?.forEach((link: string) => {
-      attachments.push({ type: "LINK", link });
-    });
 
-    req.body.docs?.forEach((doc: string) => {
-      attachments.push({ type: "DOC", doc: JSON.parse(doc) });
-    });
+    if (Array.isArray(req.body.links)) {
+      req.body.links?.forEach((link: string) => {
+        attachments.push({ type: "LINK", link });
+      });
+    } else if (typeof req.body.links === "string") {
+      attachments.push({ type: "LINK", link: req.body.links });
+    }
+
+    if (Array.isArray(req.body.docs)) {
+      req.body.docs?.forEach((doc: string) => {
+        attachments.push({ type: "DOC", doc: JSON.parse(doc) });
+      });
+    } else if (typeof req.body.docs === "string") {
+      const parsedDoc = JSON.parse(req.body.docs);
+      attachments.push({ type: "DOC", doc: parsedDoc });
+      if (parsedDoc.type === "DOCUMENT") {
+        await prismaClient.document.update({
+          where: {
+            id: parsedDoc.id,
+          },
+          data: {
+            courseDataModel: {
+              connect: {
+                assignment_id: req.body.assignment_id,
+              },
+            },
+          },
+        });
+      } else if (parsedDoc.type === "VIDEO") {
+        await prismaClient.video.update({
+          where: {
+            id: parsedDoc.id,
+          },
+          data: {
+            courseDataModel: {
+              connect: {
+                assignment_id: req.body.assignment_id,
+              },
+            },
+          },
+        });
+      }
+    }
 
     if (Array.isArray(req.body.alreadyAttached)) {
       req.body.alreadyAttached.forEach((t: any) =>
         attachments.push(JSON.parse(t))
       );
-    }
-    if (typeof req.body.alreadyAttached === "string")
-      attachments.push(req.body.alreadyAttached);
+    } else if (typeof req.body.alreadyAttached === "string")
+      attachments.push(JSON.parse(req.body.alreadyAttached));
 
     const removeFunc = (tbr_string: string) => {
       const tbr: {
@@ -229,6 +377,13 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
         unlink(path.join(__dirname + `../../../files/${tbr.path}`));
         return;
       }
+      if (tbr.type === "DOCUMENT" || tbr.type === "VIDEO") {
+        attachments = attachments.filter((att) => att.doc?.id !== tbr.path);
+        return;
+      }
+      if (tbr.type === "LINK") {
+        attachments = attachments.filter((att) => att.link !== tbr.path);
+      }
     };
 
     if (Array.isArray(req.body.toBeRemoved)) {
@@ -238,6 +393,8 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
     }
     if (typeof req.body.toBeRemoved === "string")
       removeFunc(req.body.toBeRemoved);
+
+    console.log(attachments);
 
     const submit = await prismaClient.assignmentSubmits.create({
       data: {
@@ -256,6 +413,8 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
 
     return res.status(200).send(submit);
   } catch (error) {
+    console.log(error);
+
     return res.status(400).send(JSON.stringify(error));
   }
 });

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
+import { Attachment } from "../AssignmentEditor/Page";
 import { Left, Main, Right } from "../Layouts/MainLayout";
 import SubmitsSection from "./SubmitsSection";
 
@@ -39,17 +40,22 @@ export default function Page({
 
 const FileSection = ({ files }: { files: string[] }) => {
   const mapFiles = files?.map((file) => {
+    const type = file.split("{-divide-}")[0];
+    const id = file.split("{-divide-}")[2];
+    if (type === "doc" || type === "video") {
+      return <Attachment type={type} id={id} key={file} />;
+    }
     return (
       <Link
         href={`${baseurl}/assignment/download/${file}`}
-        key={file}
         passHref={true}
+        key={file}
       >
         <a
           className="flex px-3 py-2 m-1 font-mono rounded border border-gray-900 hover:bg-gray-900 hover:text-white cursor-pointer"
           key={file}
         >
-          {file}
+          {id}
         </a>
       </Link>
     );

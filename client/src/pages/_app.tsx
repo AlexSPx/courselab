@@ -12,6 +12,8 @@ import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import Script from "next/script";
+import { SWRConfig } from "swr";
+import { fetcher } from "../lib/fetcher";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -31,13 +33,15 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Script>
 
       <UserCtxProvider user={pageProps.user}>
-        <WebSocketProvider user={pageProps.user}>
-          <Layout isAuth={pageProps.user?.isAuth}>
-            <ModalContextProvider>
-              <Component {...pageProps} />
-            </ModalContextProvider>
-          </Layout>
-        </WebSocketProvider>
+        <SWRConfig value={{ fetcher: fetcher }}>
+          <WebSocketProvider user={pageProps.user}>
+            <Layout isAuth={pageProps.user?.isAuth}>
+              <ModalContextProvider>
+                <Component {...pageProps} />
+              </ModalContextProvider>
+            </Layout>
+          </WebSocketProvider>
+        </SWRConfig>
       </UserCtxProvider>
     </>
   );

@@ -2,12 +2,16 @@ import axios from "axios";
 import { useState } from "react";
 import FIleAdder from "../../components/FIleAdder";
 import { AssignmentInterface } from "../../interfaces";
-import { baseurl } from "../../lib/fetcher";
+import { baseurl, fetcher } from "../../lib/fetcher";
 import { Left, Main, Right } from "../Layouts/MainLayout";
 import useRequest from "../../lib/useRequest";
 import { Quill } from "quill";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { AiOutlineLink } from "react-icons/ai";
+import useSWR from "swr";
+import { DocumentIcon, VideoIcon } from "../../svg/small";
 const DescriptionSection = dynamic(() => import("./DescriptionSection"), {
   ssr: false,
 });
@@ -23,8 +27,12 @@ export default function Page({
   const [daysToSubmit, setDaysToSubmit] = useState<string | undefined>(
     assignment.daysToSubmit ? assignment.daysToSubmit.toString() : undefined
   );
-
+  const [files, setFiles] = useState(assignment.files);
   const [quill, setQuill] = useState<Quill>();
+
+  useSWR(`${baseurl}/assignment/files/${assignment.id}`, {
+    onSuccess: (data) => setFiles(data.files),
+  });
 
   const { executeQuery } = useRequest();
 
@@ -71,7 +79,25 @@ export default function Page({
     );
   };
 
-  const mapFiles = assignment.files.map((file) => {
+  const mapFiles = files.map((file) => {
+    const name = file.split("{-divide-}")[2];
+    const type = file.split("{-divide-}")[0];
+    if (type === "link") {
+      return (
+        <Link href={name} passHref={true} key={file}>
+          <a
+            className="flex px-3 py-2 m-1 font-mono rounded border border-gray-900 hover:bg-gray-900 hover:text-white items-center cursor-pointer"
+            target="_blank"
+          >
+            <AiOutlineLink size={18} className="mr-1" />
+            {name}
+          </a>
+        </Link>
+      );
+    }
+    if (type === "doc" || type === "video") {
+      return <Attachment type={type} id={name} />;
+    }
     return (
       <a
         className="flex px-3 py-2 m-1 font-mono rounded border border-gray-900 hover:bg-gray-900 hover:text-white cursor-pointer"
@@ -79,7 +105,7 @@ export default function Page({
         href={`${baseurl}/assignment/download/${file}`}
         download
       >
-        {file}
+        {name}
       </a>
     );
   });
@@ -142,3 +168,26 @@ export default function Page({
     </>
   );
 }
+
+export const Attachment = ({ type, id }: { type: string; id: string }) => {
+  const [name, setName] = useState("");
+  useSWR(`${baseurl}/assignment/file/name/${type}/${id}`, {
+    onSuccess: (data) => setName(data.name),
+  });
+
+  return (
+    <Link href={`/${type}/${id}`} passHref={true} key={id}>
+      <a
+        className="flex px-3 py-2 m-1 font-mono rounded border border-gray-900 hover:bg-gray-900 hover:text-white items-center cursor-pointer"
+        target="_blank"
+      >
+        {type === "doc" ? (
+          <DocumentIcon css="mr-1" />
+        ) : (
+          <VideoIcon css="mr-1" />
+        )}
+        {name}
+      </a>
+    </Link>
+  );
+};

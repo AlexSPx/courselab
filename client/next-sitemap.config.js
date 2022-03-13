@@ -3,6 +3,7 @@ const siteUrl = "https://course-lab.xyz";
 module.exports = {
   siteUrl: siteUrl,
   generateRobotsTxt: true,
+  exclude: [`${siteUrl}/server-sitemap.xml`],
   robotsTxtOptions: {
     policies: [
       {

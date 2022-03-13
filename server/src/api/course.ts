@@ -1014,21 +1014,20 @@ router.get("/progression/:coursename", isAuth, async (req, res) => {
     });
 
     let progression = 0;
-
     function isWhatPercentOf(numA: number, numB: number) {
       return (numA / numB) * 100;
     }
-
     const startingDate = new Date(enrollmet?.startingAt!);
-    const finishDate = new Date(startingDate);
-    finishDate.setDate(finishDate.getDate() + enrollmet?.course.weeks! * 7);
-
     const today = new Date();
-    const difference = Math.ceil(
-      (finishDate.getTime() - new Date(today).getTime()) / (1000 * 60 * 60 * 24)
+    const difference = Math.abs(
+      Math.floor(
+        (startingDate.getTime() - new Date(today).getTime()) /
+          (1000 * 60 * 60 * 24)
+      )
     );
-    if (difference > 0)
-      progression = isWhatPercentOf(enrollmet?.course.weeks!, difference);
+    const totalDays = enrollmet?.course.weeks! * 7;
+    if (difference < totalDays)
+      progression = isWhatPercentOf(difference, totalDays);
     else progression = 100;
 
     return res.status(200).json(progression);

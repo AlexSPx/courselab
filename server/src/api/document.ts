@@ -4,6 +4,7 @@ import { OnlineUser } from "../functions/online";
 import { getAllInDoc, joinDoc, leaveDoc } from "../functions/redisCaching";
 import { io, prismaClient } from "../";
 import { isAuth } from "../middlewares/auth";
+import { debug } from "console";
 
 const router = Router();
 
@@ -131,6 +132,45 @@ router.get("/:id", isAuth, async (req, res) => {
   }
 });
 
+router.delete("/:id", isAuth, async (req, res) => {
+  try {
+    await prismaClient.document.delete({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+router.post("/create", isAuth, async (req, res) => {
+  try {
+    const doc = await prismaClient.document.create({
+      data: {
+        name: `New Document - @${req.session.user?.username}`,
+        file: JSON.stringify(initialDocData),
+        members: {
+          create: {
+            user_id: req.session.user?.id!,
+            role: "ADMIN",
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return res.status(201).send(doc.id);
+  } catch (error) {
+    debug(error);
+    return res.status(400).send(error);
+  }
+});
+
 router.post("/adduser", isAuth, async (req, res) => {
   try {
     await prismaClient.document.update({
@@ -153,7 +193,7 @@ router.post("/adduser", isAuth, async (req, res) => {
 
     return res.status(200).send("User added");
   } catch (error) {
-    return res.status(400).send("Someting went wrong");
+    return res.status(400).send(error);
   }
 });
 

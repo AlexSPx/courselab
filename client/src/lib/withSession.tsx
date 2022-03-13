@@ -6,7 +6,7 @@ import { baseurl } from "./fetcher";
 import { UserDataInterface } from "../interfaces";
 
 interface SessionOptions {
-  requiresAuth?: boolean;
+  requiresAuth?: boolean | null;
   redirectTo?: string;
 }
 
@@ -27,6 +27,12 @@ export function withSession<
 ) {
   return async function Authenticate(context: GetServerSidePropsContext) {
     const { isAuth, user } = await getAuth(context.req);
+
+    if (requiresAuth === null) {
+      return {
+        props: { user: { isAuth, user: user ? user : null } },
+      };
+    }
 
     if (!isAuth && requiresAuth) {
       return {

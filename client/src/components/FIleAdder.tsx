@@ -1,12 +1,22 @@
 import axios from "axios";
 import { uniqueId } from "lodash";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { AiOutlinePlus, AiOutlineVideoCameraAdd } from "react-icons/ai";
 import { BsPaperclip, BsLink } from "react-icons/bs";
 import { GrDocumentText } from "react-icons/gr";
+import { useSWRConfig } from "swr";
 import useOnOutsideClick from "../Hooks/useOnOutsideClick";
 import { baseurl } from "../lib/fetcher";
 import useRequest from "../lib/useRequest";
+import { CloseIcon } from "../svg/small";
+import Modal, { useModals } from "./Modal";
 
 export type CustomRendererProps = Attachment & {
   remove: () => void;
@@ -14,11 +24,10 @@ export type CustomRendererProps = Attachment & {
 
 export type Attachment = {
   fakeId: string;
-  type: "FILE" | "DOCUMENT" | "LINK" | "VIDEO";
+  type: "FILE" | "DOCUMENT" | "VIDEO" | "LINK";
   file?: File | null;
   doc?: {
     type: "DOCUMENT" | "VIDEO";
-    name: string;
     id: string;
   };
   link?: string;
@@ -39,7 +48,6 @@ export default function FIleAdder({
 }) {
   const [dropdown, setDropdown] = useState(false);
   const [files, setFiles] = useState<Attachment[]>();
-  const [links, setLinks] = useState<string>();
 
   useEffect(() => {
     if (!setOutsideData) return;
@@ -48,6 +56,96 @@ export default function FIleAdder({
 
   const { executeQuery } = useRequest();
 
+  const { mutate } = useSWRConfig();
+
+  const handleCreateDoc = async () => {
+    executeQuery(
+      async () => {
+        const docRes = await axios.post(
+          `${baseurl}/doc/create`,
+          {},
+          { withCredentials: true }
+        );
+
+        if (type === "submit") return docRes;
+
+        const res = await axios.post(
+          `${baseurl}/assignment/file/attach`,
+          {
+            assignment_id: assignmentId,
+            id: `doc{-divide-}username{-divide-}${docRes.data}`,
+          },
+          { withCredentials: true }
+        );
+
+        return res;
+      },
+      {
+        loadingTitle: "Creating document",
+        successBody: "Document has been created",
+        onSuccess: (res) => {
+          if (type === "upload") {
+            mutate(`${baseurl}/assignment/files/${assignmentId}`);
+          } else {
+            setFiles((files) => {
+              const att: Attachment = {
+                fakeId: res.data,
+                type: "DOCUMENT",
+                doc: { type: "DOCUMENT", id: res.data },
+              };
+              if (!files) return [att];
+              return [...files, att];
+            });
+          }
+        },
+      }
+    );
+  };
+
+  const handleCreateVideo = async () => {
+    executeQuery(
+      async () => {
+        const docRes = await axios.post(
+          `${baseurl}/video/create`,
+          {},
+          { withCredentials: true }
+        );
+
+        if (type === "submit") return docRes;
+
+        const res = await axios.post(
+          `${baseurl}/assignment/file/attach`,
+          {
+            assignment_id: assignmentId,
+            id: `video{-divide-}username{-divide-}${docRes.data}`,
+          },
+          { withCredentials: true }
+        );
+
+        return res;
+      },
+      {
+        loadingTitle: "Creating video",
+        successBody: "Video has been created",
+        onSuccess: (res) => {
+          if (type === "upload") {
+            mutate(`${baseurl}/assignment/files/${assignmentId}`);
+          } else {
+            setFiles((files) => {
+              const att: Attachment = {
+                fakeId: res.data,
+                type: "VIDEO",
+                doc: { type: "VIDEO", id: res.data },
+              };
+              if (!files) return [att];
+              return [...files, att];
+            });
+          }
+        },
+      }
+    );
+  };
+
   const handleFileSave = async () => {
     if (!files) return;
     executeQuery(
@@ -55,6 +153,7 @@ export default function FIleAdder({
         const data = new FormData();
         files.forEach((file) => {
           if (file.type === "FILE") data.append("files", file.file!);
+          if (file.type === "LINK") data.append("links", file.link!);
         });
         data.append("assigment_id", assignmentId);
         data.append("type", type);
@@ -69,6 +168,7 @@ export default function FIleAdder({
       {
         loadingTitle: "Uploading...",
         successBody: "Successfully uploaded",
+        onSuccess: () => mutate(`${baseurl}/assignment/files/${assignmentId}`),
       }
     );
   };
@@ -96,6 +196,7 @@ export default function FIleAdder({
         onClick={remove}
       >
         {file.type === "FILE" && file.file?.name}
+        {file.type === "LINK" && file.link}
       </div>
     );
   });
@@ -116,7 +217,8 @@ export default function FIleAdder({
           <FileOptions
             onClose={() => setDropdown(false)}
             setFiles={setFiles}
-            setLinks={setLinks}
+            handleCreateDoc={handleCreateDoc}
+            handleCreateVideo={handleCreateVideo}
           />
         )}
       </div>
@@ -144,15 +246,59 @@ export default function FIleAdder({
 const FileOptions = ({
   onClose,
   setFiles,
-  setLinks,
+  handleCreateDoc,
+  handleCreateVideo,
 }: {
   onClose: () => void;
   setFiles: React.Dispatch<SetStateAction<Attachment[] | undefined>>;
-  setLinks: Dispatch<SetStateAction<string | undefined>>;
+  handleCreateDoc: () => Promise<void>;
+  handleCreateVideo: () => Promise<void>;
 }) => {
+  const { pushModal, closeModal } = useModals();
+
   const ref = useRef(null);
 
   useOnOutsideClick(ref, onClose);
+
+  const handleAddFile = (e: ChangeEvent<HTMLInputElement>) => {
+    if (
+      !e ||
+      !e.target.files ||
+      e.target.files === null ||
+      !e.target.files.length
+    )
+      return;
+
+    if (!e.target.files) return;
+    setFiles((files) => {
+      const temp: Attachment[] = [];
+      if (!e.target.files) return;
+      for (let index = 0; index < e.target.files!.length; index++) {
+        temp.push({
+          type: "FILE",
+          file: e.target.files.item(index),
+          fakeId: uniqueId(),
+        });
+      }
+
+      if (!files) return [...temp];
+      return [...files, ...temp];
+    });
+  };
+
+  const handleAddLink = () => {
+    const akey = `linkm#${Date.now()}`;
+    pushModal(
+      <AddLink
+        onClose={() => closeModal(akey)}
+        setFiles={setFiles}
+        key={akey}
+      />,
+      {
+        timer: false,
+      }
+    );
+  };
 
   return (
     <div
@@ -164,51 +310,92 @@ const FileOptions = ({
           type="file"
           multiple={true}
           className="hidden"
-          onChange={(e) => {
-            if (
-              !e ||
-              !e.target.files ||
-              e.target.files === null ||
-              !e.target.files.length
-            )
-              return;
-
-            if (!e.target.files) return;
-            setFiles((files) => {
-              const temp: Attachment[] = [];
-              if (!e.target.files) return;
-              for (let index = 0; index < e.target.files!.length; index++) {
-                temp.push({
-                  type: "FILE",
-                  file: e.target.files.item(index),
-                  fakeId: uniqueId(),
-                });
-              }
-
-              if (!files) return [...temp];
-              return [...files, ...temp];
-            });
-          }}
+          onChange={handleAddFile}
         />
         <BsPaperclip size={18} className="mx-4" />
-        <p>File</p>
+        <h4>File</h4>
       </label>
-      <div className="flex flex-row items-center w-full hover:bg-gray-200 py-1 cursor-pointer">
+      <div
+        className="flex flex-row items-center w-full hover:bg-gray-200 py-1 cursor-pointer"
+        onClick={handleAddLink}
+      >
         <BsLink size={18} className="mx-4" />
-        <p>Link</p>
+        <h4>Link</h4>
       </div>
       <div className="border-b border-gray-400 w-full my-1"></div>
-      <p className="p-2 text-sm font-semibold text-gray-500 ">Create</p>
-      <div className="flex flex-row items-center w-full hover:bg-gray-200 py-1 cursor-pointer">
+      <h3 className="p-2 text-sm font-semibold text-gray-500">Create</h3>
+      <div
+        className="flex flex-row items-center w-full hover:bg-gray-200 py-1 cursor-pointer"
+        onClick={handleCreateDoc}
+      >
         <GrDocumentText size={16} className="mx-4" />
-        <p>Document</p>
+        <h4>Document</h4>
       </div>
-      <div className="flex flex-row items-center w-full hover:bg-gray-200 py-1 cursor-pointer">
+      <div
+        className="flex flex-row items-center w-full hover:bg-gray-200 py-1 cursor-pointer"
+        onClick={handleCreateVideo}
+      >
         <AiOutlineVideoCameraAdd size={16} className="mx-4" />
-        <p>Video</p>
+        <h4>Video</h4>
       </div>
     </div>
   );
 };
 
-const AddLink = () => {};
+const AddLink = ({
+  onClose,
+  setFiles,
+}: {
+  onClose: () => void;
+  setFiles: Dispatch<SetStateAction<Attachment[] | undefined>>;
+}) => {
+  const wrapperRef = useRef(null);
+  useOnOutsideClick(wrapperRef, onClose);
+  const [link, setLink] = useState("");
+
+  const handleAction = () => {
+    if (!(link.length > 0)) return;
+
+    setFiles((files) => {
+      const linkAtt: Attachment = { fakeId: uniqueId(), type: "LINK", link };
+      if (!files) return [linkAtt];
+      return [...files, linkAtt];
+    });
+    onClose();
+  };
+
+  return (
+    <Modal>
+      <div className="flex items-center justify-center w-screen h-screen bg-gray-900 bg-opacity-[.16]">
+        <div
+          className="flex flex-col w-11/12 sm:w-5/6 lg:w-1/2 max-w-2xl mx-auto rounded-lg border border-gray-300 bg-gray-50 shadow-xl overflow-auto"
+          ref={wrapperRef}
+        >
+          <div className="flex flex-row justify-between p-3 border-b bg-white max-h-[60%]">
+            <h2 className="font-semibold label">Add a sponsor</h2>
+            <div
+              className="flex h-10 w-10  items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
+              onClick={() => onClose()}
+            >
+              <CloseIcon />
+            </div>
+          </div>
+          <section className="flex flex-col px-6 py-5 bg-gray-50">
+            <label>Add Link</label>
+            <input
+              type="text"
+              value={link}
+              className="input input-bordered border border-gray-200 rounded w-full shadow-sm"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                setLink(e.target.value);
+              }}
+            />
+            <button className="btn btn-outline mt-4" onClick={handleAction}>
+              Add link
+            </button>
+          </section>
+        </div>
+      </div>
+    </Modal>
+  );
+};

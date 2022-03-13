@@ -8,7 +8,12 @@ import FormatDate from "../../components/FormatDate";
 import { AssignmentInterface, AssignmentSubmit } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import useRequest from "../../lib/useRequest";
-import { File } from "./Attachments";
+import {
+  DocumentAttachment,
+  File,
+  LinkAttachment,
+  VideoAttachment,
+} from "./Attachments";
 
 const latestSubmit = (submits: AssignmentSubmit[]) => {
   if (!submits.length) return null;
@@ -41,7 +46,30 @@ export default function SubmitsSection({
   }: CustomRendererProps) => {
     if (type === "FILE")
       return <File name={file!.name} id={fakeId} remove={remove} />;
+    if (doc?.type === "DOCUMENT") {
+      const removeDoc = async () => {
+        await axios.delete(`${baseurl}/doc/${doc.id}`, {
+          withCredentials: true,
+        });
+        remove();
+      };
+      return (
+        <DocumentAttachment key={doc?.id} id={doc?.id!} remove={removeDoc} />
+      );
+    }
 
+    if (doc?.type === "VIDEO") {
+      const removeVid = async () => {
+        await axios.delete(`${baseurl}/video/${doc.id}`, {
+          withCredentials: true,
+        });
+        remove();
+      };
+      return <VideoAttachment key={doc?.id} id={doc?.id!} remove={removeVid} />;
+    }
+    if (type === "LINK") {
+      return <LinkAttachment key={fakeId} link={link!} remove={remove} />;
+    }
     return <>{fakeId}</>;
   };
 
@@ -124,6 +152,82 @@ export default function SubmitsSection({
         />
       );
     }
+    if (att.doc?.type === "DOCUMENT") {
+      const remove = () => {
+        if (toBeRemoved?.some((r) => r.path === att.doc?.id!)) {
+          setToBeRemoved((tbr) =>
+            tbr?.filter((tr) => tr.path !== att.doc?.id!)
+          );
+          return;
+        }
+        setToBeRemoved((tbr) => {
+          if (!tbr) return [{ type: att.doc!.type, path: att.doc?.id! }];
+          return [...tbr, { type: att.doc!.type, path: att.doc?.id! }];
+        });
+      };
+
+      const check = toBeRemoved?.some((r) => r.path === att.doc?.id!);
+      return (
+        <DocumentAttachment
+          key={att.doc?.id}
+          id={att.doc?.id!}
+          css={`
+            ${check && "border-red-800 bg-red-50"}
+          `}
+          remove={remove}
+        />
+      );
+    }
+    if (att.doc?.type === "VIDEO") {
+      const remove = () => {
+        if (toBeRemoved?.some((r) => r.path === att.doc?.id!)) {
+          setToBeRemoved((tbr) =>
+            tbr?.filter((tr) => tr.path !== att.doc?.id!)
+          );
+          return;
+        }
+        setToBeRemoved((tbr) => {
+          if (!tbr) return [{ type: att.type, path: att.doc?.id! }];
+          return [...tbr, { type: att.type, path: att.doc?.id! }];
+        });
+      };
+
+      const check = toBeRemoved?.some((r) => r.path === att.doc?.id!);
+      return (
+        <DocumentAttachment
+          key={att.doc?.id}
+          id={att.doc?.id!}
+          css={`
+            ${check && "border-red-800 bg-red-50"}
+          `}
+          remove={remove}
+        />
+      );
+    }
+    if (att.type === "LINK") {
+      const remove = () => {
+        if (toBeRemoved?.some((r) => r.path === att.link)) {
+          setToBeRemoved((tbr) => tbr?.filter((tr) => tr.path !== att.link));
+          return;
+        }
+        setToBeRemoved((tbr) => {
+          if (!tbr) return [{ type: att.type, path: att.link! }];
+          return [...tbr, { type: att.type, path: att.link! }];
+        });
+      };
+
+      const check = toBeRemoved?.some((r) => r.path === att.link!);
+      return (
+        <LinkAttachment
+          key={att.link}
+          link={att.link!}
+          css={`
+            ${check && "border-red-800 bg-red-50"}
+          `}
+          remove={remove}
+        />
+      );
+    }
   });
 
   return (
@@ -132,7 +236,7 @@ export default function SubmitsSection({
         <section className="font-bold text-2xl w-full">
           Submit
           <p className="text-lg font-semibold">
-            <FormatDate date={submit?.dateOfSubmit} />
+            {submit && <FormatDate date={submit?.dateOfSubmit} />}
           </p>
         </section>
 

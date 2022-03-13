@@ -43,7 +43,7 @@ export default function useRequest() {
     try {
       const data = await query();
 
-      if (data.status === (successStatus || 200)) {
+      if (data.status === successStatus || data.status === 201) {
         if (onSuccess) onSuccess(data);
         closeModal(ackey);
         pushModal(
