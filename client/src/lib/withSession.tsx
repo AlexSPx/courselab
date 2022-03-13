@@ -29,9 +29,8 @@ export function withSession<
     const { isAuth, user } = await getAuth(context.req);
 
     if (requiresAuth === null) {
-      return {
-        props: { user: { isAuth, user: user ? user : null } },
-      };
+      context.req.user = { isAuth, user: user ? user : null };
+      return handler(context);
     }
 
     if (!isAuth && requiresAuth) {

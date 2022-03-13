@@ -32,17 +32,17 @@ function MyApp({ Component, pageProps }: AppProps) {
           `}
       </Script>
 
-      <UserCtxProvider user={pageProps.user}>
+      <WebSocketProvider user={pageProps.user}>
         <SWRConfig value={{ fetcher: fetcher }}>
-          <WebSocketProvider user={pageProps.user}>
+          <UserCtxProvider user={pageProps.user}>
             <Layout isAuth={pageProps.user?.isAuth}>
               <ModalContextProvider>
                 <Component {...pageProps} />
               </ModalContextProvider>
             </Layout>
-          </WebSocketProvider>
+          </UserCtxProvider>
         </SWRConfig>
-      </UserCtxProvider>
+      </WebSocketProvider>
     </>
   );
 }

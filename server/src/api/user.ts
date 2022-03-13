@@ -94,8 +94,25 @@ router.post("/register", uploadAvatar.single("avatar"), async (req, res) => {
 router.post(
   "/avatar/:username",
   uploadAvatar.single("avatar"),
-  async (_req, res) => {
+  async (req, res) => {
     try {
+      const avatar_path = req.file?.path;
+
+      if (avatar_path) {
+        await sharp(avatar_path)
+          .resize({
+            fit: sharp.fit.contain,
+            width: 400,
+          })
+          .toFile(
+            path
+              .resolve(req.file?.destination!, req.file?.filename!)
+              .replace("-org", "")
+          );
+
+        unlink(avatar_path);
+      }
+
       return res.sendStatus(200);
     } catch (error) {
       return res.sendStatus(400);
@@ -205,6 +222,70 @@ router.get("/logout", async (req, res) => {
       return res.clearCookie("connect.sid").sendStatus(200);
     });
     return;
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+router.post("/changes", isAuth, async (req, res) => {
+  try {
+    const user = await prismaClient.user.update({
+      where: {
+        id: req.session.user?.id,
+      },
+      data: {
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+      },
+    });
+
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      connections: req.session.user?.connections || [],
+    };
+    req.session.save();
+
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+router.get("/myfiles", isAuth, async (req, res) => {
+  try {
+    const files = await prismaClient.user.findFirst({
+      where: {
+        id: req.session.user?.id,
+      },
+      select: {
+        documents: {
+          include: {
+            document: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        videos: {
+          include: {
+            video: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return res.status(200).send(files);
   } catch (error) {
     return res.status(400).send(error);
   }

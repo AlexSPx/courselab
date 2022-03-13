@@ -12,7 +12,7 @@ import { existsSync, renameSync } from "fs";
 import { initialDocData } from "./document";
 import { deleteCache, getOrSetCache } from "../functions/redisCaching";
 import { Sponsor } from "../functions/misc";
-import { deleteAttachments } from "../functions/courseHelpers";
+import { deleteAttachments, prepareTodos } from "../functions/courseHelpers";
 import { unlink } from "fs/promises";
 
 const router = Router();
@@ -1084,6 +1084,29 @@ router.get("/today/:coursename", isAuth, async (req, res) => {
     return res.status(200).send(todo);
   } catch (error) {
     return res.status(400).send("Someting went wrong");
+  }
+});
+
+router.post("/u/todo/", isAuth, async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const enrollments = await prismaClient.user.findFirst({
+      where: {
+        id: req.session.user?.id,
+      },
+      select: {
+        courses: {
+          select: {
+            startingAt: true,
+            course_id: true,
+          },
+        },
+      },
+    });
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).send(error);
   }
 });
 

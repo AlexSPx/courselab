@@ -6,16 +6,18 @@ import path from "path";
 
 const avatar_storage = multer.diskStorage({
   destination: async function (req, _file, cb) {
+    const username = req.body.username || req.params.username;
     const apath = path.join(
       __dirname,
-      `../images/avatars/${req.body.username.toLowerCase()}`
+      `../images/avatars/${username.toLowerCase()}`
     );
 
     if (existsSync(apath)) await unlink(apath);
     cb(null, "images/avatars");
   },
   filename: function (req, _file, cb) {
-    cb(null, req.body.username.toLowerCase() + "-org.jpg");
+    const username = req.body.username || req.params.username;
+    cb(null, username.toLowerCase() + "-org.jpg");
   },
 });
 
@@ -26,7 +28,7 @@ const courseimg_storage = multer.diskStorage({
       `../images/courseImage/${req.body.name.toLowerCase()}`
     );
 
-    if (existsSync(apath)) unlink(apath);
+    if (existsSync(apath)) await unlink(apath);
     cb(null, "images/courseImage");
   },
   filename: function (req, _file, cb) {

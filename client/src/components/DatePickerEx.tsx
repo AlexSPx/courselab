@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import DatePicker from "react-date-picker/dist/entry.nostyle";
 import { LeftArrow, RightArrow } from "../svg/small";
 
-export default function DatePickerEx() {
-  const [date, setDate] = useState(new Date());
-
-  console.log(date);
-  console.log(date.getDate() + 1);
-
+export default function DatePickerEx({
+  date,
+  setDate,
+}: {
+  date: Date;
+  setDate: Dispatch<SetStateAction<Date>>;
+}) {
   const nextDay = () =>
     setDate(
       (dt) => new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() + 1)

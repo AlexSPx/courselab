@@ -18,13 +18,17 @@ export default function AuthHeader() {
     <header className="w-full border-b">
       <div className="navbar mb-1 text-black rounded-box m-1">
         <div className="flex-1 hidden px-2 mx-2 lg:flex">
-          <span className="text-lg font-bold">CourseLab</span>
+          <Link href="/home">
+            <a className="text-lg font-bold">CourseLab</a>
+          </Link>
         </div>
         <div className="items-stretch hidden lg:flex mx-2">
           <Link href="/home">
             <a className="btn btn-ghost btn-sm rounded-btn">Home</a>
           </Link>
-          <a className="btn btn-ghost btn-sm rounded-btn">Files</a>
+          <Link href="/myfiles">
+            <a className="btn btn-ghost btn-sm rounded-btn">Files</a>
+          </Link>
           <Link href="/courses">
             <a className="btn btn-ghost btn-sm rounded-btn">Explorer</a>
           </Link>
@@ -32,7 +36,7 @@ export default function AuthHeader() {
             <a className="btn btn-ghost btn-sm rounded-btn">Manager</a>
           </Link>
         </div>
-        <div className="flex-1 lg:flex-none">
+        {/* <div className="flex-1 lg:flex-none">
           <div className="form-control">
             <input
               type="text"
@@ -81,7 +85,7 @@ export default function AuthHeader() {
               />
             </svg>
           </button>
-        </div>
+        </div> */}
         <div className="flex-none">
           <div className="inline-block justify-start relative avatar online">
             <div
@@ -140,28 +144,11 @@ const Menu = ({
       </div>
       <ul className="py-1" aria-labelledby="dropdownInformationButton">
         <li>
-          <a
-            href="#"
-            className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-          >
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-          >
-            Settings
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-          >
-            Earnings
-          </a>
+          <Link href={"/settings"}>
+            <a className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+              Settings
+            </a>
+          </Link>
         </li>
       </ul>
 

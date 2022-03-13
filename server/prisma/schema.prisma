@@ -139,6 +139,7 @@ model Video {
 model VideoOnUser {
   id       String   @id @default(uuid())
   role     FileRole
+  AssignedAt DateTime @default(now())
   user     User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id  String
   video_id String

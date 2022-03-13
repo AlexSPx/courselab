@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/dist/client/router";
 import { BurgerMenu } from "../svg/small";
+import { AiOutlineGithub } from "react-icons/ai";
 
 export default function Header() {
   const [dropdown, setDropdown] = useState(false);
@@ -29,11 +30,6 @@ export default function Header() {
               active={router.pathname === "/courses" ? true : false}
             />
             <Location
-              label="Docs"
-              to="/docs"
-              active={router.pathname === "/docs" ? true : false}
-            />
-            <Location
               label="Login"
               to="/login"
               active={router.pathname === "/login" ? true : false}
@@ -43,6 +39,15 @@ export default function Header() {
               to="/register"
               active={router.pathname === "/register" ? true : false}
             />
+            <Link href={`https://github.com/alexspx/courselab`}>
+              <a
+                className={`py-2 px-6 flex items-center hover:text-indigo-500`}
+                target="_blank"
+              >
+                <AiOutlineGithub size={24} className="mx-1" />
+                GitHub
+              </a>
+            </Link>
           </nav>
           <button
             className="lg:hidden flex flex-col ml-4"

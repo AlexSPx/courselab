@@ -68,5 +68,5 @@ export const getServerSideProps: GetServerSideProps = withSession(
       };
     }
   },
-  { requiresAuth: false }
+  { requiresAuth: null }
 );

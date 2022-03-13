@@ -1,13 +1,16 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import MyCourseCard from "../../components/cards/MyCourseCard";
-import TodoCard from "../../components/cards/TodoCard";
+import TodoCard, { TodoCardSkeleton } from "../../components/cards/TodoCard";
 import DatePickerEx from "../../components/DatePickerEx";
 import { UserContext } from "../../contexts/UserContext";
 import { Left, Main, Right } from "../Layouts/MainLayout";
 
 import Avatar from "../../components/Avatar";
 import { MyCourseInterface } from ".";
+import useSWR from "swr";
+import { baseurl } from "../../lib/fetcher";
+import axios from "axios";
 
 export default function Page({ courses }: { courses: MyCourseInterface[] }) {
   const { userData } = useContext(UserContext);
@@ -30,7 +33,7 @@ export default function Page({ courses }: { courses: MyCourseInterface[] }) {
       {/* <div className="h-full border-l"></div> */}
       <Right>
         <div className="hidden sm:flex flex-col p-4 w-full items-center mt-3 rounded-xl md:w-3/4 h-96">
-          <div className="flex flex-row items-center">
+          <section className="flex flex-row items-center">
             <div className="avatar online h-16 w-16">
               <Avatar />
             </div>
@@ -42,12 +45,23 @@ export default function Page({ courses }: { courses: MyCourseInterface[] }) {
                 @{userData?.user?.username}
               </p>
             </div>
-          </div>
-          <div className="divider w-full italic">To-Do</div>
-          <DatePickerEx />
-          <TodoCard />
+          </section>
+          <div className="divider w-full"></div>
         </div>
       </Right>
     </>
   );
 }
+
+const ToDoCalendar = () => {
+  const [date, setDate] = useState(new Date());
+  const [todos, setTodos] = useState();
+
+  return (
+    <section className="w-full">
+      <h3 className="divider w-full italic">To-Do</h3>
+      <DatePickerEx date={date} setDate={setDate} />
+      <TodoCardSkeleton />
+    </section>
+  );
+};

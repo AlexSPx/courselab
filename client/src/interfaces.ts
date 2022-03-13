@@ -151,6 +151,14 @@ export interface VideoQuestion {
   parentQuestionId?: string;
 }
 
+export interface VideoUser {
+  id: string;
+  role: "ADMIN";
+  user_id: string;
+  video_id: string;
+  AssignedAt: Date;
+}
+
 export interface AssignmentInterface {
   id: string;
   name: string;
