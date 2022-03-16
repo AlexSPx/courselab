@@ -23,6 +23,11 @@ export default function AuthHeader() {
           </Link>
         </div>
         <div className="items-stretch hidden lg:flex mx-2">
+          {userData?.user?.isAdmin && (
+            <Link href="/cpanel">
+              <a className="btn btn-ghost btn-sm rounded-btn">Control Panel</a>
+            </Link>
+          )}
           <Link href="/home">
             <a className="btn btn-ghost btn-sm rounded-btn">Home</a>
           </Link>

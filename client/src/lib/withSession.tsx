@@ -8,6 +8,7 @@ import { UserDataInterface } from "../interfaces";
 interface SessionOptions {
   requiresAuth?: boolean | null;
   redirectTo?: string;
+  requiresAdmin?: boolean;
 }
 
 declare module "http" {
@@ -23,7 +24,11 @@ export function withSession<
   handler: (
     context: GetServerSidePropsContext
   ) => GetServerSidePropsResult<P> | Promise<GetServerSidePropsResult<P>>,
-  { requiresAuth = true, redirectTo = "/login" }: SessionOptions = {}
+  {
+    requiresAuth = true,
+    redirectTo = "/login",
+    requiresAdmin = false,
+  }: SessionOptions = {}
 ) {
   return async function Authenticate(context: GetServerSidePropsContext) {
     const { isAuth, user } = await getAuth(context.req);
@@ -41,6 +46,18 @@ export function withSession<
         },
         props: { user: { isAuth: false, user: null } },
       };
+    }
+
+    if (requiresAdmin) {
+      if (!user?.isAdmin) {
+        return {
+          redirect: {
+            permanent: false,
+            destination: redirectTo,
+          },
+          props: { user: { isAuth, user } },
+        };
+      }
     }
 
     if (!requiresAuth && isAuth) {

@@ -148,6 +148,9 @@ router.post("/login", async (req, res) => {
       first_name: user!.first_name,
       last_name: user!.last_name,
       email: user!.email,
+      isAdmin: user.isAdmin,
+      isVerified: user.isVerified,
+      isActive: user.isActive,
       connections: [],
     };
 
@@ -155,6 +158,15 @@ router.post("/login", async (req, res) => {
 
     return res.sendStatus(200);
   } catch (err) {
+    return res.status(400).send("Somethin went wrong");
+  }
+});
+
+router.get("/online", isAuth, async (_req, res) => {
+  try {
+    const whoIsOnline = await getAllOnline("all");
+    return res.status(200).send(whoIsOnline);
+  } catch (error) {
     return res.status(400).send("Somethin went wrong");
   }
 });
@@ -245,6 +257,9 @@ router.post("/changes", isAuth, async (req, res) => {
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
+      isAdmin: user.isAdmin,
+      isVerified: user.isVerified,
+      isActive: user.isActive,
       connections: req.session.user?.connections || [],
     };
     req.session.save();

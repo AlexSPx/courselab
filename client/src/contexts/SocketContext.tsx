@@ -22,13 +22,13 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const [socket, setSocket] = useState(
     io(absurl, {
       withCredentials: true,
-      autoConnect: true,
+      autoConnect: false,
     })
   );
 
   useEffect(() => {
-    if (socket.connected && user && user.user) {
-      socket.emit("conn", { user: user.user });
+    if (user?.isAuth && !socket.connected) {
+      socket.connect();
     }
   }, [socket, user]);
 

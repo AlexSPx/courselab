@@ -29,6 +29,7 @@ model User {
   videoQuestions VideoQuestion[]
   documents      DocumentsOnUsers[]
   videos         VideoOnUser[]
+  // sentMessages  Message[]
 
   @@map("user")
 }
@@ -236,6 +237,21 @@ model QuizSubmit {
   Enrollment    CourseEnrollment @relation(fields: [enrollment_id], references: [id], onDelete: Cascade)
   enrollment_id String
 }
+
+// model ChatRoom {
+//   id String @id @default(uuid())
+//   roomName String
+// }
+
+// model Message {
+//   id Int @id @default(autoincrement())
+//   text String
+//   sentAt DateTime @default(now())
+
+//   sender User @relation(fields: [sender_id], references: [id])
+//   sender_id String 
+   
+// }
 
 model Session {
   id        String   @id

@@ -9,7 +9,10 @@ interface LayoutProps {
 export default function Layout({ children, isAuth }: LayoutProps) {
   return (
     <>
-      <main className="flex flex-col w-screen h-screen overflow-auto">
+      <main
+        className="flex flex-col w-screen h-screen overflow-auto"
+        id="journal-scroll"
+      >
         {isAuth ? <AuthHeader /> : <Header />}
         {children}
       </main>

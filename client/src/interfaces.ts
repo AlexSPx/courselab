@@ -13,6 +13,9 @@ export interface UserDataInterface {
     socials: null | JSON;
     avatar: string | null;
     email: string;
+    isActuve: boolean;
+    isAdmin: boolean;
+    isVerified: boolean;
   } | null;
 }
 

@@ -6,6 +6,8 @@ export interface OnlineUser {
   first_name: string;
   last_name: string;
   email: string;
+  isAdmin: boolean;
+  connections: string[];
 }
 
 export const addUser = (sessionId: string, user: any) => {

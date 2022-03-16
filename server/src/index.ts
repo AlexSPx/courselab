@@ -24,6 +24,7 @@ import resizingMiddleware from "./middlewares/resizeMiddleware";
 import compression from "compression";
 import helmet from "helmet";
 import { debug } from "console";
+import setUpSocketServer from "./sockets/setup";
 
 require("dotenv").config();
 
@@ -75,47 +76,49 @@ export const io = new Server(httpServer, {
   // Sockets
   io.use(sharedsession(sessionMiddleware, { autoSave: true }));
 
-  io.on("connect", (socket: Socket) => {
-    socket.on("conn", async ({ user }: { user: OnlineUser }) => {
-      if (!socket.handshake.session?.user?.connections?.includes(socket.id)) {
-        socket.handshake.session?.user?.connections?.push(socket.id);
-        socket.handshake.session?.save();
-      }
-      await addUser(socket.handshake.sessionID!, user);
-    });
+  setUpSocketServer(io);
 
-    // docs
-    DocumentSocket(socket);
+  // io.on("connect", (socket: Socket) => {
+  //   socket.on("conn", async ({ user }: { user: OnlineUser }) => {
+  //     if (!socket.handshake.session?.user?.connections?.includes(socket.id)) {
+  //       socket.handshake.session?.user?.connections?.push(socket.id);
+  //       socket.handshake.session?.save();
+  //     }
+  //     await addUser(socket.handshake.sessionID!, user);
+  //   });
 
-    const rooms = io.sockets.adapter.socketRooms(socket.id);
-    socket.on("disconnect", async () => {
-      try {
-        // Disconect from all rooms
-        if (rooms && socket.handshake.sessionID && socket.handshake.session) {
-          await leaveDoc(Array.from(rooms), socket.handshake.sessionID);
-          socket.to(Array.from(rooms)).emit("leave-document", {
-            whoLeft: socket.handshake.session.user,
-          });
-        }
+  //   // docs
+  //   DocumentSocket(socket);
 
-        // Make offline
-        if (socket.handshake.session?.user?.connections) {
-          const updateConnections =
-            socket.handshake.session.user.connections.filter(
-              (conn) => conn !== socket.id
-            );
-          socket.handshake.session.user.connections = updateConnections;
+  //   const rooms = io.sockets.adapter.socketRooms(socket.id);
+  //   socket.on("disconnect", async () => {
+  //     try {
+  //       // Disconect from all rooms
+  //       if (rooms && socket.handshake.sessionID && socket.handshake.session) {
+  //         await leaveDoc(Array.from(rooms), socket.handshake.sessionID);
+  //         socket.to(Array.from(rooms)).emit("leave-document", {
+  //           whoLeft: socket.handshake.session.user,
+  //         });
+  //       }
 
-          socket.handshake.session.save();
+  //       // Make offline
+  //       if (socket.handshake.session?.user?.connections) {
+  //         const updateConnections =
+  //           socket.handshake.session.user.connections.filter(
+  //             (conn) => conn !== socket.id
+  //           );
+  //         socket.handshake.session.user.connections = updateConnections;
 
-          if (socket.handshake.session.user.connections.length === 0)
-            removeUser(socket.handshake.sessionID!);
-        }
-      } catch (error) {
-        debug(error);
-      }
-    });
-  });
+  //         socket.handshake.session.save();
+
+  //         if (socket.handshake.session.user.connections.length === 0)
+  //           removeUser(socket.handshake.sessionID!);
+  //       }
+  //     } catch (error) {
+  //       debug(error);
+  //     }
+  //   });
+  // });
 
   // routes
   app.use("/api/user", user);
@@ -155,6 +158,9 @@ declare module "express-session" {
       last_name: string | null;
       email: string;
       connections?: string[];
+      isAdmin: boolean;
+      isVerified: boolean;
+      isActive: boolean;
     };
   }
 }

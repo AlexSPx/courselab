@@ -40,10 +40,17 @@ export async function removeUser(sessionId: string) {
   await redisClient.hdel(ONLINE_USERS, sessionId);
 }
 
-export async function getAllOnline(members: string[]) {
+export async function getAllOnline(members: string[] | "all") {
   const whoIsOnline: OnlineUser[] = [];
 
   const all = await redisClient.hvals(ONLINE_USERS);
+
+  if (members === "all") {
+    all.forEach((onmember) => {
+      const paresedMember = JSON.parse(onmember);
+      whoIsOnline.push(paresedMember);
+    });
+  }
 
   all.forEach((onmember) => {
     const paresedMember = JSON.parse(onmember);
