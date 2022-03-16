@@ -1,4 +1,6 @@
+<p align="center">
 <img src="https://user-images.githubusercontent.com/26159761/158067675-546abeb9-c7e4-472a-afb8-bdca38347eea.png" width=400/>
+</p>
 
 <h1 style="text-align:center">CourseLab</h1>
 
@@ -31,8 +33,10 @@
 
 <h2>🔎 Preview</h2>
 
+<p align="center">
 <img src="https://user-images.githubusercontent.com/26159761/158064005-ffcc9f09-dbdb-4b63-b9b4-7e03171daef7.png" width=600/>
 
 <img src="https://user-images.githubusercontent.com/26159761/158065257-c71b7aa6-df11-4a7a-b8dd-d64f132535af.png" width=600/>
 
 <img src="https://user-images.githubusercontent.com/26159761/158068397-a2e68914-bbf1-4e96-a6fc-2b9e73e11663.png" width=600/>
+</p>
