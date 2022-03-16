@@ -58,7 +58,7 @@ export const DocumentAttachment = ({
 
   return (
     <div
-      className={`flex flex-row my-1 h-16 justify-between items-center rounded border border-gray-900 w-64 min-w-[16rem] ${css}`}
+      className={`flex flex-row my-1 mx-1 h-16 justify-between items-center rounded border border-gray-900 w-64 min-w-[16rem] ${css}`}
       key={id}
     >
       <Link href={`/doc/${id}`}>
@@ -101,7 +101,7 @@ export const VideoAttachment = ({
 
   return (
     <div
-      className={`flex flex-row my-1 h-16 justify-between items-center rounded border border-gray-900 w-64 min-w-[16rem] ${css}`}
+      className={`flex flex-row my-1 mx-1 h-16 justify-between items-center rounded border border-gray-900 w-64 min-w-[16rem] ${css}`}
       key={id}
     >
       <Link href={`/doc/${id}`}>

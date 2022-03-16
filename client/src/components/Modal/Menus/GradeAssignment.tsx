@@ -4,7 +4,11 @@ import Modal, { useModals } from "..";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
 import { baseurl } from "../../../lib/fetcher";
 import useRequest from "../../../lib/useRequest";
-import { File } from "../../../modules/Assignmnet/Attachments";
+import {
+  DocumentAttachment,
+  File,
+  VideoAttachment,
+} from "../../../modules/Assignmnet/Attachments";
 import { AttendanceInterface } from "../../../modules/CourseEditor/Attendance/RenderAssignment";
 import FormatDate from "../../FormatDate";
 
@@ -50,12 +54,11 @@ export default function GradeAssignment({
   const mapAttachments = submit.submits[submitIndex].attachments.map((att) => {
     const handleOpen = () => {
       if (att.type === "FILE") {
-      } else if (att.type === "DOCUMENT") {
+      } else if (att.type === "DOC") {
       } else if (att.type === "VIDEO") {
       } else if (att.type === "LINK") {
       }
     };
-
     if (att.type === "FILE")
       return (
         <a
@@ -72,6 +75,17 @@ export default function GradeAssignment({
           />
         </a>
       );
+    if (att.type === "DOC") {
+      return (
+        <div key={att.doc?.id}>
+          {att.doc?.type === "DOCUMENT" ? (
+            <DocumentAttachment id={att.doc?.id!} />
+          ) : (
+            <VideoAttachment id={att.doc?.id!} />
+          )}
+        </div>
+      );
+    }
     return (
       <div key={att.path}>
         <File

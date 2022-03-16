@@ -8,8 +8,8 @@ dist
 
 prisma/migrations
 
-images/avatars
-images/courseImages
-images/courses
-files/
-videos/
+images/avatars/**
+images/courseImage/**
+images/courses/**
+files/**
+videos/**

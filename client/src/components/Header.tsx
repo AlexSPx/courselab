@@ -25,6 +25,11 @@ export default function Header() {
               active={router.pathname === "/" ? true : false}
             />
             <Location
+              label="FAQs"
+              to="/faqs"
+              active={router.pathname === "/faqs" ? true : false}
+            />
+            <Location
               label="Courses"
               to="/courses"
               active={router.pathname === "/courses" ? true : false}

@@ -146,13 +146,15 @@ export const RegisterPage: NextPage = () => {
               data={username}
               setData={setUsername}
             />
-            <div className="flex gap-4 mb-2">
+            <div className="flex">
               <Field
+                css="w-1/2"
                 placeholder="First Name"
                 data={firstname}
                 setData={setFirstname}
               />
               <Field
+                css="w-1/2"
                 placeholder="Last Name"
                 data={lastname}
                 setData={setLastname}

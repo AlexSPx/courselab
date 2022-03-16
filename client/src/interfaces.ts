@@ -191,7 +191,7 @@ export interface AssignmentSubmit {
 }
 
 export interface AssignmentSubmitAttachment {
-  type: "FILE" | "DOCUMENT" | "LINK" | "VIDEO";
+  type: "FILE" | "DOC" | "LINK" | "VIDEO";
   path?: string;
   doc?: {
     type: "DOCUMENT" | "VIDEO";

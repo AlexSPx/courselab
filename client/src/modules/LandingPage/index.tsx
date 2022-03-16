@@ -9,8 +9,10 @@ export const LandingPage: NextPage = () => {
   return (
     <main className="container mx-auto px-2 justify-center items-center mb-16">
       <SeoTags
-        title="CourseLab | Online courses"
+        title="CourseLab | enroll in or create online courses |"
         description="An online learning platform for students to access course-specific study resources. And instructors, teachers or anyone to create courses."
+        keywords="courselab, course lab, course-lab, course-lab xyz, course, free courses, create course, create courses, enroll, enroll in courses, build your course, course builder, quiz builder, 
+        assignment, assignments, quiz, quizzes, students, teachers, structure, structure course, noit, edusoft, fmi, sofia uni"
       />
       <section>
         <div className="flex flex-col-reverse md:flex-row items-center h-1/2 w-full font-thin">
@@ -20,7 +22,7 @@ export const LandingPage: NextPage = () => {
               free with <strong>CourseLab</strong>
             </h1>
             <h2 className="text-xl font-normal">
-              An online learning platform for students to access course-specific{" "}
+              An online learning platform for students to access course-specific
               <br className="hidden mg:flex" />
               study resources. And instructors, teachers or anyone to create
               courses
@@ -37,6 +39,7 @@ export const LandingPage: NextPage = () => {
         </div>
       </section>
       <FeaturesSection />
+      <Support />
       <CourseFeatureBig
         subtitle="Course Structure"
         title="Structure your courses with ease"
@@ -57,7 +60,17 @@ export const LandingPage: NextPage = () => {
         and encourage them to enroll. This is your opportunity to create
         conversions and build your student base.
       </CourseFeatureBig>
-      <Support />
+      <CourseFeatureBig
+        subtitle="Course Attendance"
+        title="Track the students' progress"
+        imagePath="/course-attendance.png"
+      >
+        Progress monitoring is the standardized process of evaluating progress
+        toward a performance target, based on rates of improvement from frequent
+        (usually weekly or biweekly) assessment of a specific skill. Our system
+        at CourseLab helps you do just that with your courses.
+      </CourseFeatureBig>
+      <Footer />
     </main>
   );
 };
@@ -80,22 +93,20 @@ const FeaturesSection = () => {
         </Feature>
         <Feature title="Video Player">
           Upload videos with ease for your courses. Students can comment their
-          questions and and mark the right or most usefull replay as an answer.
+          questions and and mark the right or most useful replay as an answer.
         </Feature>
         <Feature title="Quiz Builder">
-          Create a quiz in minutes. There are two options for the questin type -
-          open-ended, closed. Each question gives points. Further check the
+          Create a quiz in minutes. There are two options for the question type
+          - open-ended, closed. Each question gives points. Further check the
           submits.
         </Feature>
         <Feature title="Assignments">
-          Assign tasks to your students easily. Monitor their submits, whether
-          it is submitted ontime or late. Check their submits and give them
-          feedback.
+          Assign tasks to your students. Monitor their submits, whether it is
+          submitted on-time or late. Check their submits and give them feedback.
         </Feature>
         <Feature title="Text Chat">
-          Communicate with your students/teachers directly from the website,
-          there is no need for third-party applications. Direct message or
-          create a group.
+          Communicate with your students/teachers from the website, there is no
+          need for third-party applications. Direct message or create a group.
         </Feature>
       </div>
     </section>
@@ -190,10 +201,10 @@ const CourseFeatureBig: React.FC<{
           {title}
         </h4>
         <p className="mt-4 text-lg leading-6 text-gray-500 dark:text-gray-300">
-          {children}{" "}
+          {children}
         </p>
       </div>
-      <div className="row-start-2 col-start-1 md:row-span-2 md:col-start-2 md:col-span-3 shadow-xl">
+      <div className="row-start-2 col-start-1 md:row-span-2 md:col-start-2 md:col-span-3 border">
         <div className="relative h-[18.4rem] md:h-[30rem]">
           <Image
             src={imagePath}
@@ -205,6 +216,16 @@ const CourseFeatureBig: React.FC<{
         </div>
       </div>
     </section>
+  );
+};
+
+const Footer = () => {
+  return (
+    <footer className="py-8">
+      <div className="text-center text-gray-500 dark:text-gray-200 pt-10 sm:pt-12 font-light flex items-center justify-center">
+        Created by Alexander
+      </div>
+    </footer>
   );
 };
 
