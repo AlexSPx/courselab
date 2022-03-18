@@ -234,3 +234,26 @@ export interface QuizGivenAnswer {
   correct: boolean;
   option: string;
 }
+
+export interface ChatRoom {
+  id: string;
+  roomName?: string;
+  type: "DIRECT" | "GROUP";
+  members: ChatRoomMember[];
+  messages: ChatRoomMessage[];
+  messagesCursor: number;
+}
+
+export interface ChatRoomMember {
+  id: string;
+  user: GeneralUserInformation;
+  role: "ADMIN" | "USER";
+}
+
+export interface ChatRoomMessage {
+  id: number;
+  room_id: string;
+  sender_id: string;
+  sentAt: Date;
+  text: string;
+}

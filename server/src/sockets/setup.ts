@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { addUser, getAllOnline, removeUser } from "../functions/redisCaching";
+import chatRoomSetup from "./chatRoomsSetup";
 
 export default function setUpSocketServer(
   io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
@@ -41,6 +42,8 @@ export default function setUpSocketServer(
     socket.onAny((event, ...args) => {
       console.log(event, args);
     });
+
+    chatRoomSetup(socket);
 
     socket.on("disconnect", async () => {
       try {

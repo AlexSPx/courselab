@@ -19,6 +19,12 @@ export default function Avatar({ user }: { user?: GeneralUserInformation }) {
   });
 
   return (
-    <Image src={url} alt="Avatar" layout="fill" className="rounded-full" />
+    <Image
+      src={url}
+      alt="Avatar"
+      layout="fill"
+      className="rounded-full"
+      objectFit="cover"
+    />
   );
 }

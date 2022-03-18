@@ -29,8 +29,7 @@ model User {
   videoQuestions VideoQuestion[]
   documents      DocumentsOnUsers[]
   videos         VideoOnUser[]
-  // sentMessages  Message[]
-
+  chatrooms ChatRoomOnUser[]
   @@map("user")
 }
 
@@ -238,26 +237,51 @@ model QuizSubmit {
   enrollment_id String
 }
 
-// model ChatRoom {
-//   id String @id @default(uuid())
-//   roomName String
-// }
+model ChatRoom {
+  id String @id @default(uuid())
+  roomName String?
+  type ChatRoomType
+  messages Message[]
+  members ChatRoomOnUser[]
+}
 
-// model Message {
-//   id Int @id @default(autoincrement())
-//   text String
-//   sentAt DateTime @default(now())
+model ChatRoomOnUser {
+  id String @id @default(uuid())
+  role ChatMember
+  chatRoom ChatRoom @relation(fields: [room_id], references: [id])
+  room_id String
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
 
-//   sender User @relation(fields: [sender_id], references: [id])
-//   sender_id String 
-   
-// }
+  messages Message[]
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+  text String
+  sentAt DateTime @default(now())
+
+  chatRoom ChatRoom @relation(fields: [room_id], references: [id])
+  room_id String
+  sender ChatRoomOnUser @relation(fields: [sender_id], references: [id])
+  sender_id String 
+}
 
 model Session {
   id        String   @id
   sid       String   @unique
   data      String
   expiresAt DateTime
+}
+
+enum ChatRoomType {
+  DIRECT
+  GROUP
+}
+
+enum ChatMember {
+  ADMIN
+  USER
 }
 
 enum ScheduleType {

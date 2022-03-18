@@ -31,6 +31,9 @@ export default function AuthHeader() {
           <Link href="/home">
             <a className="btn btn-ghost btn-sm rounded-btn">Home</a>
           </Link>
+          <Link href="/messages">
+            <a className="btn btn-ghost btn-sm rounded-btn">Chats</a>
+          </Link>
           <Link href="/myfiles">
             <a className="btn btn-ghost btn-sm rounded-btn">Files</a>
           </Link>

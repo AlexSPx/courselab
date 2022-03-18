@@ -8,10 +8,11 @@ import connectRedis from "connect-redis";
 
 import user from "./api/user";
 import course from "./api/course";
-import document, { DocumentSocket } from "./api/document";
+import document from "./api/document";
 import video from "./api/video";
 import assignment from "./api/assignment";
 import quiz from "./api/quiz";
+import chatroom from "./api/chatrooms";
 
 import path from "path";
 import sharp from "sharp";
@@ -89,6 +90,7 @@ export const io = new Server(httpServer, {
   app.use("/api/video", video);
   app.use("/api/assignment", assignment);
   app.use("/api/quiz", quiz);
+  app.use("/api/chatroom", chatroom);
 
   // static
   app.use(
