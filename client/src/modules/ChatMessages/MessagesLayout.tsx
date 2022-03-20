@@ -13,6 +13,7 @@ export const MessagesLayout: React.FC = ({ children }) => {
   useSWR(`${baseurl}/chatroom/rooms`, {
     onSuccess: (data) => setChatrooms(data),
   });
+  console.log(chatrooms);
 
   const mapRooms = chatrooms.map((chatroom) => {
     return (
@@ -29,7 +30,7 @@ export const MessagesLayout: React.FC = ({ children }) => {
       className="flex flex-row w-full h-full overflow-auto bg-gray-50"
       id="journal-scroll"
     >
-      <SideBar css="bg-white w-[34rem]">
+      <SideBar css="bg-white w-[34.1rem]">
         <Searchbar />
         {mapRooms}
       </SideBar>

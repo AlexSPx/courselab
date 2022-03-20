@@ -1,4 +1,4 @@
-import type { AppProps } from "next/app";
+import type { AppProps, NextWebVitalsMetric } from "next/app";
 import Layout from "../components/Layout";
 import { ModalContextProvider } from "../contexts/ModalContex";
 import UserCtxProvider from "../contexts/UserContext";
@@ -46,4 +46,5 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
 export default MyApp;

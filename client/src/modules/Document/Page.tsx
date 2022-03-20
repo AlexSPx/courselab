@@ -114,7 +114,6 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
     if (socket === null || !quill) return;
 
     // Emits changes
-
     const tracker = (delta: any, _oldDelta: any, source: string) => {
       if (source !== "user") return;
       socket.emit("docs-change", { delta, id: doc.id });
@@ -141,7 +140,6 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
     if (socket == null || !quill || !cursors) return;
 
     // Handles incomming changes
-
     const handler = (delta: any) => {
       quill.updateContents(delta);
     };

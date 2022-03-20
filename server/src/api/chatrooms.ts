@@ -66,8 +66,6 @@ router.get(`/rooms`, isAuth, async (req, res) => {
 
     return res.status(200).send(rooms);
   } catch (error) {
-    console.log(error);
-
     return res.status(400).send(error);
   }
 });
@@ -140,11 +138,13 @@ router.get("/:type/:query", isAuth, async (req, res) => {
       });
 
       return res.status(200).json({
-        room: Object.assign(
-          room,
-          { messagesCursor },
-          { messages: room?.messages.reverse() }
-        ),
+        room: room
+          ? Object.assign(
+              room,
+              { messagesCursor },
+              { messages: room?.messages.reverse() }
+            )
+          : null,
         user,
       });
     }

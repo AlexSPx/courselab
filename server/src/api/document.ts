@@ -1,57 +1,12 @@
 import { Router } from "express";
-import { Socket } from "socket.io";
-import { OnlineUser } from "../functions/online";
-import { getAllInDoc, joinDoc, leaveDoc } from "../functions/redisCaching";
-import { io, prismaClient } from "../";
+
+import { prismaClient } from "../";
 import { isAuth } from "../middlewares/auth";
 import { debug } from "console";
 
 const router = Router();
 
 export const initialDocData = `{ ops: [{ insert: "\n" }] }`;
-
-export function DocumentSocket(socket: Socket) {
-  socket.on("join-document", async ({ docId }: { docId: string }) => {
-    await joinDoc(
-      docId,
-      socket.handshake.sessionID!,
-      socket.handshake.session?.user as OnlineUser
-    );
-
-    socket.join(docId);
-
-    io.to(docId).emit("doc-users", { users: await getAllInDoc(docId) });
-  });
-
-  socket.on("leave-document", async ({ docId }: { docId: string }) => {
-    socket.leave(docId);
-    const whoLeft = await leaveDoc(docId, socket.handshake.sessionID!);
-    socket.to(docId).emit("leave-document", { whoLeft });
-  });
-
-  socket.on("docs-change", (data: { delta: any; id: string }) => {
-    socket.to(data.id).emit(`remote-change`, data.delta);
-  });
-
-  socket.on(
-    "cursor-change",
-    ({ docId, range, id }: { docId: string; range: any; id: string }) => {
-      socket.to(docId).emit("cursor-select", { id, range });
-    }
-  );
-
-  socket.on(
-    "save-document",
-    async ({ file, id }: { file: any; id: string }) => {
-      await prismaClient.document.update({
-        where: { id },
-        data: {
-          file,
-        },
-      });
-    }
-  );
-}
 
 router.get("/:id", isAuth, async (req, res) => {
   try {

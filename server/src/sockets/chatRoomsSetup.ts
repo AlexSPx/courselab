@@ -4,7 +4,6 @@ import { prismaClient } from "..";
 export default function chatRoomSetup(socket: Socket) {
   socket.on("chatroom-join", ({ chatroomId }: { chatroomId: string }) => {
     socket.join(chatroomId);
-    console.log(`room joined ${chatroomId}`);
   });
 
   socket.on(

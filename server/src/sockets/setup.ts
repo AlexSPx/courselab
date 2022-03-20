@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { DocumentSocket } from "./documentsSetup";
 import { addUser, getAllOnline, removeUser } from "../functions/redisCaching";
 import chatRoomSetup from "./chatRoomsSetup";
 
@@ -13,14 +14,12 @@ export default function setUpSocketServer(
       if (session && socket.handshake.session?.user?.connections) {
         const connections = session.user?.connections;
         if (connections?.includes(session.id)) {
-          console.log("session already exists");
           next();
         } else {
           socket.handshake.session.user.connections.push(socket.id);
           socket.handshake.session.save();
 
           if (socket.handshake.session.user.connections.length > 0) {
-            console.log("adding");
             const user = socket.handshake.session.user;
             await addUser(sessionID, {
               id: user.id,
@@ -39,11 +38,8 @@ export default function setUpSocketServer(
   });
 
   io.on("connect", (socket: Socket) => {
-    socket.onAny((event, ...args) => {
-      console.log(event, args);
-    });
-
     chatRoomSetup(socket);
+    DocumentSocket(socket);
 
     socket.on("disconnect", async () => {
       try {
@@ -58,7 +54,6 @@ export default function setUpSocketServer(
             );
             socket.handshake.session.user.connections = updated;
             socket.handshake.session.save();
-            console.log("session removed");
             if (updated.length === 0) {
               socket.broadcast.emit("user_disconnected", {
                 username: socket.handshake.session.user.username,

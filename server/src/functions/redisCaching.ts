@@ -1,4 +1,3 @@
-import { createClient } from "redis";
 import { OnlineUser } from "./online";
 import Redis from "ioredis";
 
@@ -76,13 +75,18 @@ export async function joinDoc(
   sessionId: string,
   user: OnlineUser
 ) {
-  const check = await redisClient.hexists(`${DOCUMENT}:${docId}`, sessionId);
-  if (!check && user) {
-    await redisClient.hset(
-      `${DOCUMENT}:${docId}`,
-      sessionId,
-      JSON.stringify(user)
-    );
+  try {
+    const check = await redisClient.hexists(`${DOCUMENT}:${docId}`, sessionId);
+
+    if (!check && user) {
+      await redisClient.hset(
+        `${DOCUMENT}:${docId}`,
+        sessionId,
+        JSON.stringify(user)
+      );
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 

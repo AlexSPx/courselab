@@ -296,8 +296,6 @@ router.get("/file/name/:type/:id", isAuth, async (req, res) => {
 router.get("/download/:name", isAuth, async (req, res) => {
   try {
     const file = path.join(baseDir + `files/${req.params.name}`);
-    console.log(file);
-
     return res.download(file);
   } catch (error) {
     return res.status(400).send(error);
@@ -396,8 +394,6 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
     if (typeof req.body.toBeRemoved === "string")
       removeFunc(req.body.toBeRemoved);
 
-    console.log(attachments);
-
     const submit = await prismaClient.assignmentSubmits.create({
       data: {
         AssignmentsOnUsers: {
@@ -415,8 +411,6 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
 
     return res.status(200).send(submit);
   } catch (error) {
-    console.log(error);
-
     return res.status(400).send(JSON.stringify(error));
   }
 });

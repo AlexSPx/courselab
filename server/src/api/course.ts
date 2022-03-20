@@ -1090,8 +1090,6 @@ router.get("/today/:coursename", isAuth, async (req, res) => {
 
 router.post("/u/todo/", isAuth, async (req, res) => {
   try {
-    console.log(req.body);
-
     const enrollments = await prismaClient.user.findFirst({
       where: {
         id: req.session.user?.id,

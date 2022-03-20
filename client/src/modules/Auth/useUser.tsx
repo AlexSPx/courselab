@@ -25,11 +25,6 @@ export default function useUser() {
         userCtx.setUserData!(data);
         setData(data);
 
-        if (data.isAuth) {
-          if (!socket?.connected) socket?.connect();
-          socket?.emit("conn", { user: data.user });
-        }
-
         setIsLoading(false);
       } catch (err) {
         setIsLoading(false);

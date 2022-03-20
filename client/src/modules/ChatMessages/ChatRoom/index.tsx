@@ -45,14 +45,16 @@ export const ChatMessages: NextPage<ChatMessageProps> = ({
     receiver
   );
   const [chatroom, setChatroom] = useState(chat);
+  console.log(chatroom);
+
   return (
     <MessagesLayout>
       <SeoTags
         title={`Chat Messages`}
         description={`The place to chat with your course teachers or just anyone`}
       />
-      {chatroom && <ChatSection chatroom={chatroom} />}
       {!chatroom && user && <NoChatRoom user={user} mutate={mutate} />}
+      {chatroom && <ChatSection chatroom={chatroom} />}
       {user && <DirectMessageSettings user={user} />}
     </MessagesLayout>
   );
@@ -71,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         },
       });
 
-      console.log("response: " + data);
+      console.log(data);
 
       return {
         props: {
