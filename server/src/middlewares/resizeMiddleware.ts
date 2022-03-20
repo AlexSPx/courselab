@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { join } from "path";
 import sharp from "sharp";
+import { baseDir } from "../settings/multer";
 
 const paths = new Map([
-  ["/api/user/avatars/", join(__dirname, "../../images/avatars")],
-  ["/api/course/logo/", join(__dirname, "../../images/courseImage")],
-  ["/api/course/images/", join(__dirname, "../../images/courses")],
+  ["/api/user/avatars/", join(baseDir, "images/avatars")],
+  ["/api/course/logo/", join(baseDir, "images/courseImage")],
+  ["/api/course/images/", join(baseDir, "images/courses")],
 ]);
 
 export default function resizingMiddleware(

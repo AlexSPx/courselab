@@ -25,6 +25,7 @@ import compression from "compression";
 import helmet from "helmet";
 import { debug } from "console";
 import setUpSocketServer from "./sockets/setup";
+import { baseDir } from "./settings/multer";
 
 require("dotenv").config();
 
@@ -95,17 +96,17 @@ export const io = new Server(httpServer, {
   // static
   app.use(
     "/api/user/avatars",
-    express.static(path.join(__dirname, "../images/avatars"))
+    express.static(path.join(baseDir, "images/avatars"))
   );
 
   app.use(
     "/api/course/logo",
-    express.static(path.join(__dirname, "../images/courseImage"))
+    express.static(path.join(baseDir, "images/courseImage"))
   );
 
   app.use(
     "/api/course/images",
-    express.static(path.join(__dirname, "../images/courses"))
+    express.static(path.join(baseDir, "images/courses"))
   );
 
   app.use("/(*_\\d+x\\d+.(jpe?g|png))", resizingMiddleware);

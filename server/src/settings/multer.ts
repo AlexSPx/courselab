@@ -4,16 +4,22 @@ import { unlink } from "fs/promises";
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
 
+const baseFolder =
+  process.env.NODE_ENV === "production"
+    ? "../../../../../serverStorage"
+    : "../../../";
+export const baseDir = path.join(__dirname + baseFolder);
+
 const avatar_storage = multer.diskStorage({
   destination: async function (req, _file, cb) {
     const username = req.body.username || req.params.username;
     const apath = path.join(
-      __dirname,
-      `../images/avatars/${username.toLowerCase()}`
+      baseDir,
+      `images/avatars/${username.toLowerCase()}`
     );
 
     if (existsSync(apath)) await unlink(apath);
-    cb(null, "images/avatars");
+    cb(null, baseDir + "images/avatars");
   },
   filename: function (req, _file, cb) {
     const username = req.body.username || req.params.username;
@@ -24,12 +30,12 @@ const avatar_storage = multer.diskStorage({
 const courseimg_storage = multer.diskStorage({
   destination: async function (req, _file, cb) {
     const apath = path.join(
-      __dirname,
-      `../images/courseImage/${req.body.name.toLowerCase()}`
+      baseDir,
+      `images/courseImage/${req.body.name.toLowerCase()}`
     );
 
     if (existsSync(apath)) await unlink(apath);
-    cb(null, "images/courseImage");
+    cb(null, baseDir + "images/courseImage");
   },
   filename: function (req, _file, cb) {
     cb(null, req.body.name.toLowerCase() + "-org.jpg");
@@ -38,7 +44,7 @@ const courseimg_storage = multer.diskStorage({
 
 const coursedetails_storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    cb(null, "images/courses");
+    cb(null, baseDir + "images/courses");
   },
   filename: function (_req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname.toLowerCase()}`);
@@ -47,7 +53,7 @@ const coursedetails_storage = multer.diskStorage({
 
 const coursedetails_sponsors_storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    cb(null, "images/courses");
+    cb(null, baseDir + "images/courses");
   },
   filename: function (req, _file, cb) {
     cb(
@@ -59,7 +65,7 @@ const coursedetails_sponsors_storage = multer.diskStorage({
 
 const video_storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    cb(null, "videos/");
+    cb(null, baseDir + "videos/");
   },
   filename: function (req, file, cb) {
     const path = `${Date.now()}-${file.originalname.toLowerCase()}`;
@@ -70,7 +76,7 @@ const video_storage = multer.diskStorage({
 
 const file_uploader = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    cb(null, "files/");
+    cb(null, baseDir + "files/");
   },
   filename: function (req, file, cb) {
     const path = `${req.session.user?.username.toLowerCase()}{-divide-}${Date.now()}{-divide-}${file.originalname.toLowerCase()}`;
@@ -85,8 +91,8 @@ const CourseSponsorFilter = (
   cb: FileFilterCallback
 ) => {
   const apath = path.join(
-    __dirname,
-    `../../images/courses/${req.params.course.toLowerCase()}-sponsor-${req.params.sponsor.toLowerCase()}.jpg`
+    baseDir,
+    `images/courses/${req.params.course.toLowerCase()}-sponsor-${req.params.sponsor.toLowerCase()}.jpg`
   );
 
   if (existsSync(apath)) {

@@ -3,7 +3,7 @@ import { createReadStream, statSync } from "fs";
 import { extname, join } from "path";
 import { prismaClient } from "../";
 import { isAuth } from "../middlewares/auth";
-import { uploadVideo } from "../settings/multer";
+import { baseDir, uploadVideo } from "../settings/multer";
 
 const router = Router();
 
@@ -145,7 +145,7 @@ router.get("/stream/:path", isAuth, async (req, res) => {
 
     if (!range) return res.status(400).send("Range required");
 
-    const videoPath = join(__dirname + `../../../videos/${req.params.path}`);
+    const videoPath = join(baseDir + `videos/${req.params.path}`);
 
     const videoSize = statSync(videoPath).size;
 

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { deleteCache } from "../functions/redisCaching";
 import { prismaClient } from "../";
 import { isAuth } from "../middlewares/auth";
-import { uploadFile } from "../settings/multer";
+import { baseDir, uploadFile } from "../settings/multer";
 import path from "path";
 import { submitsDitribution } from "../functions/assignmentHelpers";
 import { unlink } from "fs/promises";
@@ -295,7 +295,9 @@ router.get("/file/name/:type/:id", isAuth, async (req, res) => {
 
 router.get("/download/:name", isAuth, async (req, res) => {
   try {
-    const file = path.join(__dirname + `../../../files/${req.params.name}`);
+    const file = path.join(baseDir + `files/${req.params.name}`);
+    console.log(file);
+
     return res.download(file);
   } catch (error) {
     return res.status(400).send(error);
@@ -374,7 +376,7 @@ router.post("/submit", isAuth, uploadFile.array("files"), async (req, res) => {
 
       if (tbr.type === "FILE") {
         attachments = attachments.filter((att) => att.path !== tbr.path);
-        unlink(path.join(__dirname + `../../../files/${tbr.path}`));
+        unlink(path.join(baseDir + `files/${tbr.path}`));
         return;
       }
       if (tbr.type === "DOCUMENT" || tbr.type === "VIDEO") {

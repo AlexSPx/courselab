@@ -2,6 +2,7 @@ import { prismaClient } from "../index";
 import { Router } from "express";
 import { isAuth } from "../middlewares/auth";
 import {
+  baseDir,
   uplaodCourseImages,
   uplaodCourseSponsorImages,
   uploadCourseImg,
@@ -243,8 +244,8 @@ router.post(
         )?.sponsors as Sponsor[] | undefined;
 
         const apath = path.join(
-          __dirname +
-            `../../../images/courses/${
+          baseDir +
+            `images/courses/${
               sponsors?.find((sponsor) => sponsor.name === req.params.sponsor)
                 ?.path
             }`
@@ -317,7 +318,7 @@ router.post(
         )?.images;
 
         const apath = (imgName: string) =>
-          path.join(__dirname + `../../../images/courses/${imgName}`);
+          path.join(baseDir + `images/courses/${imgName}`);
 
         const updated = initialImages?.filter((image) => {
           if (!req.body.removed.includes(image)) {
@@ -527,8 +528,8 @@ router.post(
       });
 
       const apath = path.join(
-        __dirname,
-        `../../images/courseImage/${req.body.old_name}.jpg`
+        baseDir,
+        `images/courseImage/${req.body.old_name}.jpg`
       );
 
       if (existsSync(apath))
@@ -795,7 +796,7 @@ router.delete("/delete/:name", isAuth, async (req, res) => {
         },
       });
 
-      unlink(path.join(__dirname, `../../videos/${video.path}`));
+      unlink(path.join(baseDir, `videos/${video.path}`));
     } else if (deletedData.type === "ASSIGNMENT") {
       const deleted = await prismaClient.assignment.delete({
         where: {
@@ -812,7 +813,7 @@ router.delete("/delete/:name", isAuth, async (req, res) => {
 
       if (deleted.files.length) {
         deleted.files.forEach((file: any) => {
-          unlink(path.join(__dirname + `../../../files/${file}`));
+          unlink(path.join(baseDir + `files/${file}`));
         });
       }
 

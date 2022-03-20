@@ -1,9 +1,9 @@
 import { AssignmentSubmits, Prisma } from "@prisma/client";
 import { unlink } from "fs/promises";
 import path from "path";
+import { baseDir } from "../settings/multer";
 
-const basepath = (fileName: string) =>
-  path.join(__dirname + `../../../files/${fileName}`);
+const basepath = (fileName: string) => path.join(baseDir + `files/${fileName}`);
 
 export const deleteAttachments = (submits: AssignmentSubmits[]) => {
   if (!submits) return;
