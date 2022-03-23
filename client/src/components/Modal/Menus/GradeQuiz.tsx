@@ -49,10 +49,6 @@ export default function GradeQuiz({
         onSuccess: (res) => {
           setSubmits((submits) =>
             submits?.map((submit) => {
-              console.log(submit);
-
-              console.log({ ...submit, quizzes: [res.data.id] });
-
               return submit.quizzes[0].id === res.data.id
                 ? { ...submit, quizzes: [res.data] }
                 : submit;

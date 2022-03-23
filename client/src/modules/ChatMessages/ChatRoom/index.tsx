@@ -24,7 +24,7 @@ export const ChatMessages: NextPage<ChatMessageProps> = ({
   receiver,
 }) => {
   const { query } = useRouter();
-  console.log(query.to?.toString());
+
   const { mutate } = useSWR(`${baseurl}/chatroom/${query.id}/${query.to}`, {
     refreshInterval: 0,
     revalidateIfStale: false,
@@ -38,14 +38,12 @@ export const ChatMessages: NextPage<ChatMessageProps> = ({
 
   useEffect(() => {
     mutate();
-    console.log("here");
   }, [mutate, query]);
 
   const [user, setUser] = useState<GeneralUserInformation | undefined>(
     receiver
   );
   const [chatroom, setChatroom] = useState(chat);
-  console.log(chatroom);
 
   return (
     <MessagesLayout>
@@ -72,8 +70,6 @@ export const getServerSideProps: GetServerSideProps = withSession(
           cookie: req?.headers.cookie,
         },
       });
-
-      console.log(data);
 
       return {
         props: {

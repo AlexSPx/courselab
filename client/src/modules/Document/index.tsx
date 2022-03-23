@@ -37,8 +37,6 @@ export const getServerSideProps: GetServerSideProps = withSession(
         },
       });
 
-      console.log(res.data);
-
       return {
         props: {
           user: req.user,
@@ -46,8 +44,6 @@ export const getServerSideProps: GetServerSideProps = withSession(
         },
       };
     } catch (error) {
-      console.log(error);
-
       return {
         props: {
           user: undefined,

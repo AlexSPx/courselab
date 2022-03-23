@@ -31,7 +31,9 @@ export const ControlPanelPage: NextPage = () => {
         title={`Control Panel`}
         description={`The general settings for your course`}
       />
-      <Main>{users.map((user: any) => user.username + " ")}</Main>
+      <Main>
+        <h1 className="text-2xl text-center">Comming Soon</h1>
+      </Main>
     </MainLayout>
   );
 };

@@ -34,8 +34,6 @@ type FilesPageType = {
 export const MyFilesPage: NextPage<FilesPageType> = ({
   files: { documents, videos },
 }) => {
-  console.log(videos);
-
   const mapDocument = documents.map((documentOnUser) => {
     return (
       <Document

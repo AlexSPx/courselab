@@ -107,8 +107,6 @@ export default function useStructureData(
 
     const fileData = data![fileIndex];
     setData((dt) => dt!.splice(fileIndex - 1, 0, dt!.splice(fileIndex, 1)[0]));
-
-    console.log(data);
   };
 
   return {

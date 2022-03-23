@@ -114,6 +114,7 @@ export const LoginPage: NextPage = () => {
             <div className="flex w-full">
               <button
                 onClick={() => handleLogin()}
+                id="sign-in-button"
                 className="btn btn-primary w-full"
                 aria-label="login"
               >

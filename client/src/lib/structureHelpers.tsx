@@ -19,8 +19,6 @@ export const initializeData = (course: CourseInterface): Data => {
     init[dmodel.props.week][dmodel.props.day][dmodel.props.index] = dmodel;
   });
 
-  console.log(init);
-
   return init;
 };
 

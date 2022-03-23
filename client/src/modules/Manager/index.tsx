@@ -12,8 +12,6 @@ type CourseManagerTypes = {
 };
 
 export const Manager: NextPage<CourseManagerTypes> = ({ courses }) => {
-  console.log(courses);
-
   const mapCourses = courses?.map((course) => {
     return <CourseDraftCard draft={course} key={course.name} />;
   });

@@ -57,8 +57,6 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
       const value = quill.getContents();
 
       if (value) {
-        console.log("saving");
-
         socket.emit("save-document", {
           id: doc.id,
           file: JSON.stringify(value),
@@ -143,7 +141,6 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
     const handler = (delta: any) => {
       quill.updateContents(delta);
     };
-    console.log(cursors);
 
     const cursorHandler = ({ range, id }: { range: any; id: string }) => {
       cursors.moveCursor(id, range);

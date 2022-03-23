@@ -95,7 +95,7 @@ const FeaturesSection = () => {
           Upload videos with ease for your courses. Students can comment their
           questions and and mark the right or most useful replay as an answer.
         </Feature>
-        <Feature title="Quiz Builder">
+        <Feature title="Quiz Builder" border="l">
           Create a quiz in minutes. There are two options for the question type
           - open-ended, closed. Each question gives points. Further check the
           submits.
@@ -104,7 +104,7 @@ const FeaturesSection = () => {
           Assign tasks to your students. Monitor their submits, whether it is
           submitted on-time or late. Check their submits and give them feedback.
         </Feature>
-        <Feature title="Text Chat">
+        <Feature title="Text Chat" border="l">
           Communicate with your students/teachers from the website, there is no
           need for third-party applications. Direct message or create a group.
         </Feature>
@@ -113,9 +113,15 @@ const FeaturesSection = () => {
   );
 };
 
-const Feature: React.FC<{ title: string }> = ({ title, children }) => {
+const Feature: React.FC<{ title: string; border?: "r" | "l" }> = ({
+  title,
+  children,
+  border = "r",
+}) => {
   return (
-    <div className="w-full border-b md:w-1/2 md:border-r lg:w-1/3 p-8">
+    <div
+      className={`w-full border-b md:w-1/2 md:border-${border} lg:w-1/3 p-8`}
+    >
       <div className="flex items-center mb-6">
         <svg
           width={20}

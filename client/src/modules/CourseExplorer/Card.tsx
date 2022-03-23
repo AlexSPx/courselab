@@ -64,7 +64,7 @@ export default function Card({ course }: { course: CourseGeneralInterface }) {
             sm:flex-row sm:items-start sm:px-12
           "
           >
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <span className="flex-shrink-0 p-1 text-white bg-green-600 rounded-full">
                 <svg
                   className="w-5 h-5"
@@ -113,7 +113,7 @@ export default function Card({ course }: { course: CourseGeneralInterface }) {
                 <dt>Students</dt>
                 <dd className="order-first">1,520,404</dd>
               </span>
-            </div>
+            </div> */}
           </dl>
         </div>
       </a>

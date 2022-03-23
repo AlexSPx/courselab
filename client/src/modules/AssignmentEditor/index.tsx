@@ -42,8 +42,6 @@ export const getServerSideProps: GetServerSideProps = withSession(
 
       return { props: { user: req.user, assignment: res.data } };
     } catch (error) {
-      console.log(error);
-
       return { props: { user: undefined, assignment: null } };
     }
   }

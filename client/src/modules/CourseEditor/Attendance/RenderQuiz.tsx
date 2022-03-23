@@ -35,7 +35,6 @@ export default function RenderQuiz({
         { quizId: id, course: courseName, startingDate },
         { withCredentials: true }
       );
-      console.log(res.data);
 
       setSubmitted(res.data.submitted);
       setMissing(res.data.missing);

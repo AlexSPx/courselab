@@ -31,7 +31,6 @@ export default function Searchbar() {
         const res = await axios.get(`${baseurl}/chatroom/search/${query}`, {
           withCredentials: true,
         });
-        console.log(res.data);
 
         setUsers(res.data.length ? res.data : []);
       } catch (error) {}
@@ -45,7 +44,7 @@ export default function Searchbar() {
       <input
         type="text"
         className="input input-ghost input-bordered bg-white shadow-sm w-full"
-        placeholder="Enter username or email"
+        placeholder="Enter @ + username"
         onFocus={() => setDropdown(true)}
         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
           setQuery(e.target.value);

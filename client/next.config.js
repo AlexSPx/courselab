@@ -1,4 +1,9 @@
-module.exports = {
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true" ? true : false,
+});
+const withPWA = require("next-pwa");
+
+module.exports = withPWA({
   reactStrictMode: true,
   images: {
     domains: ["localhost", "avatars.dicebear.com", "course-lab.xyz"],
@@ -10,4 +15,7 @@ module.exports = {
     defaultLocale: "en",
   },
   poweredByHeader: false,
-};
+  pwa: {
+    dest: "public",
+  },
+});

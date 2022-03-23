@@ -47,8 +47,6 @@ export default function Questions({
     setTimestamp(time);
   };
 
-  console.log(questions);
-
   const handleAskQuestion = async () => {
     try {
       if (!content) {
@@ -435,8 +433,6 @@ const Response = ({
         },
         { withCredentials: true }
       );
-
-      console.log(res.data);
 
       if (res.status === 200) {
         setResponses((responses) => {
