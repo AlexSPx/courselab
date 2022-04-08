@@ -24,7 +24,7 @@ export default function Page({
     };
   };
   setSubmit: Dispatch<SetStateAction<QuizSubmit | null>>;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) {
   const [answers, setAnswers] = useState<Object>();
   const [filledQuestions, setFilledQuestions] = useState(0);

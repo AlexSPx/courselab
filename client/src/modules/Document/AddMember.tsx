@@ -13,7 +13,7 @@ export default function AddMember({
 }: {
   onClose: Function;
   document: DocumentInterface;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) {
   const wrapperRef = useRef(null);
 

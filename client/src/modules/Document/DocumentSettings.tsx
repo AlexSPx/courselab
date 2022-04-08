@@ -21,7 +21,7 @@ export default function DocumentSettings({
 }: {
   doc: DocumentInterface;
   UsersInDoc: GeneralUserInformation[];
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) {
   const [showMembers, setShowMembers] = useState(false);
 

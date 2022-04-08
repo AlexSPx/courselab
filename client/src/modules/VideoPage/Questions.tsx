@@ -31,7 +31,7 @@ export default function Questions({
 }: {
   video: VideoInterface;
   playerRef: MutableRefObject<ReactPlayer | undefined>;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) {
   const [timestamp, setTimestamp] = useState<number | null>(null);
   const [content, setContent] = useState<string>();
@@ -159,7 +159,7 @@ const QuestionBlock = ({
   currentUser: string;
   videoId: string;
   playerRef: MutableRefObject<ReactPlayer | undefined>;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) => {
   const [showResponses, setShowResponses] = useState(false);
   const [showReplay, setShowReplay] = useState(true);
@@ -424,7 +424,7 @@ const Response = ({
   currentUser: string;
   parentAuthorId: String;
   setResponses: Dispatch<SetStateAction<VideoQuestion[]>>;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) => {
   const handleScrollTimestamp = () => {
     if (!response.timestamp) return;

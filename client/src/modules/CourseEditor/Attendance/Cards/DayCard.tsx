@@ -12,7 +12,7 @@ export type DayCardProps = {
   currentWeek: number;
   startingDate?: Date;
   index: number;
-  t: TFunction;
+  t: TFunction<"course_settings", undefined>;
 };
 
 export default function DayCard({

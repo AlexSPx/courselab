@@ -18,7 +18,7 @@ export default function OpenedQuestionModal({
   onClose: Function;
   setQuestions: Dispatch<SetStateAction<QuizzQuestionInterface[]>>;
   editData?: QuizzQuestionInterface;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [answer, setAnswer] = useState<string | null>();

@@ -257,7 +257,7 @@ const FileOptions = ({
   setFiles: React.Dispatch<SetStateAction<Attachment[] | undefined>>;
   handleCreateDoc: () => Promise<void>;
   handleCreateVideo: () => Promise<void>;
-  t: TFunction;
+  t: TFunction<"docs">;
 }) => {
   const { pushModal, closeModal } = useModals();
 

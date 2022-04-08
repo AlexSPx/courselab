@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { TFunction } from "react-i18next";
 import Modal from "..";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
@@ -154,7 +154,7 @@ const OpenedQuestion = ({
   question: QuizzQuestionInterface;
   givenAnswer: QuizGivenAnswer;
   changeAnswer: (correct: boolean) => void;
-  t: TFunction;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   return (
     <div
@@ -202,7 +202,7 @@ const ClosedQuestion = ({
   question: QuizzQuestionInterface;
   givenAnswer: QuizGivenAnswer;
   changeAnswer: (correct: boolean) => void;
-  t: TFunction;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const options = question.options?.map((option) => {
     return (

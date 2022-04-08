@@ -15,7 +15,7 @@ import { TFunction } from "react-i18next";
 type SideBarMenuProps = {
   name: string;
   published: boolean;
-  t: TFunction;
+  t: TFunction<"course_settings", undefined>;
 };
 
 export const CourseEditorLayout: React.FC<SideBarMenuProps> = ({

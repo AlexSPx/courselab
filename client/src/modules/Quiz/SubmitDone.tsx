@@ -8,7 +8,7 @@ export default function SubmitDone({
   t,
 }: {
   submit: QuizSubmit;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) {
   return (
     <Main css="max-w-2xl items-center">

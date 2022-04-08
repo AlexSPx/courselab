@@ -89,7 +89,7 @@ const SearchBarUserDisplay = ({
 }: {
   user: GeneralUserInformation;
   docId: string;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) => {
   const [role, setRole] = useState<"ADMIN" | "EDITOR" | "READER">("EDITOR");
   const [loading, setLoading] = useState(false);

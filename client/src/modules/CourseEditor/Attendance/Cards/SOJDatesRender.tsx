@@ -10,7 +10,7 @@ export default function SOJDatesRender({
 }: {
   courseWeeks: number;
   courseName: string;
-  t: TFunction;
+  t: TFunction<"course_settings", undefined>;
 }) {
   const [currentWeek, setCurrentWeek] = useState(0);
 

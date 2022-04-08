@@ -27,7 +27,7 @@ export default function SubmitsSection({
   t,
 }: {
   assignment: AssignmentInterface;
-  t: TFunction;
+  t: TFunction<"docs", undefined>;
 }) {
   const [attachedFiles, setAttachedFiles] = useState<Attachment[]>();
   const [toBeRemoved, setToBeRemoved] =

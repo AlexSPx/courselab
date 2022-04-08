@@ -107,7 +107,7 @@ const Submited = ({
 }: {
   submit: AttendanceInterface;
   index: number;
-  t: TFunction;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const [submitIndex, setSubmitIndex] = useState(submit.submits.length - 1);
 
