@@ -1,5 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { useEffect, useState } from "react";
@@ -44,22 +46,35 @@ export const ChatMessages: NextPage<ChatMessageProps> = ({
     receiver
   );
   const [chatroom, setChatroom] = useState(chat);
-
+  const { t } = useTranslation();
   return (
     <MessagesLayout>
       <SeoTags
         title={`Chat Messages`}
         description={`The place to chat with your course teachers or just anyone`}
       />
-      {!chatroom && user && <NoChatRoom user={user} mutate={mutate} />}
-      {chatroom && <ChatSection chatroom={chatroom} />}
+      {!chatroom && user && (
+        <NoChatRoom
+          user={user}
+          mutate={mutate}
+          message={t("no-chatroom")}
+          btnLabel={t("start-chat")}
+        />
+      )}
+      {chatroom && (
+        <ChatSection
+          chatroom={chatroom}
+          typeLabel={t("type-label")}
+          typingLabel={t("typing-label")}
+        />
+      )}
       {user && <DirectMessageSettings user={user} />}
     </MessagesLayout>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req, query }) => {
+  async ({ req, query, locale }) => {
     const type = typeof query.id === "string" ? query.id : "";
     const to = typeof query.to === "string" ? query.to : "";
 
@@ -76,6 +91,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
           user: req.user,
           chat: data.room,
           receiver: data.user,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     } catch (error) {
@@ -84,6 +100,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
           user: req.user,
           chat: to,
           receiver: null,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     }

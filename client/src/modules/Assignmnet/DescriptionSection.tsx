@@ -3,8 +3,12 @@ import { useState, useEffect, useCallback } from "react";
 
 export default function DescriptionSection({
   description,
+  placeholder,
+  label,
 }: {
   description: string;
+  placeholder: string;
+  label: string;
 }) {
   const [quill, setQuill] = useState<Quill>();
 
@@ -13,25 +17,28 @@ export default function DescriptionSection({
     if (description) quill.setContents(JSON.parse(description));
   }, [description, quill]);
 
-  const wrapperRef = useCallback((wrapper: HTMLDivElement) => {
-    if (typeof window === "undefined") return;
-    if (wrapper === null) return;
+  const wrapperRef = useCallback(
+    (wrapper: HTMLDivElement) => {
+      if (typeof window === "undefined") return;
+      if (wrapper === null) return;
 
-    wrapper.innerHTML = "";
-    const editor = document.createElement("div");
-    wrapper.append(editor);
-    const q = new Quill(editor, {
-      theme: "bubble",
-      readOnly: true,
-      placeholder: "There is no assignment description...",
-      bounds: "journal-scroll",
-    });
-    setQuill(q);
-  }, []);
+      wrapper.innerHTML = "";
+      const editor = document.createElement("div");
+      wrapper.append(editor);
+      const q = new Quill(editor, {
+        theme: "bubble",
+        readOnly: true,
+        placeholder,
+        bounds: "journal-scroll",
+      });
+      setQuill(q);
+    },
+    [placeholder]
+  );
 
   return (
     <div className="block p-4 bg-white border border-gray-100 shadow-sm rounded-xl my-2">
-      <span className="font-bold text-2xl ">Assignment description</span>
+      <span className="font-bold text-2xl">{label}</span>
       <div ref={wrapperRef}></div>
     </div>
   );

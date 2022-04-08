@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/dist/client/router";
-import { BurgerMenu } from "../svg/small";
 import { AiOutlineGithub } from "react-icons/ai";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { useTranslation } from "next-i18next";
+import LanguageSelector from "./LanguageSelector";
 
 export default function Header() {
   const [dropdown, setDropdown] = useState(false);
 
   const router = useRouter();
+
+  const { t } = useTranslation("common");
 
   return (
     <header className="lg:h-24 xl:h-24 2xl:h-24 flex items-center z-30 w-full flex-col justify-center mt-3">
@@ -20,27 +24,27 @@ export default function Header() {
         <div className="flex items-center">
           <nav className="font-sen text-gray-800 dark:text-white uppercase text-lg lg:flex items-center hidden">
             <Location
-              label="Home"
+              label={t("header-home")}
               to="/"
               active={router.pathname === "/" ? true : false}
             />
             <Location
-              label="FAQs"
+              label={t("header-faqs")}
               to="/faqs"
               active={router.pathname === "/faqs" ? true : false}
             />
             <Location
-              label="Courses"
+              label={t("header-courses")}
               to="/courses"
               active={router.pathname === "/courses" ? true : false}
             />
             <Location
-              label="Login"
+              label={t("header-login")}
               to="/login"
               active={router.pathname === "/login" ? true : false}
             />
             <Location
-              label="Register"
+              label={t("header-register")}
               to="/register"
               active={router.pathname === "/register" ? true : false}
             />
@@ -53,40 +57,41 @@ export default function Header() {
                 GitHub
               </a>
             </Link>
+            <LanguageSelector />
           </nav>
           <button
-            className="lg:hidden flex flex-col ml-4"
+            className="flex md:hidden flex-col ml-4"
             onClick={() => setDropdown(!dropdown)}
             aria-label="Header dropdown"
           >
-            <BurgerMenu />
+            <GiHamburgerMenu size={28} />
           </button>
         </div>
       </div>
       {dropdown && (
         <div className="flex lg:hidden  flex-col">
           <LocationMobile
-            label="Home"
+            label={t("header-home")}
             to="/"
             active={router.pathname === "/" ? true : false}
           />
           <LocationMobile
-            label="Courses"
+            label={t("header-courses")}
             to="/courses"
             active={router.pathname === "/about" ? true : false}
           />
           <LocationMobile
-            label="Docs"
-            to="/docs"
+            label={t("header-faqs")}
+            to="/faqs"
             active={router.pathname === "/docs" ? true : false}
           />
           <LocationMobile
-            label="Login"
+            label={t("header-login")}
             to="/login"
             active={router.pathname === "/login" ? true : false}
           />
           <LocationMobile
-            label="Register"
+            label={t("header-register")}
             to="/register"
             active={router.pathname === "/register" ? true : false}
           />

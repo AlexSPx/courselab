@@ -25,8 +25,8 @@ export const SideBarHref = ({
 }) => {
   return (
     <Link href={href}>
-      <a className="w-5/6 btn btn-outline btn-sm rounded-btn my-1 justify-center">
-        <div className="mx-1">{icon}</div>
+      <a className="w-5/6 btn btn-outline btn-sm rounded-btn my-1 justify-center h-auto px-2">
+        {icon}
         {label}
       </a>
     </Link>

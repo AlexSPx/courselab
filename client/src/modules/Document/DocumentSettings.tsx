@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import useHasImage from "../../Hooks/useHasImage";
 import useOnlineQuery from "../../Hooks/useOnlineQuery";
 import {
@@ -18,13 +12,16 @@ import Image from "next/image";
 import Avatar from "../../components/Avatar";
 import { useModals } from "../../components/Modal";
 import AddMember from "./AddMember";
+import { TFunction } from "react-i18next";
 
 export default function DocumentSettings({
   doc,
   UsersInDoc,
+  t,
 }: {
   doc: DocumentInterface;
   UsersInDoc: GeneralUserInformation[];
+  t: TFunction;
 }) {
   const [showMembers, setShowMembers] = useState(false);
 
@@ -44,7 +41,12 @@ export default function DocumentSettings({
     const akey = Date.now();
 
     pushModal(
-      <AddMember onClose={() => closeModal(akey)} document={doc} key={akey} />,
+      <AddMember
+        onClose={() => closeModal(akey)}
+        document={doc}
+        key={akey}
+        t={t}
+      />,
       {
         timer: false,
       }
@@ -87,17 +89,17 @@ export default function DocumentSettings({
         <DropDown
           state={showMembers}
           setState={setShowMembers}
-          label="Show Members"
+          label={t("show-members")}
         />
         {showMembers && (
           <>
-            <Members docUsers={docUsers} />
+            <Members docUsers={docUsers} adminLabel={t("admin")} />
             <button
               className="btn btn-sm btn-outline w-full h-2"
               onClick={addMember}
               aria-label="add a member"
             >
-              Add Member
+              {t("add-member")}
             </button>
           </>
         )}
@@ -126,7 +128,13 @@ const DropDown = ({
   );
 };
 
-const Members = ({ docUsers }: { docUsers: DocumentUser[] }) => {
+const Members = ({
+  docUsers,
+  adminLabel,
+}: {
+  docUsers: DocumentUser[];
+  adminLabel: string;
+}) => {
   const ids = docUsers.map((docUser) => docUser.user.id);
   const { onlineUsers } = useOnlineQuery(ids, 3000);
 
@@ -134,7 +142,12 @@ const Members = ({ docUsers }: { docUsers: DocumentUser[] }) => {
     const isOnline = onlineUsers.some((user) => user.id === docUser.user.id);
 
     return (
-      <Member docUser={docUser} isOnline={isOnline} key={docUser.user.id} />
+      <Member
+        docUser={docUser}
+        isOnline={isOnline}
+        key={docUser.user.id}
+        adminLabel={adminLabel}
+      />
     );
   });
 
@@ -144,9 +157,11 @@ const Members = ({ docUsers }: { docUsers: DocumentUser[] }) => {
 const Member = ({
   docUser,
   isOnline,
+  adminLabel,
 }: {
   docUser: DocumentUser;
   isOnline: boolean;
+  adminLabel: string;
 }) => {
   const { url } = useHasImage(`${docUser.user.username}`, {
     avatar: `${docUser.user.first_name}-${docUser.user.last_name}`,
@@ -172,7 +187,7 @@ const Member = ({
         <p className="flex flex-row">
           {docUser.user.first_name} {docUser.user.last_name}
         </p>
-        {docUser.role === "ADMIN" && <p className="text-sm">Administrator</p>}
+        {docUser.role === "ADMIN" && <p className="text-sm">{adminLabel}</p>}
       </div>
     </div>
   );

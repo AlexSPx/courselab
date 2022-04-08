@@ -5,6 +5,7 @@ import { AssignmentSubmit, GeneralUserInformation } from "../../../interfaces";
 import { useModals } from "../../../components/Modal";
 import GradeAssignment from "../../../components/Modal/Menus/GradeAssignment";
 import FormatDate from "../../../components/FormatDate";
+import { TFunction } from "react-i18next";
 
 export interface AttendanceInterface {
   assignment_id: string;
@@ -30,10 +31,12 @@ const RenderAssignment = ({
   id,
   courseName,
   startingDate,
+  t,
 }: {
   id: string;
   courseName: string;
   startingDate: Date | null;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const [submitted, setSubmitted] = useState<AttendanceInterface[]>();
   const [missing, setMissing] = useState<Missing[]>();
@@ -52,7 +55,9 @@ const RenderAssignment = ({
   }, [courseName, id, startingDate]);
 
   const mapSubmitted = submitted?.map((submit, index) => {
-    return <Submited submit={submit} index={index} key={`submit#${index}`} />;
+    return (
+      <Submited submit={submit} index={index} key={`submit#${index}`} t={t} />
+    );
   });
 
   const mapMissing = missing?.map((submit, index) => {
@@ -81,11 +86,11 @@ const RenderAssignment = ({
         <thead>
           <tr>
             <th></th>
-            <th>Name</th>
-            <th className="hidden md:table-cell">Username</th>
-            <th className="hidden md:table-cell">Submitted At</th>
-            <th className="hidden md:table-cell">Submits</th>
-            <th>Attachments</th>
+            <th>{t("user-name")}</th>
+            <th className="hidden md:table-cell">{t("username")}</th>
+            <th className="hidden md:table-cell">{t("submitted-on")}</th>
+            <th className="hidden md:table-cell">{t("submits")}</th>
+            <th>{t("attachments")}</th>
           </tr>
         </thead>
         <tbody>{mapSubmitted}</tbody>
@@ -98,9 +103,11 @@ const RenderAssignment = ({
 const Submited = ({
   submit,
   index,
+  t,
 }: {
   submit: AttendanceInterface;
   index: number;
+  t: TFunction;
 }) => {
   const [submitIndex, setSubmitIndex] = useState(submit.submits.length - 1);
 
@@ -144,7 +151,7 @@ const Submited = ({
       <td>
         {submit.enrollment.user.first_name} {submit.enrollment.user.last_name}
         <br />
-        {submit.submits[submitIndex].returned && "returned"}
+        {submit.submits[submitIndex].returned && t("returned")}
       </td>
       <td className="hidden md:table-cell">
         @{submit.enrollment.user.username}

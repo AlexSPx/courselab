@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import SeoTags from "../../components/SeoTags";
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
@@ -26,7 +27,7 @@ export const AssignmentEditor: NextPage<AssigmentEditorTypes> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req, query }) => {
+  async ({ req, query, locale }) => {
     const assignmentId = typeof query.id === "string" ? query.id : "";
 
     try {
@@ -40,9 +41,21 @@ export const getServerSideProps: GetServerSideProps = withSession(
         }
       );
 
-      return { props: { user: req.user, assignment: res.data } };
+      return {
+        props: {
+          user: req.user,
+          assignment: res.data,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
+        },
+      };
     } catch (error) {
-      return { props: { user: undefined, assignment: null } };
+      return {
+        props: {
+          user: undefined,
+          assignment: null,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
+        },
+      };
     }
   }
 );

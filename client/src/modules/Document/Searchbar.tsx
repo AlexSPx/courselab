@@ -7,6 +7,8 @@ import { baseurl } from "../../lib/fetcher";
 import { CheckIcon, CloseIcon, ErrorIcon } from "../../svg/small";
 import Avatar from "../../components/Avatar";
 import { ErrorModal, useModals } from "../../components/Modal";
+import { useTranslation } from "next-i18next";
+import { TFunction } from "react-i18next";
 
 export default function Searchbar({
   document,
@@ -19,7 +21,7 @@ export default function Searchbar({
 
   const { mutate } = useSWRConfig();
   const { pushModal } = useModals();
-
+  const { t } = useTranslation("docs");
   const debouncedValue = useDebounce(query);
 
   useEffect(() => {
@@ -47,7 +49,12 @@ export default function Searchbar({
 
   const renderUsers = users.map((user) => {
     return (
-      <SearchBarUserDisplay user={user} docId={document.id} key={user.id} />
+      <SearchBarUserDisplay
+        user={user}
+        docId={document.id}
+        key={user.id}
+        t={t}
+      />
     );
   });
 
@@ -56,7 +63,7 @@ export default function Searchbar({
       <input
         type="text"
         className="input input-ghost input-bordered bg-white shadow-sm w-full"
-        placeholder="Enter username or email"
+        placeholder={t("document-search")}
         onFocus={() => setDropdown(true)}
         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
           setQuery(e.target.value);
@@ -64,7 +71,9 @@ export default function Searchbar({
       />
       {dropdown && (
         <div className="flex flex-col absolute w-[28rem] max-w-2xl mt-[1px] p-2 bg-white border rounded">
-          <p className="c animate-pulse">Searching...</p>
+          <p className="c animate-pulse">
+            {t("searching", { ns: "common" })}...
+          </p>
           <div className="border-b my-1"></div>
           <div className="flex flex-col">{renderUsers}</div>
         </div>
@@ -76,9 +85,11 @@ export default function Searchbar({
 const SearchBarUserDisplay = ({
   user,
   docId,
+  t,
 }: {
   user: GeneralUserInformation;
   docId: string;
+  t: TFunction;
 }) => {
   const [role, setRole] = useState<"ADMIN" | "EDITOR" | "READER">("EDITOR");
   const [loading, setLoading] = useState(false);
@@ -112,7 +123,9 @@ const SearchBarUserDisplay = ({
             {user.first_name} {user.last_name}
           </p>
           <p className="text-gray-400 italic">@{user.username}</p>
-          <p className="text-gray-400 text-sm italic">email: {user.email}</p>
+          <p className="text-gray-400 text-sm italic">
+            {t("email", { ns: "common" })}: {user.email}
+          </p>
         </div>
       </div>
       <div className="flex">
@@ -124,9 +137,9 @@ const SearchBarUserDisplay = ({
             setRole(e.target.value as any);
           }}
         >
-          <option value="EDITOR">Editor</option>
-          <option value="READER">Reader</option>
-          <option value="ADMIN">Admin</option>
+          <option value="EDITOR">{t("editor")}</option>
+          <option value="READER">{t("reader")}</option>
+          <option value="ADMIN">{t("admin")}</option>
         </select>
         <button
           className={`btn btn-sm btn-outline ${loading && "loading"}`}
@@ -135,7 +148,7 @@ const SearchBarUserDisplay = ({
         >
           {typeof isSuccess !== "undefined" &&
             (isSuccess ? <CheckIcon /> : <CloseIcon />)}
-          Add
+          {t("add")}
         </button>
       </div>
     </div>

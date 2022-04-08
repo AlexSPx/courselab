@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { CoursePublicRaw } from ".";
@@ -14,10 +13,12 @@ import dynamic from "next/dynamic";
 import TweetEmbed from "react-tweet-embed";
 import { BsStarFill } from "react-icons/bs";
 import { GiGraduateCap } from "react-icons/gi";
-import useEnroll from "../../../components/Modal/Menus/EnrollMenu";
 import NoSsr from "../../../components/NoSsr";
 import { useModals } from "../../../components/Modal";
 import EnrollMenu from "../../../components/Modal/Menus/EnrollMenu";
+import LazyImage from "../../../components/LazyImage";
+import { useTranslation } from "next-i18next";
+import { TFunction } from "react-i18next";
 
 const Description = dynamic(() => import("./Description"), { ssr: false });
 
@@ -39,7 +40,7 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
   );
 
   const [isEnrollEnabled, setIsEnrollEnabled] = useState(true);
-
+  const { t } = useTranslation();
   const { pushModal, closeModal } = useModals();
 
   const handleOpenEnroll = () => {
@@ -49,6 +50,7 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
         key={mkey}
         onClose={() => closeModal(mkey)}
         course={courseRaw}
+        t={t}
       />,
       { timer: false }
     );
@@ -71,7 +73,7 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
 
             <p className="mt-2 text-gray-500">{course.details.description}</p>
 
-            <dl className="flex items-center mt-6">
+            {/* <dl className="flex items-center mt-6">
               <div className="flex items-center">
                 <span className="p-2 text-white bg-green-600 rounded-full">
                   <BsStarFill />
@@ -90,12 +92,13 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
                   <dd className="order-first">1,520,404</dd>
                 </span>
               </div>
-            </dl>
+            </dl> */}
 
             <div className="flex items-stretch md:justify-end lg:justify-start mt-2">
-              <a className="inline-flex items-center justify-center w-12 rounded-lg cursor-pointer bg-rose-50 text-rose-600 group">
+              {/* Bookmark */}
+              {/* <a className="inline-flex items-center justify-center w-12 rounded-lg cursor-pointer bg-rose-50 text-rose-600 group">
                 <FiHeart size={24} className="group-hover:fill-current" />
-              </a>
+              </a> */}
 
               <button
                 className="btn btn-info px-20 ml-3 font-medium text-white bg-blue-600 hover:bg-blue-700"
@@ -103,22 +106,33 @@ export default function Page({ courseRaw }: { courseRaw: CoursePublicRaw }) {
                 disabled={!isEnrollEnabled}
                 aria-label="enroll"
               >
-                Enroll
+                {t("enroll")}
               </button>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
-            <Description description={course.ExtendedDetails.description} />
-            <Schedule course={course} setIsEnrollEnabled={setIsEnrollEnabled} />
+            <Description
+              description={course.ExtendedDetails.description}
+              label={t("course-details")}
+              placeholder={t("no-details")}
+            />
+            <Schedule
+              course={course}
+              setIsEnrollEnabled={setIsEnrollEnabled}
+              t={t}
+            />
           </div>
         </div>
         {course.ExtendedDetails.sponsors.length > 0 && (
           <div className="flex w-full py-4 mt-1 items-center justify-center">
-            <div className="divider w-full">Sponsors</div>
+            <div className="divider w-full">{t("sponsors")}</div>
           </div>
         )}
         {course.ExtendedDetails.reviews.length > 0 && (
-          <Reviews reviews={course.ExtendedDetails.reviews} />
+          <Reviews
+            reviews={course.ExtendedDetails.reviews}
+            label={t("reviews")}
+          />
         )}
       </div>
     </div>
@@ -133,16 +147,13 @@ const Images = ({ images }: { images: string[] }) => {
     if (images.length === 1) {
       return (
         <div className="relative h-64 col-span-3 lg:h-96 sm:row-span-2">
-          <Image
-            layout="fill"
-            objectFit="cover"
+          <LazyImage
             alt="image"
-            className="inset-0 object-cover w-full h-full rounded-lg"
             src={withSize(`${baseurl}/course/images/${images[0]}`, {
               width: 1000,
               height: 1000,
             })}
-            priority
+            classes="inset-0 object-cover w-full h-full rounded-lg"
           />
         </div>
       );
@@ -150,31 +161,25 @@ const Images = ({ images }: { images: string[] }) => {
     return (
       <>
         <div className="relative h-64 col-span-2 lg:h-96 sm:row-span-2">
-          <Image
-            layout="fill"
-            objectFit="cover"
+          <LazyImage
             alt="image"
-            className="inset-0 object-cover w-full h-full rounded-lg"
             src={withSize(`${baseurl}/course/images/${images[0]}`, {
               width: 1000,
               height: 1000,
             })}
-            priority
+            classes="inset-0 object-cover w-full h-full rounded-lg"
           />
         </div>
         {images.slice(1, 3).map((img) => {
           return (
             <div className="relative h-32 col-span-1 sm:h-auto" key={img}>
-              <Image
-                layout="fill"
-                objectFit="cover"
+              <LazyImage
                 alt="image"
-                className="inset-0 object-cover w-full h-full rounded-lg"
                 src={withSize(`${baseurl}/course/images/${img}`, {
                   width: 500,
                   height: 500,
                 })}
-                priority
+                classes="inset-0 object-cover w-full h-full rounded-lg"
               />
             </div>
           );
@@ -190,14 +195,14 @@ const Images = ({ images }: { images: string[] }) => {
   );
 };
 
-const Reviews = ({ reviews }: { reviews: String[] }) => {
+const Reviews = ({ reviews, label }: { reviews: String[]; label: string }) => {
   const renderReviews = reviews.map((review) => {
     return <TweetEmbed id={`${review}`} className="mx-3" key={`${review}`} />;
   });
 
   return (
     <div className="flex flex-col w-full py-4 mt-1 items-center justify-center">
-      <div className="divider w-full">Reviews</div>
+      <div className="divider w-full">{label}</div>
       <div className="flex flex-warp">{renderReviews}</div>
     </div>
   );
@@ -206,9 +211,11 @@ const Reviews = ({ reviews }: { reviews: String[] }) => {
 const Schedule = ({
   course,
   setIsEnrollEnabled,
+  t,
 }: {
   course: Course;
   setIsEnrollEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  t: TFunction;
 }) => {
   const upcommingDates = useMemo<ScheduleDate[]>(
     () => nextDate(course.scheduledDates) as unknown as ScheduleDate[],
@@ -241,9 +248,9 @@ const Schedule = ({
   return (
     <NoSsr>
       <div className="flex flex-col p-4 bg-white border border-gray-100 shadow-sm rounded-xl items-center">
-        <p className="font-bold text-2xl w-full">Schedule</p>
+        <p className="font-bold text-2xl w-full">{this}</p>
         {course.scheduleType === "START_ON_JOIN" && (
-          <div>You will start the course on join</div>
+          <div>{t("soj-message")}</div>
         )}
         {course.scheduleType === "INTERVAL" && <div></div>}
         {course.scheduleType === "SCHEDULE" && (
@@ -251,15 +258,15 @@ const Schedule = ({
             <table className="table w-full">
               <thead>
                 <tr>
-                  <th>Date</th>
+                  <th>{t("date")}</th>
                 </tr>
               </thead>
               <tbody>
-                {mapUpcommingDates ? (
+                {mapUpcommingDates.length ? (
                   mapUpcommingDates
                 ) : (
                   <tr>
-                    <td>There are no dates</td>
+                    <td>{t("no-dates")}</td>
                   </tr>
                 )}
               </tbody>

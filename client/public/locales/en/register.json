@@ -1,0 +1,13 @@
+{
+  "h1": "Create a new account",
+  "login-redirect": "Already have an account?",
+  "sign-in": "Sign in",
+  "select-avatar": "Select an Avatar",
+  "username": "Username",
+  "first-name": "First Name",
+  "last-name": "Last Name",
+  "email": "Email",
+  "password": "Password",
+  "cpassword": "Confirm Password",
+  "register": "Register"
+}

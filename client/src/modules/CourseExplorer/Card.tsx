@@ -1,8 +1,8 @@
 import React from "react";
 import useHasImage from "../../Hooks/useHasImage";
 import { CourseGeneralInterface } from "../../interfaces";
-import Image from "next/image";
 import Link from "next/link";
+import LazyImage from "../../components/LazyImage";
 
 export default function Card({ course }: { course: CourseGeneralInterface }) {
   const { url } = useHasImage(`${course.name}`, {
@@ -15,12 +15,7 @@ export default function Card({ course }: { course: CourseGeneralInterface }) {
     <Link href={`/course/${course.name}`}>
       <a className="block md:w-3/4 xl:w-[45%] mx-3 mt-4 h-[34rem] overflow-hidden bg-white shadow-xl rounded-2xl hover:bg-slate-50">
         <div className="w-full h-48 relative">
-          <Image
-            src={url}
-            layout="fill"
-            objectFit="cover"
-            alt={`${course.public_name} banner`}
-          />
+          <LazyImage src={url} alt={`${course.public_name} banner`} />
         </div>
         <div className="relative pt-20 text-center">
           <div
@@ -36,11 +31,9 @@ export default function Card({ course }: { course: CourseGeneralInterface }) {
             left-1/2
           "
           >
-            <Image
+            <LazyImage
               src={url}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-lg"
+              classes="rounded-lg"
               alt={`${course.public_name} banner`}
             />
           </div>

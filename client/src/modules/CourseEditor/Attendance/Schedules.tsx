@@ -1,3 +1,4 @@
+import { TFunction } from "react-i18next";
 import { useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 import FormatDate from "../../../components/FormatDate";

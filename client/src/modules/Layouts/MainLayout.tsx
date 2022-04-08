@@ -7,7 +7,7 @@ interface LayoutProps {
 export const MainLayout: React.FC<LayoutProps> = ({ children, css }) => {
   return (
     <section
-      className={`flex flex-col sm:flex-row w-full h-full justify-center overflow-auto ${css}`}
+      className={`flex flex-col relative sm:flex-row w-full h-full justify-center overflow-auto ${css}`}
       id="journal-scroll"
     >
       {children}
@@ -39,24 +39,6 @@ export const Right: React.FC<LayoutProps> = ({ children, css }) => {
   const [dropdown, setDropdown] = useState(false);
   const [opened, setOpened] = useState(false);
 
-  const updateTarget = useCallback((e: MediaQueryListEvent) => {
-    if (e.matches) {
-      setDropdown(true);
-    } else setDropdown(false);
-  }, []);
-
-  useEffect(() => {
-    const breaking = 640;
-    const media = window.matchMedia(`(max-width: ${breaking}px)`);
-    media.addEventListener("change", updateTarget);
-
-    if (media.matches) {
-      setDropdown(true);
-    }
-
-    return () => media.removeEventListener("change", updateTarget);
-  }, [updateTarget]);
-
   return (
     <>
       {dropdown ? (
@@ -68,7 +50,7 @@ export const Right: React.FC<LayoutProps> = ({ children, css }) => {
             dropdown
           </div>
           {opened && (
-            <div className="justify-center order-none w-full h-full flex">
+            <div className="justify-center order-none w-full h-full flex bg-red-200">
               {children}
             </div>
           )}
@@ -82,4 +64,27 @@ export const Right: React.FC<LayoutProps> = ({ children, css }) => {
       )}
     </>
   );
+};
+
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const updateTarget = useCallback((e: MediaQueryListEvent) => {
+    if (e.matches) {
+      setIsMobile(true);
+    } else setIsMobile(false);
+  }, []);
+
+  useEffect(() => {
+    const breaking = 640;
+    const media = window.matchMedia(`(max-width: ${breaking}px)`);
+    media.addEventListener("change", updateTarget);
+
+    if (media.matches) {
+      setIsMobile(true);
+    }
+
+    return () => media.removeEventListener("change", updateTarget);
+  }, [updateTarget]);
+
+  return isMobile;
 };

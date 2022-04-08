@@ -1,6 +1,7 @@
 import axios from "axios";
 import { NextPage } from "next";
 import { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import SeoTags from "../../components/SeoTags";
 import {
   CourseScheduleType,
@@ -41,7 +42,7 @@ export const CourseExplorer: NextPage<CourseExplorerProps> = ({ courses }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req }) => {
+  async ({ req, locale }) => {
     try {
       const courses = await axios.get(`${baseurl}/course/explore/null`, {
         withCredentials: true,
@@ -57,6 +58,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           courses: courses.data,
           user: req.user || null,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     } catch (error) {
@@ -64,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           courses: null,
           user: req.user || null,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     }

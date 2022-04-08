@@ -1,5 +1,6 @@
 import axios from "axios";
-import { filter, isEqual, isObject, size, transform } from "lodash";
+import { filter, isEqual, size, transform } from "lodash";
+import { useTranslation } from "next-i18next";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import {
   DragDropContext,
@@ -9,12 +10,7 @@ import {
 } from "react-beautiful-dnd";
 import { AiOutlineEdit } from "react-icons/ai";
 import QuizMenu from "../../components/Menus/QuizMenu";
-import {
-  ErrorModal,
-  LoadingModal,
-  SuccessModal,
-  useModals,
-} from "../../components/Modal";
+import { useModals } from "../../components/Modal";
 import { QuizInterface, QuizzQuestionInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import useRequest from "../../lib/useRequest";
@@ -44,6 +40,7 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
 
   const questionsWrapperRef = useRef(null);
 
+  const { t } = useTranslation("docs");
   const { pushModal, closeModal } = useModals();
   const { executeQuery } = useRequest();
 
@@ -65,6 +62,7 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
             onClose={() => closeModal(akey)}
             setQuestions={setQuestions}
             editData={question}
+            t={t}
           />,
           { timer: false }
         );
@@ -89,6 +87,7 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
             onClose={() => closeModal(akey)}
             setQuestions={setQuestions}
             editData={question}
+            t={t}
           />,
           { timer: false }
         );
@@ -197,7 +196,7 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
         <div className="flex flex-col w-3/4">
           <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">Course Public Name</span>
+              <span className="label-text">{t("quiz-name")}</span>
             </label>
             <input
               type="text"
@@ -210,11 +209,13 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
           </div>
           <div className="form-control mb-3">
             <label className="label">
-              <span className="label-text">Description</span>
+              <span className="label-text">
+                {t("description", { ns: "common" })}
+              </span>
             </label>
             <textarea
               className="textarea textarea-bordered"
-              placeholder="Description"
+              placeholder={t("description", { ns: "common" })}
               defaultValue={description}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
                 setDescription(e.target.value);
@@ -227,14 +228,14 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
               onClick={handleGeneralSettings}
               aria-label="save general settings"
             >
-              Save General Settings
+              {t("save-general-settings")}
             </button>
             <button
               className="btn btn-outline my-4 mx-1 w-[45%] border-red-500 text-red-500 hover:bg-red-100 hover:text-red-500 hover:border-red-500"
               onClick={handleDelete}
               aria-label="delete quiz"
             >
-              Delete Quiz
+              {t("delete-quiz")}
             </button>
           </div>
           {winReady && (
@@ -246,7 +247,7 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
                     ref={questionsWrapperRef}
                   >
                     <p className="py-4 text-xs opacity-60">
-                      Right click to create questions
+                      {t("create-question-msg")}
                     </p>
                     <QuizMenu
                       outerRef={questionsWrapperRef}
@@ -268,7 +269,7 @@ export default function Page({ quiz }: { quiz: QuizInterface }) {
               onClick={handleSaveChanges}
               aria-label="save changes"
             >
-              Save Changes
+              {t("save-changes", { ns: "common" })}
             </button>
           )}
         </div>

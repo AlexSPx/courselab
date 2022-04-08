@@ -4,13 +4,16 @@ import Searchbar from "./Searchbar";
 import useOnOutsideClick from "../../Hooks/useOnOutsideClick";
 import { DocumentInterface } from "../../interfaces";
 import { CloseIcon } from "../../svg/small";
+import { TFunction } from "react-i18next";
 
 export default function AddMember({
   onClose,
   document,
+  t,
 }: {
   onClose: Function;
   document: DocumentInterface;
+  t: TFunction;
 }) {
   const wrapperRef = useRef(null);
 
@@ -24,7 +27,7 @@ export default function AddMember({
           ref={wrapperRef}
         >
           <div className="flex flex-row justify-between p-3 border-b bg-white">
-            <span className="font-semibold label">Add Member</span>
+            <span className="font-semibold label">{t("add-member")}</span>
             <div
               className="flex h-10 w-10  items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
               onClick={() => onClose()}

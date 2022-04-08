@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { TFunction } from "react-i18next";
 import { useRef, useState } from "react";
 import Modal from "..";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
@@ -12,10 +13,12 @@ export default function SponsorCreate({
   onClose,
   setSponsors,
   courseName,
+  t,
 }: {
   onClose: Function;
   setSponsors: React.Dispatch<React.SetStateAction<Sponsor[]>>;
   courseName: string;
+  t: TFunction<"course_settings", undefined>;
 }) {
   const wrapperRef = useRef(null);
 
@@ -74,7 +77,7 @@ export default function SponsorCreate({
           ref={wrapperRef}
         >
           <div className="flex flex-row justify-between p-3 border-b bg-white">
-            <span className="font-semibold label">Add a sponsor</span>
+            <span className="font-semibold label">{t("add-sponsor")}</span>
             <div
               className="flex h-10 w-10  items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
               onClick={() => onClose()}
@@ -88,13 +91,13 @@ export default function SponsorCreate({
                 image={image}
                 setImage={setImage}
                 shape="square"
-                label="Logo"
+                label={t("logo")}
               />
             </div>
           </div>
           <div className="flex flex-col px-6 py-5 bg-gray-50">
             <label className="label">
-              <span className="label-text">Sponsor&apos;s Name</span>
+              <span className="label-text">{t("sponsor-name")}</span>
             </label>
             <input
               type="text"
@@ -114,7 +117,7 @@ export default function SponsorCreate({
               onClick={handleAddASponsor}
               aria-label="Add a sponsor"
             >
-              Create
+              {t("add")}
             </button>
           </div>
         </div>

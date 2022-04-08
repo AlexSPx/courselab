@@ -6,9 +6,11 @@ import { ChatRoom } from "../../interfaces";
 export default function ChatPreview({
   chatroom,
   userId,
+  emailLabel,
 }: {
   chatroom: ChatRoom;
   userId: string;
+  emailLabel: string;
 }) {
   const [user, setUser] = useState(
     chatroom.members.find((mmbr) => mmbr.user.id !== userId)?.user!
@@ -40,7 +42,9 @@ export default function ChatPreview({
           {user.first_name} {user.last_name}
         </p>
         <p className="text-gray-400 italic">@{user.username}</p>
-        <p className="text-gray-400 text-sm italic">email: {user.email}</p>
+        <p className="text-gray-400 text-sm italic">
+          {emailLabel}: {user.email}
+        </p>
       </div>
     </div>
   );

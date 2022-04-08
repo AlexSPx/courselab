@@ -13,11 +13,14 @@ import ImageSelector from "../../../components/Inputs/ImageSelector";
 import useRequest from "../../../lib/useRequest";
 import NoSsr from "../../../components/NoSsr";
 import FormatDate from "../../../components/FormatDate";
+import { TFunction } from "react-i18next";
 
 export default function GeneralSettings({
   course,
+  t,
 }: {
   course: CourseInterface;
+  t: TFunction<"course_settings", undefined>;
 }) {
   const [description, setDescription] = useState(course.details.description);
   const [name, setName] = useState(course.name);
@@ -77,12 +80,14 @@ export default function GeneralSettings({
 
   return (
     <div className="flex flex-col items-center w-full">
-      <p className="text-2xl font-bold">{publicName} - Editor</p>
+      <p className="text-2xl font-bold">
+        {publicName} - {t("editor")}
+      </p>
       <div className="flex flex-col w-3/4 font-semibold">
         <div className="flex flex-row w-full">
           <div className="form-control w-full mx-3">
             <label className="label">
-              <span className="label-text">Course Public Name</span>
+              <span className="label-text">{t("public-name")}</span>
             </label>
             <input
               type="text"
@@ -95,7 +100,7 @@ export default function GeneralSettings({
           </div>
           <div className="form-control w-full mx-3">
             <label className="label">
-              <span className="label-text">Course Name</span>
+              <span className="label-text">{t("name")}</span>
             </label>
             <input
               type="text"
@@ -111,11 +116,13 @@ export default function GeneralSettings({
         <div className="flex flex-row w-full mt-3">
           <div className="form-control w-1/2 mb-3 mx-3">
             <label className="label">
-              <span className="label-text">Description</span>
+              <span className="label-text">
+                {t("description", { ns: "common" })}
+              </span>
             </label>
             <textarea
               className="textarea h-36 textarea-bordered"
-              placeholder="Bio"
+              placeholder={t("description", { ns: "common" })}
               defaultValue={description}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
                 setDescription(e.target.value);
@@ -124,7 +131,7 @@ export default function GeneralSettings({
           </div>
           <div className="flex flex-col w-1/2 justify-center items-center">
             <label className="label">
-              <span className="label-text">Course Image</span>
+              <span className="label-text">{t("course-image")}</span>
             </label>
             <div className="relative w-32 h-32 rounded-xl border cursor-pointer overflow-hidden">
               <ImageSelector
@@ -139,10 +146,9 @@ export default function GeneralSettings({
         <CourseSchedule
           schedule={schedule}
           setSchedule={setSchedule}
-          interval={interval}
-          setInterval={setInterval}
           scheduledDates={scheduledDates}
           setScheduledDates={setScheduledDates}
+          t={t}
         />
       </div>
       <button
@@ -150,7 +156,7 @@ export default function GeneralSettings({
         onClick={() => saveChanges()}
         aria-label="save changes"
       >
-        Save Chanes
+        {t("save-changes", { ns: "common" })}
       </button>
     </div>
   );
@@ -159,17 +165,15 @@ export default function GeneralSettings({
 const CourseSchedule = ({
   schedule,
   setSchedule,
-  interval,
-  setInterval,
   scheduledDates,
   setScheduledDates,
+  t,
 }: {
   schedule: CourseScheduleType;
   setSchedule: Dispatch<SetStateAction<CourseScheduleType>>;
-  interval: number | undefined;
-  setInterval: Dispatch<SetStateAction<number | undefined>>;
   scheduledDates: ScheduleDate[];
   setScheduledDates: Dispatch<SetStateAction<ScheduleDate[]>>;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const [freeScheduleDate, setFreeScheduleDate] = useState(new Date());
 
@@ -180,7 +184,7 @@ const CourseSchedule = ({
         <td>
           <FormatDate date={date.startingAt} />
         </td>
-        <td>{date.status}</td>
+        <td>{t(`${date.status.toLowerCase()}`)}</td>
         <td>
           <button
             className="btn btn-sm"
@@ -191,7 +195,7 @@ const CourseSchedule = ({
             }
             aria-label="remove a date"
           >
-            Remove
+            {t("remove")}
           </button>
         </td>
       </tr>
@@ -209,7 +213,7 @@ const CourseSchedule = ({
 
   return (
     <>
-      <div className="divider w-full">Schedule</div>
+      <div className="divider w-full">{t("schedule")}</div>
       <div className="flex flex-col w-full items-center justify-center">
         <select
           className="select select-bordered w-full max-w-md"
@@ -217,15 +221,13 @@ const CourseSchedule = ({
           placeholder="Course schedule"
           value={schedule}
         >
-          <option value="START_ON_JOIN">Start on Join</option>
-          <option value="INTERVAL">Interval</option>
-          <option value="SCHEDULE">Schedule it yourself</option>
+          <option value="START_ON_JOIN">{t("dropd-soj")}</option>
+          {/* <option value="INTERVAL">Interval</option> */}
+          <option value="SCHEDULE">{t("dropd-schedule")}</option>
         </select>
         <div className="flex p-4 mt-2 w-full justify-center text-sm font-normal">
-          {schedule === "START_ON_JOIN" && (
-            <p>Users will be able to start the course on join</p>
-          )}
-          {schedule === "INTERVAL" && (
+          {schedule === "START_ON_JOIN" && <p>{t("soj-message")}</p>}
+          {/* {schedule === "INTERVAL" && (
             <div className="flex flex-col w-full max-w-xs">
               <label className="label">Interval value</label>
               <input
@@ -234,7 +236,7 @@ const CourseSchedule = ({
                 placeholder="type value in days"
               />
             </div>
-          )}
+          )} */}
           {schedule === "SCHEDULE" && (
             <div className="flex flex-row w-full">
               <div className="flex flex-col w-full max-w-sm">
@@ -247,7 +249,7 @@ const CourseSchedule = ({
                   onClick={handleAddaDate}
                   aria-label="add a date"
                 >
-                  Add a date
+                  {t("add-date")}
                 </button>
               </div>
 
@@ -256,10 +258,10 @@ const CourseSchedule = ({
                   <table className="table w-full">
                     <thead>
                       <tr>
-                        <th>Index</th>
-                        <th>Starting date</th>
-                        <th>Status</th>
-                        <th>Remove</th>
+                        <th>{t("index")}</th>
+                        <th>{t("starting-date")}</th>
+                        <th>{t("status")}</th>
+                        <th>{t("remove")}</th>
                       </tr>
                     </thead>
                     <tbody>{tableDates}</tbody>

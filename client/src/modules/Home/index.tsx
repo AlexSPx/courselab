@@ -1,5 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import SeoTags from "../../components/SeoTags";
 import { UserDataInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
@@ -21,19 +23,20 @@ export interface MyCourseInterface {
 }
 
 export const Home: NextPage<Courses> = ({ courses, user }) => {
+  const { t } = useTranslation();
   return (
     <MainLayout>
       <SeoTags
         title={`CourseLab | Home Page | @${user.user?.username}`}
         description={`CourseLab home page for ${user.user?.username}`}
       />
-      <Page courses={courses} />
+      <Page courses={courses} t={t} />
     </MainLayout>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req }) => {
+  async ({ req, locale }) => {
     try {
       const courses = await axios.get(`${baseurl}/course/mycourses`, {
         withCredentials: true,
@@ -46,6 +49,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           courses: courses.data,
           user: req.user,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     } catch (error) {
@@ -53,6 +57,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           courses: null,
           user: undefined,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     }

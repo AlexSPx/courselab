@@ -1,5 +1,6 @@
 import axios from "axios";
 import { uniqueId } from "lodash";
+import { useTranslation } from "next-i18next";
 import {
   ChangeEvent,
   Dispatch,
@@ -8,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { TFunction } from "react-i18next";
 import { AiOutlinePlus, AiOutlineVideoCameraAdd } from "react-icons/ai";
 import { BsPaperclip, BsLink } from "react-icons/bs";
 import { GrDocumentText } from "react-icons/gr";
@@ -55,7 +57,7 @@ export default function FIleAdder({
   }, [files, setOutsideData]);
 
   const { executeQuery } = useRequest();
-
+  const { t } = useTranslation("docs");
   const { mutate } = useSWRConfig();
 
   const handleCreateDoc = async () => {
@@ -211,7 +213,7 @@ export default function FIleAdder({
           onClick={() => setDropdown(!dropdown)}
         >
           <AiOutlinePlus size={20} className="mr-2" />
-          <p className="font-[600] uppercase">Add or attach a file</p>
+          <p className="font-[600] uppercase">{t("add-attach")}</p>
         </div>
         {dropdown && (
           <FileOptions
@@ -219,6 +221,7 @@ export default function FIleAdder({
             setFiles={setFiles}
             handleCreateDoc={handleCreateDoc}
             handleCreateVideo={handleCreateVideo}
+            t={t}
           />
         )}
       </div>
@@ -236,7 +239,7 @@ export default function FIleAdder({
           onClick={handleFileSave}
           aria-label="Upload Files"
         >
-          Upload Files
+          {t("upload-file")}
         </button>
       )}
     </div>
@@ -248,11 +251,13 @@ const FileOptions = ({
   setFiles,
   handleCreateDoc,
   handleCreateVideo,
+  t,
 }: {
   onClose: () => void;
   setFiles: React.Dispatch<SetStateAction<Attachment[] | undefined>>;
   handleCreateDoc: () => Promise<void>;
   handleCreateVideo: () => Promise<void>;
+  t: TFunction;
 }) => {
   const { pushModal, closeModal } = useModals();
 
@@ -292,6 +297,7 @@ const FileOptions = ({
       <AddLink
         onClose={() => closeModal(akey)}
         setFiles={setFiles}
+        label={t("add-link")}
         key={akey}
       />,
       {
@@ -313,14 +319,14 @@ const FileOptions = ({
           onChange={handleAddFile}
         />
         <BsPaperclip size={18} className="mx-4" />
-        <h4>File</h4>
+        <h4>{t("file", { ns: "common" })}</h4>
       </label>
       <div
         className="flex flex-row items-center w-full hover:bg-gray-200 py-1 cursor-pointer"
         onClick={handleAddLink}
       >
         <BsLink size={18} className="mx-4" />
-        <h4>Link</h4>
+        <h4>{t("link", { ns: "common" })}</h4>
       </div>
       <div className="border-b border-gray-400 w-full my-1"></div>
       <h3 className="p-2 text-sm font-semibold text-gray-500">Create</h3>
@@ -329,14 +335,14 @@ const FileOptions = ({
         onClick={handleCreateDoc}
       >
         <GrDocumentText size={16} className="mx-4" />
-        <h4>Document</h4>
+        <h4>{t("document", { ns: "common" })}</h4>
       </div>
       <div
         className="flex flex-row items-center w-full hover:bg-gray-200 py-1 cursor-pointer"
         onClick={handleCreateVideo}
       >
         <AiOutlineVideoCameraAdd size={16} className="mx-4" />
-        <h4>Video</h4>
+        <h4>{t("video", { ns: "common" })}</h4>
       </div>
     </div>
   );
@@ -345,9 +351,11 @@ const FileOptions = ({
 const AddLink = ({
   onClose,
   setFiles,
+  label,
 }: {
   onClose: () => void;
   setFiles: Dispatch<SetStateAction<Attachment[] | undefined>>;
+  label: string;
 }) => {
   const wrapperRef = useRef(null);
   useOnOutsideClick(wrapperRef, onClose);
@@ -372,7 +380,7 @@ const AddLink = ({
           ref={wrapperRef}
         >
           <div className="flex flex-row justify-between p-3 border-b bg-white max-h-[60%]">
-            <h2 className="font-semibold label">Add a sponsor</h2>
+            <h2 className="font-semibold label">{label}</h2>
             <div
               className="flex h-10 w-10  items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
               onClick={() => onClose()}
@@ -381,7 +389,7 @@ const AddLink = ({
             </div>
           </div>
           <section className="flex flex-col px-6 py-5 bg-gray-50">
-            <label>Add Link</label>
+            <label>{label}</label>
             <input
               type="text"
               value={link}
@@ -391,7 +399,7 @@ const AddLink = ({
               }}
             />
             <button className="btn btn-outline mt-4" onClick={handleAction}>
-              Add link
+              {label}
             </button>
           </section>
         </div>

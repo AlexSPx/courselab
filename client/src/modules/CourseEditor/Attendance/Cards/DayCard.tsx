@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { TFunction } from "react-i18next";
+import { useState, useEffect } from "react";
 import FormatDate from "../../../../components/FormatDate";
 import { DataModelInterface } from "../../../../interfaces";
 import { baseurl } from "../../../../lib/fetcher";
@@ -11,6 +12,7 @@ export type DayCardProps = {
   currentWeek: number;
   startingDate?: Date;
   index: number;
+  t: TFunction;
 };
 
 export default function DayCard({
@@ -18,6 +20,7 @@ export default function DayCard({
   currentWeek,
   startingDate,
   index,
+  t,
 }: DayCardProps) {
   const [dropdown, setDropdown] = useState(false);
   const [cooldown, setCooldown] = useState(false);
@@ -64,6 +67,7 @@ export default function DayCard({
         courseName={courseName}
         startingDate={startingDate || null}
         key={files.id}
+        t={t}
       />
     );
   });
@@ -78,15 +82,15 @@ export default function DayCard({
         }}
       >
         <div className="font-mono font-semibold px-3">
-          Day {index + 1}(
+          {t("day")} {index + 1}(
           {isUnlocked?.unlockingAt ? (
             <FormatDate date={isUnlocked?.unlockingAt} />
           ) : (
-            "Already started"
+            t("already-started")
           )}
           )
           <p className="text-sm">
-            {!isUnlocked?.isUnlocked && "Not yet unlocked"}
+            {!isUnlocked?.isUnlocked && t("not-yet-unlocked")}
           </p>
         </div>
         {dropdown ? <UpArrow /> : <DownArrow />}

@@ -1,5 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -19,6 +21,7 @@ export const LoginPage: NextPage = () => {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
 
+  const { t } = useTranslation("login");
   const { pushModal, closeModal } = useModals();
   const { push } = useRouter();
 
@@ -66,7 +69,7 @@ export const LoginPage: NextPage = () => {
       <SeoTags title="CourseLab | Login" description="CourseLab login page" />
       <div className="flex flex-col w-full max-w-md px-4 py-8 bg-white rounded-lg shadow dark:bg-gray-800 sm:px-6 md:px-8 lg:px-10">
         <h1 className="self-center mb-6 text-xl font-light text-gray-600 sm:text-2xl dark:text-white">
-          Login To Your Account
+          {t("h1")}
         </h1>
         <div className="mt-8">
           <div>
@@ -79,7 +82,7 @@ export const LoginPage: NextPage = () => {
                   type="email"
                   id="sign-in-email"
                   className=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="Email"
+                  placeholder={t("email")}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
                     setEmail(e.target.value)
                   }
@@ -95,7 +98,7 @@ export const LoginPage: NextPage = () => {
                   type="password"
                   id="sign-in-password"
                   className=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="Your password"
+                  placeholder={t("password")}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
                     setPassword(e.target.value)
                   }
@@ -106,7 +109,7 @@ export const LoginPage: NextPage = () => {
               <div className="flex ml-auto">
                 <Link href="/forgotpassword">
                   <a className="inline-flex text-xs font-thin text-gray-500 sm:text-sm dark:text-gray-100 hover:text-gray-700 dark:hover:text-white">
-                    Forgot Your Password?
+                    {t("forgot-password")}
                   </a>
                 </Link>
               </div>
@@ -118,7 +121,7 @@ export const LoginPage: NextPage = () => {
                 className="btn btn-primary w-full"
                 aria-label="login"
               >
-                Login
+                {t("login")}
               </button>
             </div>
           </div>
@@ -126,7 +129,7 @@ export const LoginPage: NextPage = () => {
         <div className="flex items-center justify-center mt-6">
           <Link href="/register">
             <a className="inline-flex items-center text-xs font-thin text-center text-gray-500 hover:text-gray-700 dark:text-gray-100 dark:hover:text-white">
-              <span className="ml-2">You dont have an account?</span>
+              <span className="ml-2">{t("no-account")}</span>
             </a>
           </Link>
         </div>
@@ -136,10 +139,11 @@ export const LoginPage: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req }) => {
+  async ({ req, locale }) => {
     return {
       props: {
         user: req.user || null,
+        ...(await serverSideTranslations(locale!, ["common", "login"])),
       },
     };
   },

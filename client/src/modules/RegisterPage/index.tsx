@@ -1,5 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -24,6 +26,7 @@ export const RegisterPage: NextPage = () => {
   const [password, setPassword] = useState<string>();
   const [cpassword, setCpassword] = useState<string>();
 
+  const { t } = useTranslation("register");
   const { pushModal, closeModal } = useModals();
   const { push } = useRouter();
 
@@ -115,13 +118,13 @@ export const RegisterPage: NextPage = () => {
       />
       <div className="flex flex-col max-w-md px-4 py-8 bg-white rounded-lg shadow dark:bg-gray-800 sm:px-6 md:px-8 lg:px-10">
         <div className="self-center mb-2 text-xl font-light text-gray-800 sm:text-2xl dark:text-white">
-          Create a new account
+          {t("h1")}
         </div>
         <span className="justify-center text-sm text-center text-gray-500 flex-items-center dark:text-gray-400">
-          Already have an account?{" "}
+          {t("login-redirect")}
           <Link href="/login">
             <a className="text-sm text-blue-500 underline hover:text-blue-700">
-              Sign in
+              {t("sign-in")}
             </a>
           </Link>
         </span>
@@ -133,29 +136,29 @@ export const RegisterPage: NextPage = () => {
                   image={avatar}
                   setImage={setAvatar}
                   shape="circle"
-                  label="Click Here"
+                  label={t("click-here", { ns: "common" })}
                 />
               </div>
 
               <p className="text-xl font-light text-gray-700 placeholder-gray-400 shadow-sm">
-                Select an Avatar
+                {t("select-avatar")}
               </p>
             </div>
             <Field
-              placeholder="Username"
+              placeholder={t("username")}
               data={username}
               setData={setUsername}
             />
             <div className="flex">
               <Field
                 css="w-1/2"
-                placeholder="First Name"
+                placeholder={t("first-name")}
                 data={firstname}
                 setData={setFirstname}
               />
               <Field
                 css="w-1/2"
-                placeholder="Last Name"
+                placeholder={t("last-name")}
                 data={lastname}
                 setData={setLastname}
               />
@@ -163,13 +166,13 @@ export const RegisterPage: NextPage = () => {
             <div className="flex flex-col mb-2">
               <Field placeholder="Email" data={email} setData={setEmail} />
               <Field
-                placeholder="Password"
+                placeholder={t("password")}
                 type="password"
                 data={password}
                 setData={setPassword}
               />
               <Field
-                placeholder="Confirm Password"
+                placeholder={t("cpassword")}
                 type="password"
                 data={cpassword}
                 setData={setCpassword}
@@ -183,7 +186,7 @@ export const RegisterPage: NextPage = () => {
                 }}
                 aria-label="register"
               >
-                Register
+                {t("register")}
               </button>
             </div>
           </div>
@@ -194,10 +197,11 @@ export const RegisterPage: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req }) => {
+  async ({ req, locale }) => {
     return {
       props: {
         user: req.user || null,
+        ...(await serverSideTranslations(locale!, ["common", "register"])),
       },
     };
   },

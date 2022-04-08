@@ -1,4 +1,5 @@
 import axios from "axios";
+import { TFunction } from "react-i18next";
 import {
   Dispatch,
   MutableRefObject,
@@ -26,9 +27,11 @@ import secondsFormater from "../../lib/secondsFormater";
 export default function Questions({
   video,
   playerRef,
+  t,
 }: {
   video: VideoInterface;
   playerRef: MutableRefObject<ReactPlayer | undefined>;
+  t: TFunction;
 }) {
   const [timestamp, setTimestamp] = useState<number | null>(null);
   const [content, setContent] = useState<string>();
@@ -87,13 +90,14 @@ export default function Questions({
         videoId={video.id}
         playerRef={playerRef}
         key={question.id}
+        t={t}
       />
     );
   });
 
   return (
     <div className="flex flex-col px-2">
-      <p className="text-lg">Questions</p>
+      <p className="text-lg">{t("questions")}</p>
       <div className="flex flex-col items-start w-full">
         <div className="flex flex-row items-center w-full">
           <button
@@ -102,7 +106,7 @@ export default function Questions({
             aria-label="add a timestamp"
           >
             <IoMdTime />
-            Timestamp
+            {t("timestamp")}
           </button>
           {timestamp && (
             <>
@@ -136,7 +140,7 @@ export default function Questions({
           onClick={handleAskQuestion}
           aria-label="ask a question"
         >
-          Ask a question
+          {t("ask-question")}
         </button>
       </div>
       {renderQuestions}
@@ -149,11 +153,13 @@ const QuestionBlock = ({
   currentUser,
   videoId,
   playerRef,
+  t,
 }: {
   question: VideoQuestion;
   currentUser: string;
   videoId: string;
   playerRef: MutableRefObject<ReactPlayer | undefined>;
+  t: TFunction;
 }) => {
   const [showResponses, setShowResponses] = useState(false);
   const [showReplay, setShowReplay] = useState(true);
@@ -223,6 +229,7 @@ const QuestionBlock = ({
         currentUser={currentUser}
         setResponses={setResponses}
         key={response.id}
+        t={t}
       />
     );
   });
@@ -239,12 +246,12 @@ const QuestionBlock = ({
         <ul className="py-1" aria-labelledby="dropdownInformationButton">
           <li>
             <p className="block py-2 px-4 text-sm text-red-700 hover:bg-red-50">
-              Delete
+              {t("delete", { ns: "common" })}
             </p>
           </li>
           <li>
             <p className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-              Edit
+              {t("edit", { ns: "common" })}
             </p>
           </li>
         </ul>
@@ -274,11 +281,11 @@ const QuestionBlock = ({
             </div>
             {question.answered ? (
               <span className="flex items-center justify-center h-6 w-36 px-3 text-xs font-semibold text-green-500 bg-green-100 rounded-full">
-                Answered
+                {t("answered")}
               </span>
             ) : (
               <span className="flex items-center justify-center h-6 w-36 px-3 text-xs font-semibold bg-gray-100 rounded-full">
-                Not Answered
+                {t("not-answered")}
               </span>
             )}
           </div>
@@ -324,6 +331,7 @@ const QuestionBlock = ({
             currentUser={currentUser}
             setResponses={setResponses}
             key={responses[0].id}
+            t={t}
           />
         </div>
       )}
@@ -337,7 +345,7 @@ const QuestionBlock = ({
               onClick={() => setShowReplay(!showReplay)}
               aria-label="post a replay"
             >
-              Post a replay
+              {t("post-reply")}
               {showReplay ? (
                 <IoIosArrowDown className="ml-2" size={24} />
               ) : (
@@ -346,7 +354,7 @@ const QuestionBlock = ({
             </button>
             {showReplay && (
               <div className="flex flex-col w-full">
-                <p className="p-1 font-medium">Write a response</p>
+                <p className="p-1 font-medium">{t("write-response")}</p>
                 <div className="flex flex-row items-center w-full">
                   <div className="flex flex-row items-center w-full">
                     <button
@@ -355,7 +363,7 @@ const QuestionBlock = ({
                       aria-label="add a timestamp"
                     >
                       <IoMdTime />
-                      Timestamp
+                      {t("timestamp")}
                     </button>
                     {timestamp && (
                       <>
@@ -392,7 +400,7 @@ const QuestionBlock = ({
                   className="btn btn-xs btn-outline mt-2 w-44"
                   onClick={handleSendResponse}
                 >
-                  Post a response
+                  {t("post-response")}
                 </div>
               </div>
             )}
@@ -409,12 +417,14 @@ const Response = ({
   currentUser,
   parentAuthorId,
   setResponses,
+  t,
 }: {
   response: VideoQuestion;
   playerRef: MutableRefObject<ReactPlayer | undefined>;
   currentUser: string;
   parentAuthorId: String;
   setResponses: Dispatch<SetStateAction<VideoQuestion[]>>;
+  t: TFunction;
 }) => {
   const handleScrollTimestamp = () => {
     if (!response.timestamp) return;
@@ -488,13 +498,13 @@ const Response = ({
                 onClick={handleMarkAsAnswer}
                 aria-label="mark as answer"
               >
-                Mark as answer
+                {t("mark-answer")}
               </button>
             )}
           </div>
           {response.is_answer && (
             <span className="flex items-center justify-center h-6 w-36 px-3 text-xs mr-4 font-semibold text-green-500 bg-green-100 rounded-full">
-              Answer
+              {t("answer")}
             </span>
           )}
         </div>

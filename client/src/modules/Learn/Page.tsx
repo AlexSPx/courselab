@@ -1,4 +1,5 @@
 import axios from "axios";
+import { TFunction } from "react-i18next";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -18,15 +19,26 @@ import {
   VideoIcon,
 } from "../../svg/small";
 
+interface CountdownLabels {
+  daysLabel: string;
+  hoursLabel: string;
+  minutesLabel: string;
+  secondsLabel: string;
+  startingLabel: string;
+}
 const countdownRenderer: CountdownRendererFn = ({
   days,
   hours,
   minutes,
   seconds,
   completed,
-}) => {
-  if (completed)
-    return <div className="flex text-mono">The course is starting...</div>;
+  daysLabel,
+  hoursLabel,
+  minutesLabel,
+  secondsLabel,
+  startingLabel,
+}: CountdownRenderProps & CountdownLabels) => {
+  if (completed) return <div className="flex text-mono">{startingLabel}</div>;
 
   return (
     <div className="grid grid-flow-col gap-5 place-items-end auto-cols-max font-mono text-2xl">
@@ -34,31 +46,37 @@ const countdownRenderer: CountdownRendererFn = ({
         <span className="font-mono text-4xl">
           <span>{days}</span>
         </span>
-        days
+        {daysLabel}
       </div>
       <div>
         <span className="font-mono text-4xl">
           <span>{hours}</span>
         </span>
-        hours
+        {hoursLabel}
       </div>
       <div>
         <span className="font-mono text-4xl">
           <span>{minutes}</span>
         </span>
-        min
+        {minutesLabel}
       </div>
       <div>
         <span className="font-mono text-4xl">
           <span>{seconds}</span>
         </span>
-        sec
+        {secondsLabel}
       </div>
     </div>
   );
 };
 
-export default function Page({ enrollment }: { enrollment: Enrollment }) {
+export default function Page({
+  enrollment,
+  t,
+}: {
+  enrollment: Enrollment;
+  t: TFunction;
+}) {
   const courseData = useStructureData(enrollment.course!);
   const router = useRouter();
 
@@ -82,6 +100,7 @@ export default function Page({ enrollment }: { enrollment: Enrollment }) {
         courseName={enrollment.course!.name}
         startingDate={enrollment.startingAt}
         index={index}
+        t={t}
       />
     ));
 
@@ -94,7 +113,16 @@ export default function Page({ enrollment }: { enrollment: Enrollment }) {
           <Countdown
             date={enrollment.startingAt}
             onComplete={() => setAvailable(true)}
-            renderer={countdownRenderer}
+            renderer={(props) =>
+              countdownRenderer({
+                ...props,
+                daysLabel: t("days"),
+                hoursLabel: t("hours"),
+                minutesLabel: t("minutes"),
+                secondsLabel: t("seconds"),
+                startingLabel: t("course-starting"),
+              })
+            }
           />
         </div>
       )}
@@ -108,17 +136,21 @@ const Day = ({
   courseName,
   courseData,
   startingDate,
+  t,
 }: {
   initialDay: DataModelInterface[];
   index: number;
   courseName: string;
   courseData: StructureData;
   startingDate: Date;
+  t: TFunction;
 }) => {
   const [dropdown, setDropdown] = useState(initialDay.length ? true : false);
   const [cooldown, setCooldown] = useState(false);
-  const [isUnlocked, setIsUnlocked] =
-    useState<{ isUnlocked: boolean; unlockingAt: Date }>();
+  const [isUnlocked, setIsUnlocked] = useState<{
+    isUnlocked: boolean;
+    unlockingAt: Date;
+  }>();
   const router = useRouter();
 
   useEffect(() => {
@@ -183,7 +215,7 @@ const Day = ({
         onClick={() => setDropdown(!dropdown)}
       >
         <p className="font-mono font-semibold px-3">
-          Day {index + 1}({getUnlockDate()})
+          {t("day")} {index + 1}({getUnlockDate()})
         </p>
         {dropdown ? <UpArrow /> : <DownArrow />}
       </div>
@@ -192,7 +224,7 @@ const Day = ({
           <div className="divider divider-vertical p-0 m-0 mt-3 mx-1"></div>
           <div className="w-full mt-3">
             {isUnlocked?.isUnlocked ? (
-              <>{content.length ? content : "There is nothing here"}</>
+              <>{content.length ? content : t("there-is-nothing")}</>
             ) : (
               <Countdown
                 date={isUnlocked.unlockingAt}
@@ -202,7 +234,16 @@ const Day = ({
                     unlockingAt: isUnlocked.unlockingAt,
                   })
                 }
-                renderer={countdownRenderer}
+                renderer={(props) =>
+                  countdownRenderer({
+                    ...props,
+                    daysLabel: t("days"),
+                    hoursLabel: t("hours"),
+                    minutesLabel: t("minutes"),
+                    secondsLabel: t("seconds"),
+                    startingLabel: t("day-starting"),
+                  })
+                }
               />
             )}
           </div>

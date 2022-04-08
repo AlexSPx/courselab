@@ -1,12 +1,6 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
-import { KeyedMutator, useSWRConfig } from "swr";
-import {
-  ErrorModal,
-  LoadingModal,
-  SuccessModal,
-  useModals,
-} from "../../components/Modal";
+import { KeyedMutator } from "swr";
 import { VideoInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 import VideoPlayer from "./VideoPlayer";
@@ -14,6 +8,7 @@ import { Left, Main, Right } from "../Layouts/MainLayout";
 import ReactPlayer from "react-player";
 import Questions from "./Questions";
 import useRequest from "../../lib/useRequest";
+import { useTranslation } from "next-i18next";
 
 export default function Page({
   video,
@@ -25,6 +20,7 @@ export default function Page({
   const [file, setFile] = useState<File | null>(null);
   const [name, setName] = useState<string>(video?.name);
 
+  const { t } = useTranslation("docs");
   const { executeQuery } = useRequest();
   const playerRef = useRef<ReactPlayer | undefined>();
 
@@ -55,7 +51,7 @@ export default function Page({
   return (
     <>
       {!video ? (
-        <div className="flex">No Video</div>
+        <div className="flex">{t("no-video")}</div>
       ) : (
         <>
           {!video.path ? (
@@ -63,7 +59,7 @@ export default function Page({
             <div className="flex flex-col w-full items-center">
               <label className="relative mt-3 w-2/5">
                 <div className="input btn btn-outline w-full">
-                  Select a Video
+                  {t("select-video")}
                 </div>
                 <input
                   className="hidden"
@@ -80,7 +76,7 @@ export default function Page({
                 <div className="flex flex-col w-2/5 mt-3">
                   <label className="label w-full">
                     <span className="label-text font-semibold ">
-                      Course Name
+                      {t("course-name")}
                     </span>
                   </label>
                   <input
@@ -99,7 +95,7 @@ export default function Page({
                     className="btn btn-sm btn-outline mt-2"
                     onClick={handleVideoUpload}
                   >
-                    Upload Video
+                    {t("upload-video")}
                   </div>
                 </div>
               )}
@@ -110,7 +106,7 @@ export default function Page({
               <Main>
                 <VideoPlayer video={video} playerRef={playerRef} />
                 <div className="w-full border-b my-4"></div>
-                <Questions video={video} playerRef={playerRef} />
+                <Questions video={video} playerRef={playerRef} t={t} />
               </Main>
               <Right></Right>
             </>

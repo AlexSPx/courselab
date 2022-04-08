@@ -17,10 +17,12 @@ export default function DescriptionSection({
   quill,
   setQuill,
   contents,
+  placeholder,
 }: {
   quill: Quill | undefined;
   setQuill: Dispatch<SetStateAction<Quill | undefined>>;
   contents: string;
+  placeholder: string;
 }) {
   useEffect(() => {
     if (!quill) return;
@@ -37,14 +39,14 @@ export default function DescriptionSection({
       wrapper.append(editor);
       const q = new Quill(editor, {
         theme: "bubble",
-        placeholder: "Type here...",
+        placeholder,
         modules: {
           toolbar: TOOLBAR_OPTIONS,
         },
       });
       setQuill(q);
     },
-    [setQuill]
+    [placeholder, setQuill]
   );
   return (
     <div

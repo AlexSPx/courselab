@@ -1,5 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Error401 from "../../components/Error401";
 import SeoTags from "../../components/SeoTags";
 import { AssignmentInterface } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
@@ -21,25 +23,13 @@ export const AssignmentPage: NextPage<AssignmentPageProps> = ({
         description="assignment page"
       />
 
-      {assignment ? (
-        <Page assignment={assignment} />
-      ) : (
-        <div className="flex w-full h-full items-center justify-center">
-          <p className="font-semibold text-2xl uppercase">
-            <p className="text-center text-8xl">401</p>
-            {`Either the document does not exist or`}
-            <br />
-            {` you don't have
-              permissions to access it`}
-          </p>
-        </div>
-      )}
+      {assignment ? <Page assignment={assignment} /> : <Error401 />}
     </MainLayout>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req, query }) => {
+  async ({ req, query, locale }) => {
     const assignmentId = typeof query.id === "string" ? query.id : "";
 
     try {
@@ -54,10 +44,17 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           user: req.user,
           assignment: res.data,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
         },
       };
     } catch (error) {
-      return { props: { user: undefined, assignment: null } };
+      return {
+        props: {
+          user: undefined,
+          assignment: null,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
+        },
+      };
     }
   }
 );

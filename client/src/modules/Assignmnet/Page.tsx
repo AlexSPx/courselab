@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -22,23 +23,36 @@ export default function Page({
 }: {
   assignment: AssignmentInterface;
 }) {
-  useMemo(() => isLateCalc(assignment.submitDate), [assignment.submitDate]);
-
+  // const isLate = useMemo(() => isLateCalc(assignment.submitDate), [assignment.submitDate]);
+  const { t } = useTranslation("docs");
   return (
     <>
       <Left />
       <Main>
-        <DescriptionSection description={assignment.content} />
-        <FileSection files={assignment.files} />
+        <DescriptionSection
+          description={assignment.content}
+          placeholder={t("assignment-desc-placeholder")}
+          label={t("assignment-desc")}
+        />
+        <FileSection
+          files={assignment.files}
+          filesLabel={t("attached-files")}
+        />
       </Main>
       <Right css="flex-col">
-        <SubmitsSection assignment={assignment} />
+        <SubmitsSection assignment={assignment} t={t} />
       </Right>
     </>
   );
 }
 
-const FileSection = ({ files }: { files: string[] }) => {
+const FileSection = ({
+  files,
+  filesLabel,
+}: {
+  files: string[];
+  filesLabel: string;
+}) => {
   const mapFiles = files?.map((file) => {
     const type = file.split("{-divide-}")[0];
     const id = file.split("{-divide-}")[2];
@@ -63,7 +77,7 @@ const FileSection = ({ files }: { files: string[] }) => {
 
   return (
     <section className="block p-4 bg-white border border-gray-100 shadow-sm rounded-xl my-2">
-      <span className="font-bold text-2xl ">Attached Files</span>
+      <span className="font-bold text-2xl ">{filesLabel}</span>
       {mapFiles}
     </section>
   );

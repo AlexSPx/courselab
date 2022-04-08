@@ -6,7 +6,7 @@ import path from "path";
 
 const baseFolder =
   process.env.NODE_ENV === "production"
-    ? "../../../../../serverStorage"
+    ? "../../../../../serverStorage/"
     : "../../../";
 export const baseDir = path.join(__dirname + baseFolder);
 

@@ -4,15 +4,19 @@ export default function WeekSelector({
   currentWeek,
   setCurrentWeek,
   courseWeeks,
+  weekLabel,
+  selectDateLabel,
 }: {
   currentWeek: number;
   setCurrentWeek: Dispatch<SetStateAction<number>>;
   courseWeeks: number;
+  weekLabel: string;
+  selectDateLabel: string;
 }) {
   const mapWeekOptions = [...Array(courseWeeks)].map((_, index) => {
     return (
       <option value={`${index}`} key={index}>
-        Week {index + 1}
+        {weekLabel} {index + 1}
       </option>
     );
   });
@@ -24,7 +28,7 @@ export default function WeekSelector({
       value={currentWeek}
     >
       <option value="def" defaultChecked={true}>
-        Select a date
+        {selectDateLabel}
       </option>
       {mapWeekOptions}
     </select>

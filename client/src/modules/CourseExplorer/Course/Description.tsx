@@ -1,7 +1,15 @@
 import Quill from "quill";
 import { useState, useEffect, useCallback } from "react";
 
-export default function Description({ description }: { description: string }) {
+export default function Description({
+  description,
+  label,
+  placeholder,
+}: {
+  description: string;
+  label: string;
+  placeholder: string;
+}) {
   const [quill, setQuill] = useState<Quill>();
 
   useEffect(() => {
@@ -19,7 +27,7 @@ export default function Description({ description }: { description: string }) {
     const q = new Quill(editor, {
       theme: "bubble",
       readOnly: true,
-      placeholder: "There are no details about the course...",
+      placeholder,
       bounds: "journal-scroll",
     });
     setQuill(q);
@@ -27,7 +35,7 @@ export default function Description({ description }: { description: string }) {
 
   return (
     <div className="block p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
-      <span className="font-bold text-2xl ">Course details:</span>
+      <span className="font-bold text-2xl ">{label}</span>
       <div ref={wrapperRef}></div>
     </div>
   );

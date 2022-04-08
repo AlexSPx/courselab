@@ -20,15 +20,22 @@ import {
   VideoIcon,
 } from "../../../svg/small";
 import NoSsr from "../../../components/NoSsr";
+import { TFunction } from "react-i18next";
 
-export default function Structure({ course }: { course: CourseInterface }) {
+export default function Structure({
+  course,
+  t,
+}: {
+  course: CourseInterface;
+  t: TFunction<"course_settings", undefined>;
+}) {
   const structureData = useStructureData(course);
 
   if (!structureData.data)
     return (
       <div className="flex flex-col w-full items-center justify-center">
         <p className="flex font-bold text-2xl text-center">
-          {course.public_name} - Structure
+          {course.public_name} - {t("structure")}
         </p>
         <div
           className="btn btn-lg btn-outline mt-6"
@@ -46,6 +53,7 @@ export default function Structure({ course }: { course: CourseInterface }) {
         dayIndex={index}
         structureData={structureData}
         key={index + "0"}
+        t={t}
       />
     );
   });
@@ -53,7 +61,7 @@ export default function Structure({ course }: { course: CourseInterface }) {
   return (
     <div className="flex flex-col w-full items-center justify-center">
       <p className="flex font-bold text-2xl text-center">
-        {course.public_name} - Structure
+        {course.public_name} - {t("structure")}
       </p>
       <div className="flex flex-col lg:flex-row w-full mt-3 items-center justify-center px-1">
         {!structureData.changes && (
@@ -62,8 +70,7 @@ export default function Structure({ course }: { course: CourseInterface }) {
             onClick={() => structureData.saveWeeks()}
             aria-label="save changes"
           >
-            Save <br />
-            changes
+            {t("save-changes", { ns: "common" })}
           </button>
         )}
         <div className="flex w-full md:w-3/4 lg:w-3/5 xl:w-2/5 mx-3 items-center justify-center">
@@ -71,6 +78,7 @@ export default function Structure({ course }: { course: CourseInterface }) {
             data={structureData.data}
             week={structureData.currentWeek}
             setCurrentWeek={structureData.setCurrentWeek}
+            t={t}
           />
         </div>
         <button
@@ -78,7 +86,7 @@ export default function Structure({ course }: { course: CourseInterface }) {
           onClick={() => structureData.createWeek()}
           aria-label="add a week"
         >
-          <PlusCircle /> Add week
+          <PlusCircle /> {t("add-week")}
         </button>
       </div>
 
@@ -93,10 +101,12 @@ const RenderDay = ({
   day,
   dayIndex,
   structureData,
+  t,
 }: {
   day: DataModelInterface[];
   dayIndex: number;
   structureData: StructureData;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const router = useRouter();
 
@@ -130,7 +140,9 @@ const RenderDay = ({
   return (
     <div className="flex flex-col">
       <div className="flex flex-col items-center">
-        <p className="font-semibold text-2xl">Day {dayIndex + 1}</p>
+        <p className="font-semibold text-2xl">
+          {t("day")} {dayIndex + 1}
+        </p>
         <div className="divider my-0 w-full" />
       </div>
       <div className="flex flex-row p-1">
@@ -146,7 +158,7 @@ const RenderDay = ({
             aria-label="Create a video"
           >
             <VideoIcon />
-            New video
+            {t("new-video")}
           </button>
           <button
             className="btn btn-outline btn-sm h-auto w-full md:w-3/4 my-1"
@@ -154,7 +166,7 @@ const RenderDay = ({
             aria-label="Create a document"
           >
             <DocumentIcon />
-            New Document
+            {t("new-document")}
           </button>
           <button
             className="btn btn-outline btn-sm h-auto w-full md:w-3/4 my-1"
@@ -162,7 +174,7 @@ const RenderDay = ({
             aria-label="Create an assignment"
           >
             <AssignmentIcon />
-            New Assignemnt
+            {t("new-assignment")}
           </button>
           <button
             className="btn btn-outline btn-sm h-auto w-full md:w-3/4 my-1"
@@ -170,7 +182,7 @@ const RenderDay = ({
             aria-label="Create a quiz"
           >
             <QuizzIcon />
-            New Quizz
+            {t("new-quiz")}
           </button>
         </div>
       </div>
@@ -238,10 +250,12 @@ const WeekSection = ({
   data,
   week,
   setCurrentWeek,
+  t,
 }: {
   data: Object[] | null;
   week: number;
   setCurrentWeek: React.Dispatch<React.SetStateAction<number>>;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const [active, setActive] = useState(false);
 
@@ -255,12 +269,14 @@ const WeekSection = ({
           setActive(false);
         }}
       >
-        <p className="text-2xl font-semibold">Week {index + 1}</p>
+        <p className="text-2xl font-semibold">
+          {t("week")} {index + 1}
+        </p>
         <div className="flex flex-row font-thin italic">
-          <p className="mx-1">Videos: 3</p>
-          <p className="mx-1">Readables: 2</p>
-          <p className="mx-1">Assignments: 4</p>
-          <p className="mx-1">Quizes: 1</p>
+          <p className="mx-1">{t("videos", { ns: "common" })}: 3</p>
+          <p className="mx-1">{t("documents", { ns: "common" })}: 2</p>
+          <p className="mx-1">{t("assignments", { ns: "common" })}: 4</p>
+          <p className="mx-1">{t("quizzes", { ns: "common" })}: 1</p>
         </div>
       </div>
     );
@@ -268,13 +284,15 @@ const WeekSection = ({
 
   const CurrentWeek = ({ week, index }: { week: object; index: number }) => {
     return (
-      <div className="flex flex-col w-full h-full p-1">
-        <p className="text-2xl font-semibold">Week {index + 1}</p>
+      <div className="flex flex-col w-full h-full p-1 hover:bg-gray-900 hover:text-white">
+        <p className="text-2xl font-semibold">
+          {t("week")} {index + 1}
+        </p>
         <div className="flex flex-row font-thin italic">
-          <p className="mx-1">Videos: 3</p>
-          <p className="mx-1">Readables: 2</p>
-          <p className="mx-1">Assignments: 4</p>
-          <p className="mx-1">Quizzes: 1</p>
+          <p className="mx-1">{t("videos", { ns: "common" })}: 3</p>
+          <p className="mx-1">{t("documents", { ns: "common" })}: 2</p>
+          <p className="mx-1">{t("assignments", { ns: "common" })}: 4</p>
+          <p className="mx-1">{t("quizzes", { ns: "common" })}: 1</p>
         </div>
       </div>
     );

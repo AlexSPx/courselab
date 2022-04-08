@@ -1,11 +1,17 @@
 import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import SeoTags from "../../components/SeoTags";
 import { withSession } from "../../lib/withSession";
 import Landing from "../../svg/Landing";
+import { TFunction } from "react-i18next";
+import LazyImage from "../../components/LazyImage";
 
 export const LandingPage: NextPage = () => {
+  const { t } = useTranslation(["landing", "common"]);
+
   return (
     <main className="container mx-auto px-2 justify-center items-center mb-16">
       <SeoTags
@@ -18,17 +24,11 @@ export const LandingPage: NextPage = () => {
         <div className="flex flex-col-reverse md:flex-row items-center h-1/2 w-full font-thin">
           <div className="flex flex-col w-2/3 md:w-1/2 justify-center text-left">
             <h1 className="text-3xl md:text-5xl font-semibold">
-              Create and Enroll in courses <br className="hidden mg:flex" /> for
-              free with <strong>CourseLab</strong>
+              {t("h1")} <strong>{t("title", { ns: "common" })}</strong>
             </h1>
-            <h2 className="text-xl font-normal">
-              An online learning platform for students to access course-specific
-              <br className="hidden mg:flex" />
-              study resources. And instructors, teachers or anyone to create
-              courses
-            </h2>
+            <h2 className="text-xl font-normal">{t("subheader")}</h2>
             <Link href="/register">
-              <a className="btn btn-outline w-44 mt-6">Get Started</a>
+              <a className="btn btn-outline w-44 mt-6">{t("get-started")}</a>
             </Link>
           </div>
           <div className="flex w-full md:w-1/2 h-full justify-center">
@@ -38,75 +38,58 @@ export const LandingPage: NextPage = () => {
           </div>
         </div>
       </section>
-      <FeaturesSection />
-      <Support />
+      <FeaturesSection t={t} />
+      <Support t={t} />
       <CourseFeatureBig
-        subtitle="Course Structure"
-        title="Structure your courses with ease"
+        subtitle={t("course-structure")}
+        title={t("course-structure-title")}
         imagePath="/course-stucture.png"
       >
-        The course structure refers to the choice of topics and the organization
-        and sequencing of course content. Remember that the choice of topics and
-        their organization should always support the learning objectives for the
-        course.
+        {t("course-structure-body")}
       </CourseFeatureBig>
       <CourseFeatureBig
-        subtitle="Course Landing"
-        title="Customize your course look"
+        subtitle={t("course-landing")}
+        title={t("course-landing-title")}
         imagePath="/course-landing.png"
       >
-        Make it feel personal, customize how your course will appear for the
-        students. The landing course page lead students to the specific topic
-        and encourage them to enroll. This is your opportunity to create
-        conversions and build your student base.
+        {t("course-landing-body")}
       </CourseFeatureBig>
       <CourseFeatureBig
-        subtitle="Course Attendance"
-        title="Track the students' progress"
+        subtitle={t("course-attendance")}
+        title={t("course-attendance-title")}
         imagePath="/course-attendance.png"
       >
-        Progress monitoring is the standardized process of evaluating progress
-        toward a performance target, based on rates of improvement from frequent
-        (usually weekly or biweekly) assessment of a specific skill. Our system
-        at CourseLab helps you do just that with your courses.
+        {t("course-attendance-body")}
       </CourseFeatureBig>
-      <Footer />
+      <Footer t={t} />
     </main>
   );
 };
 
-const FeaturesSection = () => {
+const FeaturesSection = ({
+  t,
+}: {
+  t: TFunction<("landing" | "common")[], undefined>;
+}) => {
   return (
     <section className="items-center w-full">
       <div className="mb-16 text-center">
         <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">
-          Features
+          {t("features")}
         </h2>
         <h3 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-          What does the site offers
+          {t("what-it-offers")}
         </h3>
       </div>
       <div className="flex flex-wrap my-12 dark:text-white justify-center">
-        <Feature title="Shared Documents">
-          Create, edit and collaborate online documents in real-time from
-          anywhere.
+        <Feature title={t("shared-docs")}>{t("shared-docs-desc")}</Feature>
+        <Feature title={t("video-player")}>{t("video-player-desc")}</Feature>
+        <Feature title={t("quiz-builder")} border="l">
+          {t("quiz-builder-desc")}
         </Feature>
-        <Feature title="Video Player">
-          Upload videos with ease for your courses. Students can comment their
-          questions and and mark the right or most useful replay as an answer.
-        </Feature>
-        <Feature title="Quiz Builder" border="l">
-          Create a quiz in minutes. There are two options for the question type
-          - open-ended, closed. Each question gives points. Further check the
-          submits.
-        </Feature>
-        <Feature title="Assignments">
-          Assign tasks to your students. Monitor their submits, whether it is
-          submitted on-time or late. Check their submits and give them feedback.
-        </Feature>
-        <Feature title="Text Chat" border="l">
-          Communicate with your students/teachers from the website, there is no
-          need for third-party applications. Direct message or create a group.
+        <Feature title={t("assignments")}>{t("assignments-desc")}</Feature>
+        <Feature title={t("text-chat")} border="l">
+          {t("text-chat-desc")}
         </Feature>
       </div>
     </section>
@@ -142,7 +125,11 @@ const Feature: React.FC<{ title: string; border?: "r" | "l" }> = ({
   );
 };
 
-const Support = () => {
+const Support = ({
+  t,
+}: {
+  t: TFunction<("landing" | "common")[], undefined>;
+}) => {
   const Element = ({ text }: { text: string }) => {
     return (
       <li className="mt-6 lg:mt-0">
@@ -169,23 +156,20 @@ const Support = () => {
       <div className="flex flex-col max-w-xl">
         <div>
           <h3 className="text-base leading-6 text-indigo-500 font-semibold uppercase">
-            Transparency
+            {t("transparency")}
           </h3>
           <h4 className="mt-2 text-2xl leading-8 font-extrabold text-gray-900 dark:text-white sm:text-3xl sm:leading-9">
-            Interactivity between the developers and users is the key of the
-            success
+            {t("transparency-sub")}
           </h4>
           <p className="mt-4 text-lg leading-6 text-gray-500 dark:text-gray-300">
-            We value the client suggestions and feedback, for that reason we are
-            completely open source on Github. You can review the code, suggest
-            ideas and report security problems there.
+            {t("transparency-body")}
           </p>
         </div>
 
         <ul className="mt-8 md:grid md:grid-cols-2 gap-6">
-          <Element text="24/7 support" />
-          <Element text="Open source" />
-          <Element text="Ticket issues" />
+          <Element text={t("transparency-el1")} />
+          <Element text={t("transparency-el2")} />
+          <Element text={t("transparency-el3")} />
         </ul>
       </div>
     </section>
@@ -212,34 +196,33 @@ const CourseFeatureBig: React.FC<{
       </div>
       <div className="row-start-2 col-start-1 md:row-span-2 md:col-start-2 md:col-span-3 border">
         <div className="relative h-[18.4rem] md:h-[30rem]">
-          <Image
-            src={imagePath}
-            alt="course structure image"
-            layout="fill"
-            objectFit="cover"
-            quality={100}
-          />
+          <LazyImage src={imagePath} alt="course structure image" />
         </div>
       </div>
     </section>
   );
 };
 
-const Footer = () => {
+const Footer = ({
+  t,
+}: {
+  t: TFunction<("landing" | "common")[], undefined>;
+}) => {
   return (
     <footer className="py-8">
       <div className="text-center text-gray-500 dark:text-gray-200 pt-10 sm:pt-12 font-light flex items-center justify-center">
-        Created by Alexander
+        {t("created-by")}
       </div>
     </footer>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req }) => {
+  async ({ req, locale }) => {
     return {
       props: {
         user: req.user || null,
+        ...(await serverSideTranslations(locale!, ["landing", "common"])),
       },
     };
   },

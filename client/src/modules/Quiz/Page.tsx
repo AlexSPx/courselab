@@ -1,4 +1,5 @@
 import axios from "axios";
+import { TFunction } from "react-i18next";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import {
   Enrollment,
@@ -13,6 +14,7 @@ import { Main } from "../Layouts/MainLayout";
 export default function Page({
   quiz,
   setSubmit,
+  t,
 }: {
   quiz: QuizInterface & {
     courseDataModel: {
@@ -22,6 +24,7 @@ export default function Page({
     };
   };
   setSubmit: Dispatch<SetStateAction<QuizSubmit | null>>;
+  t: TFunction;
 }) {
   const [answers, setAnswers] = useState<Object>();
   const [filledQuestions, setFilledQuestions] = useState(0);
@@ -58,7 +61,7 @@ export default function Page({
   const handleSubmit = () => {
     if (quiz.questions.length > filledQuestions) {
       setError(
-        `You haven't filled all questions - ${filledQuestions}/${quiz.questions.length}`
+        `${t("empty-error")} - ${filledQuestions}/${quiz.questions.length}`
       );
       return;
     }
@@ -103,10 +106,22 @@ export default function Page({
     // };
     // handleEmpty();
     if (question.type === "OPENED") {
-      return <OpenedQuestion question={question} change={handleChange} />;
+      return (
+        <OpenedQuestion
+          question={question}
+          change={handleChange}
+          pointsLabel={t("points")}
+        />
+      );
     }
     if (question.type === "CLOSED") {
-      return <ClosedQuestion question={question} change={handleChange} />;
+      return (
+        <ClosedQuestion
+          question={question}
+          change={handleChange}
+          pointsLabel={t("points")}
+        />
+      );
     }
 
     return <></>;
@@ -117,7 +132,9 @@ export default function Page({
       <Main css="items-center max-w-2xl">
         <span className="text-2xl font-bold">{quiz.name}</span>
         <div className="block p-4 bg-white border border-gray-100 w-full shadow-sm rounded-xl mt-3">
-          <h5 className="text-xl font-bold text-gray-900">Quiz Description</h5>
+          <h5 className="text-xl font-bold text-gray-900">
+            {t("quiz-description")}
+          </h5>
           <p className="mt-2 text-gray-500">{quiz.description}</p>
         </div>
         <div className="block p-4 bg-white border border-gray-100 w-full shadow-sm rounded-xl mt-3">
@@ -140,7 +157,7 @@ export default function Page({
             onClick={handleSubmit}
             aria-label="submit the quiz"
           >
-            Submit
+            {t("submit")}
           </button>
         </div>
       </Main>
@@ -151,9 +168,11 @@ export default function Page({
 const ClosedQuestion = ({
   question,
   change,
+  pointsLabel,
 }: {
   question: QuizzQuestionInterface;
   change: (answer: string) => void;
+  pointsLabel: string;
 }) => {
   const options = question.options?.map((option) => {
     return (
@@ -177,7 +196,7 @@ const ClosedQuestion = ({
     >
       <p className="text-lg max-w-[85%]">{question.question}</p>
       <p className="absolute top-3 right-3 text-sm text-gray-700 italic">
-        points: {question.points}
+        {pointsLabel}: {question.points}
       </p>
       {options}
     </form>
@@ -187,9 +206,11 @@ const ClosedQuestion = ({
 const OpenedQuestion = ({
   question,
   change,
+  pointsLabel,
 }: {
   question: QuizzQuestionInterface;
   change: (answer: string) => void;
+  pointsLabel: string;
 }) => {
   return (
     <form
@@ -198,7 +219,7 @@ const OpenedQuestion = ({
     >
       <p className="text-lg max-w-[85%]">{question.question}</p>
       <p className="absolute top-3 right-3 text-sm text-gray-700 italic">
-        points: {question.points}
+        {pointsLabel}: {question.points}
       </p>
       <input
         type="text"

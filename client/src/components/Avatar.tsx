@@ -4,7 +4,11 @@ import { UserContext } from "../contexts/UserContext";
 import useHasImage from "../Hooks/useHasImage";
 import { GeneralUserInformation } from "../interfaces";
 
-export default function Avatar({ user }: { user?: GeneralUserInformation }) {
+export default function Avatar(
+  { user, refresh }: { user?: GeneralUserInformation; refresh?: boolean } = {
+    refresh: true,
+  }
+) {
   const { userData } = useContext(UserContext);
 
   const userInfo = {
@@ -16,6 +20,7 @@ export default function Avatar({ user }: { user?: GeneralUserInformation }) {
   const { url } = useHasImage(`${userInfo.username}`, {
     avatar: `${userInfo.first_name}-${userInfo.last_name}`,
     type: "avatar",
+    refresh,
   });
 
   return (

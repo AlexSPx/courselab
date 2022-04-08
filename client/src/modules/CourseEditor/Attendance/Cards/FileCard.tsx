@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { TFunction } from "react-i18next";
 import { DataModelInterface } from "../../../../interfaces";
 import { baseurl } from "../../../../lib/fetcher";
 import {
@@ -15,10 +16,12 @@ export default function FileCard({
   file,
   courseName,
   startingDate,
+  t,
 }: {
   file: DataModelInterface;
   courseName: string;
   startingDate: Date | null;
+  t: TFunction<"course_settings", undefined>;
 }) {
   const [count, setCount] = useState<{ all: number; complete: number }>();
   const [opened, setOpened] = useState(false);
@@ -77,6 +80,7 @@ export default function FileCard({
             id={file.assignment_id!}
             courseName={courseName}
             startingDate={startingDate}
+            t={t}
           />
         ) : file.type === "DOCUMENT" ? (
           "DOC"

@@ -1,4 +1,5 @@
 import { uniqueId } from "lodash";
+import { TFunction } from "react-i18next";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { BsFillQuestionCircleFill } from "react-icons/bs";
 import Modal from "../../components/Modal";
@@ -12,10 +13,12 @@ export default function OpenedQuestionModal({
   onClose,
   setQuestions,
   editData,
+  t,
 }: {
   onClose: Function;
   setQuestions: Dispatch<SetStateAction<QuizzQuestionInterface[]>>;
   editData?: QuizzQuestionInterface;
+  t: TFunction;
 }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [answer, setAnswer] = useState<string | null>();
@@ -58,9 +61,7 @@ export default function OpenedQuestionModal({
           ref={wrapperRef}
         >
           <div className="flex flex-row justify-between p-3 border-b bg-white">
-            <span className="font-semibold label">
-              Create a new Open-Choice question
-            </span>
+            <span className="font-semibold label">{t("open-choice")}</span>
             <div
               className="flex h-10 w-10  items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
               onClick={() => onClose()}
@@ -70,14 +71,14 @@ export default function OpenedQuestionModal({
           </div>
           <div className="flex flex-col px-6 py-3 bg-gray-50">
             <label className="label pt-0">
-              <span className="label-text">Question</span>
+              <span className="label-text">{t("question")}</span>
             </label>
             <textarea
               className="textarea textarea-bordered"
               value={question || ""}
               onChange={(e) => setQuestion(e.target.value)}
             />
-            <span className="label-text mt-1">Points</span>
+            <span className="label-text mt-1">{t("points")}</span>
             <input
               type="text"
               className="input input-sm input-bordered mt-1"
@@ -91,10 +92,10 @@ export default function OpenedQuestionModal({
               }}
             />
             <label className="label pt-0 mt-2 flex justify-between">
-              <span className="label-text">Answer</span>
+              <span className="label-text">{t("answer")}</span>
               <div
                 className="tooltip tooltip-right"
-                data-tip="If the provided answer below does not exactly match the user input, they will not get any points. It is recommended to manually check them after each quiz."
+                data-tip={t("open-ended-answer-tooltip")}
               >
                 <BsFillQuestionCircleFill size={16} className="rounded-full" />
               </div>

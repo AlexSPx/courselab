@@ -1,18 +1,22 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
 import MyCourseCard from "../../components/cards/MyCourseCard";
-import TodoCard, { TodoCardSkeleton } from "../../components/cards/TodoCard";
+import { TodoCardSkeleton } from "../../components/cards/TodoCard";
 import DatePickerEx from "../../components/DatePickerEx";
 import { UserContext } from "../../contexts/UserContext";
 import { Left, Main, Right } from "../Layouts/MainLayout";
 
 import Avatar from "../../components/Avatar";
 import { MyCourseInterface } from ".";
-import useSWR from "swr";
-import { baseurl } from "../../lib/fetcher";
-import axios from "axios";
+import { TFunction } from "react-i18next";
 
-export default function Page({ courses }: { courses: MyCourseInterface[] }) {
+export default function Page({
+  courses,
+  t,
+}: {
+  courses: MyCourseInterface[];
+  t: TFunction<"translation", undefined>;
+}) {
   const { userData } = useContext(UserContext);
 
   const mapCourses = courses.map((course) => {
@@ -22,15 +26,13 @@ export default function Page({ courses }: { courses: MyCourseInterface[] }) {
   return (
     <>
       <Left></Left>
-      {/* <div className="h-full border-r"></div> */}
       <Main css="items-center">
-        <p className="text-2xl font-light text-center">My Courses</p>
+        <p className="text-2xl font-light text-center">{t("home-h1")}</p>
         <div className="flex flex-col mt-3 w-full max-w-2xl">{mapCourses}</div>
         <Link href="/course/create">
-          <a className="btn max-w-2xl w-full">Create a Course</a>
+          <a className="btn max-w-2xl w-full">{t("create-course")}</a>
         </Link>
       </Main>
-      {/* <div className="h-full border-l"></div> */}
       <Right>
         <div className="hidden sm:flex flex-col p-4 w-full items-center mt-3 rounded-xl md:w-3/4 h-96">
           <section className="flex flex-row items-center">

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { CourseGeneralRawInterface } from "..";
 import SeoTags from "../../../components/SeoTags";
 import { CourseDetails } from "../../../interfaces";
@@ -26,7 +27,7 @@ export const CoursePage: NextPage<{ course: CoursePublicRaw }> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ query, req }) => {
+  async ({ query, req, locale }) => {
     const course = typeof query.name === "string" ? query.name : "";
     const { data } = await axios.get(`${baseurl}/course/${course}`);
 
@@ -34,6 +35,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
       props: {
         course: data || null,
         user: req.user || null,
+        ...(await serverSideTranslations(locale!, ["common"])),
       },
     };
   },

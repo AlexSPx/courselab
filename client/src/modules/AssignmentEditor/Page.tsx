@@ -12,6 +12,7 @@ import Link from "next/link";
 import { AiOutlineLink } from "react-icons/ai";
 import useSWR from "swr";
 import { DocumentIcon, VideoIcon } from "../../svg/small";
+import { useTranslation } from "next-i18next";
 const DescriptionSection = dynamic(() => import("./DescriptionSection"), {
   ssr: false,
 });
@@ -29,6 +30,8 @@ export default function Page({
   );
   const [files, setFiles] = useState(assignment.files);
   const [quill, setQuill] = useState<Quill>();
+
+  const { t } = useTranslation("docs");
 
   useSWR(`${baseurl}/assignment/files/${assignment.id}`, {
     onSuccess: (data) => setFiles(data.files),
@@ -125,16 +128,17 @@ export default function Page({
           quill={quill}
           setQuill={setQuill}
           contents={assignment.content}
+          placeholder={t("document-placeholder")}
         />
         <section className="flex flex-wrap">{mapFiles}</section>
         <h3 className="divider w-full text-lg font-semibold my-8">
-          Days to submit
+          {t("days-to-submit")}
         </h3>
 
         <input
           type="text"
           className="input input-bordered w-[24rem] py-3"
-          placeholder="Input number in days"
+          placeholder={t("days-numbers")}
           value={daysToSubmit}
           onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
             if (e.target.value === "" || re.test(e.target.value)) {
@@ -143,7 +147,7 @@ export default function Page({
           }}
         />
         <h3 className="divider w-full text-lg font-semibold my-8">
-          Attach files
+          {t("attached-files")}
         </h3>
         <FIleAdder type="upload" assignmentId={assignment.id} />
 
@@ -153,14 +157,14 @@ export default function Page({
             onClick={handleSaveChanges}
             aria-label="Save changes"
           >
-            Save Changes
+            {t("save-changes", { ns: "common" })}
           </button>
           <button
             className="mt-8 btn btn-outline border-red-500 text-red-500 hover:bg-red-50 hover:text-red-500 hover:border-red-500 mx-2 w-64"
             onClick={handleDeleteAssignment}
             aria-label="delete assignment"
           >
-            Delete Assignment
+            {t("delete-assignment")}
           </button>
         </section>
       </Main>

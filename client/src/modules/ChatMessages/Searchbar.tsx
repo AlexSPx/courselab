@@ -7,7 +7,17 @@ import useOnOutsideClick from "../../Hooks/useOnOutsideClick";
 import { GeneralUserInformation } from "../../interfaces";
 import { baseurl } from "../../lib/fetcher";
 
-export default function Searchbar() {
+interface SearchBarLabels {
+  searching: string;
+  email: string;
+  instructions: string;
+}
+
+export default function Searchbar({
+  searching,
+  email,
+  instructions,
+}: SearchBarLabels) {
   const [query, setQuery] = useState<string>();
   const [users, setUsers] = useState<GeneralUserInformation[] | null>(null);
   const [dropdown, setDropdown] = useState(false);
@@ -18,7 +28,7 @@ export default function Searchbar() {
   const debouncedValue = useDebounce(query);
 
   const mapUsers = users?.map((user) => {
-    return <RenderUser key={user.id} user={user} />;
+    return <RenderUser key={user.id} user={user} email={email} />;
   });
 
   useEffect(() => {
@@ -44,15 +54,15 @@ export default function Searchbar() {
       <input
         type="text"
         className="input input-ghost input-bordered bg-white shadow-sm w-full"
-        placeholder="Enter @ + username"
+        placeholder={instructions}
         onFocus={() => setDropdown(true)}
         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
           setQuery(e.target.value);
         }}
       />
       {dropdown && (
-        <div className="flex flex-col absolute w-[25.2rem] max-w-2xl mt-[1px] p-2 border rounded bg-white z-10">
-          <p className="c animate-pulse">Searching...</p>
+        <div className="flex flex-col fixed w-[25.2rem] max-w-2xl mt-[1px] p-2 border rounded bg-white z-[100]">
+          <p className="c animate-pulse">{searching}...</p>
           <div className="border-b my-1"></div>
           <div className="flex flex-col">{mapUsers}</div>
         </div>
@@ -61,7 +71,13 @@ export default function Searchbar() {
   );
 }
 
-const RenderUser = ({ user }: { user: GeneralUserInformation }) => {
+const RenderUser = ({
+  user,
+  email,
+}: {
+  user: GeneralUserInformation;
+  email: string;
+}) => {
   const { push } = useRouter();
 
   return (
@@ -78,7 +94,9 @@ const RenderUser = ({ user }: { user: GeneralUserInformation }) => {
             {user.first_name} {user.last_name}
           </p>
           <p className="text-gray-400 italic">@{user.username}</p>
-          <p className="text-gray-400 text-sm italic">email: {user.email}</p>
+          <p className="text-gray-400 text-sm italic">
+            {email}: {user.email}
+          </p>
         </div>
       </div>
     </div>

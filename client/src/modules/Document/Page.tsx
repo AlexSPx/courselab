@@ -9,6 +9,7 @@ import Quill from "quill";
 import QuillCursors from "quill-cursors";
 import { UserContext } from "../../contexts/UserContext";
 import randomColor from "../../lib/randomColor";
+import { useTranslation } from "next-i18next";
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -29,6 +30,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
 
   const [usersInDoc, setUsersInDoc] = useState<GeneralUserInformation[]>([]);
 
+  const { t } = useTranslation("docs");
   const { socket } = useContext(WebSocketContext);
   const { userData } = useContext(UserContext);
 
@@ -168,7 +170,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
       wrapper.append(editor);
       const q = new Quill(editor, {
         theme: "snow",
-        placeholder: "Type here...",
+        placeholder: t("document-placeholder"),
         readOnly: readOnly,
         modules: {
           toolbar: !readOnly && TOOLBAR_OPTIONS,
@@ -181,7 +183,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
       setCursors(q.getModule("cursors"));
       setQuill(q);
     },
-    [readOnly]
+    [readOnly, t]
   );
 
   return (
@@ -197,7 +199,7 @@ export default function Page({ doc }: { doc: DocumentInterface }) {
         ></div>
       </Main>
       <div className="divider divider-vertical sticky top-0"></div>
-      <DocumentSettings doc={doc} UsersInDoc={usersInDoc} />
+      <DocumentSettings doc={doc} UsersInDoc={usersInDoc} t={t} />
     </>
   );
 }

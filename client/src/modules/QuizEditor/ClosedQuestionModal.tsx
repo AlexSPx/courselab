@@ -1,4 +1,5 @@
-import { indexOf, uniqueId } from "lodash";
+import { uniqueId } from "lodash";
+import { TFunction } from "react-i18next";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Modal from "../../components/Modal";
 import useDebounce from "../../Hooks/useDebounce";
@@ -12,10 +13,12 @@ export default function ClosedQuestionModal({
   onClose,
   setQuestions,
   editData,
+  t,
 }: {
   onClose: Function;
   setQuestions: Dispatch<SetStateAction<QuizzQuestionInterface[]>>;
   editData?: QuizzQuestionInterface;
+  t: TFunction;
 }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [options, setOptions] = useState<string[] | null>(null);
@@ -78,9 +81,7 @@ export default function ClosedQuestionModal({
           ref={wrapperRef}
         >
           <div className="flex flex-row justify-between p-3 border-b bg-white">
-            <span className="font-semibold label">
-              Create a new MultiChoice question
-            </span>
+            <span className="font-semibold label">{t("closed-choice")}</span>
             <div
               className="flex h-10 w-10  items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
               onClick={() => onClose()}
@@ -90,14 +91,14 @@ export default function ClosedQuestionModal({
           </div>
           <div className="flex flex-col px-6 py-3 bg-gray-50">
             <label className="label pt-0">
-              <span className="label-text">Question</span>
+              <span className="label-text">{t("question")}</span>
             </label>
             <textarea
               className="textarea textarea-bordered"
               value={question || ""}
               onChange={(e) => setQuestion(e.target.value)}
             />
-            <span className="label-text mt-1">Points</span>
+            <span className="label-text mt-1">{t("points")}</span>
             <input
               type="text"
               className="input input-sm input-bordered mt-1"
@@ -121,7 +122,7 @@ export default function ClosedQuestionModal({
               }
               aria-label="add an option"
             >
-              Add an option
+              {t("add-option")}
             </button>
             <button
               className="btn btn-sm mt-2"

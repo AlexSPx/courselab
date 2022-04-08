@@ -8,9 +8,13 @@ import useRequest from "../../../lib/useRequest";
 export default function NoChatRoom({
   user,
   mutate,
+  message,
+  btnLabel,
 }: {
   user: GeneralUserInformation;
   mutate: KeyedMutator<any>;
+  message: string;
+  btnLabel: string;
 }) {
   const { executeQuery } = useRequest();
   const handleCreate = async () => {
@@ -35,13 +39,13 @@ export default function NoChatRoom({
 
   return (
     <div className="flex flex-col w-[73rem] h-full items-center justify-center">
-      <h3 className="text-xl">You donot have a chat room with that user</h3>
+      <h3 className="text-xl">{message}</h3>
       <button
         aria-details="start chat"
         className="btn btn-primary mt-6 px-12"
         onClick={handleCreate}
       >
-        Start chat
+        {btnLabel}
       </button>
     </div>
   );

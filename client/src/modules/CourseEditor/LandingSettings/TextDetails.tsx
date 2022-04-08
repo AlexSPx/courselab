@@ -1,4 +1,5 @@
 import axios from "axios";
+import { TFunction } from "react-i18next";
 import Quill from "quill";
 import { useCallback, useState, useEffect } from "react";
 import { baseurl } from "../../../lib/fetcher";
@@ -26,10 +27,12 @@ export default function TextDetails({
   quill,
   setQuill,
   courseName,
+  t,
 }: {
   quill: Quill | undefined;
   setQuill: React.Dispatch<React.SetStateAction<Quill | undefined>>;
   courseName: string;
+  t: TFunction<"course_settings", undefined>;
 }) {
   const { executeQuery } = useRequest();
 
@@ -43,8 +46,7 @@ export default function TextDetails({
       wrapper.append(editor);
       const q = new Quill(editor, {
         theme: "snow",
-        placeholder:
-          "Here you can provide addictional information about the course",
+        placeholder: t("editor-placeholder"),
         modules: {
           toolbar: TOOLBAR_OPTIONS,
         },
@@ -52,7 +54,7 @@ export default function TextDetails({
       });
       setQuill(q);
     },
-    [setQuill]
+    [setQuill, t]
   );
 
   const handleSaveChanges = async () => {
@@ -83,22 +85,34 @@ export default function TextDetails({
           <QuillSection
             quill={quill}
             toInsert={Prerequisites}
-            check="Prerequisites"
+            check={t("prerequisits")}
+            btnLabel={t("insert")}
           />
           <QuillSection
             quill={quill}
             toInsert={Objectives}
-            check="Objectives"
+            check={t("objectives")}
+            btnLabel={t("insert")}
           />
-          <QuillSection quill={quill} toInsert={Summary} check="Summary" />
-          <QuillSection quill={quill} toInsert={AboutUs} check="About us" />
+          <QuillSection
+            quill={quill}
+            toInsert={Summary}
+            check={t("summary")}
+            btnLabel={t("insert")}
+          />
+          <QuillSection
+            quill={quill}
+            toInsert={AboutUs}
+            check={t("about-us")}
+            btnLabel={t("insert")}
+          />
         </div>
         <button
           className="btn btn-outline w-full"
           onClick={handleSaveChanges}
           aria-label="save changes"
         >
-          Save Changes
+          {t("save-changes", { ns: "common" })}
         </button>
       </div>
     </div>
@@ -110,11 +124,13 @@ const QuillSection = ({
   toInsert,
   check,
   label = check,
+  btnLabel,
 }: {
   quill: Quill | undefined;
   toInsert: any;
   check: string;
   label?: string;
+  btnLabel?: string;
 }) => {
   const [isChecked, setIsChecked] = useState(false);
 
@@ -145,7 +161,7 @@ const QuillSection = ({
         onClick={handleInsertPreq}
         aria-label="Insert"
       >
-        Insert
+        {btnLabel}
       </button>
       <label className="cursor-pointer label">
         <input

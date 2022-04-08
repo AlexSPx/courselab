@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import { Dispatch, SetStateAction } from "react";
 import { BsFillQuestionCircleFill } from "react-icons/bs";
 import { IoIosAdd } from "react-icons/io";
@@ -17,7 +18,7 @@ export default function QuizMenu({
   const { x, y, visible } = useRightClickContext(outerRef);
 
   const { pushModal, closeModal } = useModals();
-
+  const { t } = useTranslation("docs");
   const handleOpenMCM = () => {
     const mkey = Date.now();
 
@@ -26,6 +27,7 @@ export default function QuizMenu({
         key={mkey}
         onClose={() => closeModal(mkey)}
         setQuestions={setQuestions}
+        t={t}
       />,
       { timer: false }
     );
@@ -39,6 +41,7 @@ export default function QuizMenu({
         key={mkey}
         onClose={() => closeModal(mkey)}
         setQuestions={setQuestions}
+        t={t}
       />,
       { timer: false }
     );
@@ -56,10 +59,10 @@ export default function QuizMenu({
         >
           <IoIosAdd size={24} className="mx-1 text-gray-900" />
 
-          <div>Multiple choice question</div>
+          <div>{t("mcq")}</div>
           <div
             className="tooltip tooltip-right"
-            data-tip="Multiple choice questions are fundamental survey questions which provides respondents with multiple answer options.(A, B, C, D)"
+            data-tip={t("multichoice-tooltip")}
           >
             <BsFillQuestionCircleFill size={16} className="mx-1 rounded-full" />
           </div>
@@ -70,10 +73,10 @@ export default function QuizMenu({
         >
           <IoIosAdd size={24} className="mx-1 text-gray-900" />
 
-          <div>Open-Ended question</div>
+          <div>{t("oeq")}</div>
           <div
             className="tooltip tooltip-right"
-            data-tip="Open-ended questions are questions that cannot be answered with a simple 'yes' or 'no', and instead require the respondent to elaborate on their points."
+            data-tip={t("open-ended-tooltip")}
           >
             <BsFillQuestionCircleFill size={16} className="mx-1 rounded-full" />
           </div>

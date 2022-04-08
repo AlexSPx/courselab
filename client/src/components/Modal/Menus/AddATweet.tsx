@@ -1,3 +1,4 @@
+import { TFunction } from "react-i18next";
 import React, { useRef, useState } from "react";
 import TweetEmbed from "react-tweet-embed";
 import Modal from "..";
@@ -7,14 +8,18 @@ import { CloseIcon } from "../../../svg/small";
 export default function AddATweet({
   onClose,
   setTweets,
+  t,
 }: {
   onClose: Function;
   setTweets: React.Dispatch<React.SetStateAction<string[]>>;
+  t: TFunction<"course_settings", undefined>;
 }) {
   const wrapperRef = useRef(null);
 
-  const [tweetInput, setTweetInput] =
-    useState<{ url: string; id: string | undefined }>();
+  const [tweetInput, setTweetInput] = useState<{
+    url: string;
+    id: string | undefined;
+  }>();
   const [error, setError] = useState<string>();
 
   useOnOutsideClick(wrapperRef, () => onClose());
@@ -41,7 +46,7 @@ export default function AddATweet({
           ref={wrapperRef}
         >
           <div className="flex flex-row justify-between p-3 border-b bg-white max-h-[60%]">
-            <span className="font-semibold label">Add a sponsor</span>
+            <span className="font-semibold label">{t("add-tweet")}</span>
             <div
               className="flex h-10 w-10  items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
               onClick={() => onClose()}
@@ -58,7 +63,7 @@ export default function AddATweet({
               />
             </div>
             <label className="label">
-              <span className="label-text">Tweet url</span>
+              <span className="label-text">{t("tweet-url")}</span>
             </label>
             <input
               type="text"
@@ -83,7 +88,7 @@ export default function AddATweet({
               onClick={handleAddATweet}
               aria-label="Add a tweet"
             >
-              Create
+              {t("add")}
             </button>
           </div>
         </div>

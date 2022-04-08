@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Error401 from "../../components/Error401";
 import SeoTags from "../../components/SeoTags";
 import { QuizInterface } from "../../interfaces";
@@ -25,7 +26,7 @@ export const QuizEditor: NextPage<QuizEditorProps> = ({ quiz }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req, query }) => {
+  async ({ req, query, locale }) => {
     const quizId = typeof query.id === "string" ? query.id : "";
 
     try {
@@ -36,9 +37,21 @@ export const getServerSideProps: GetServerSideProps = withSession(
         },
       });
 
-      return { props: { user: req.user, quiz: quizRes.data } };
+      return {
+        props: {
+          user: req.user,
+          quiz: quizRes.data,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
+        },
+      };
     } catch (error) {
-      return { props: { quiz: null, user: req.user } };
+      return {
+        props: {
+          quiz: null,
+          user: req.user,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
+        },
+      };
     }
   }
 );

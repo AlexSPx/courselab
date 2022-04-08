@@ -8,10 +8,12 @@ import { baseurl } from "../../lib/fetcher";
 import { ErrorModal, useModals } from "../../components/Modal";
 import { useRouter } from "next/router";
 import useOnOutsideClick from "../../Hooks/useOnOutsideClick";
+import { useTranslation } from "next-i18next";
+import LanguageSelector from "../../components/LanguageSelector";
 
 export default function AuthHeader() {
   const { userData } = useContext(UserContext);
-
+  const { t } = useTranslation("common");
   const [dropdown, setDropdown] = useState(false);
 
   return (
@@ -22,27 +24,40 @@ export default function AuthHeader() {
             <a className="text-lg font-bold">CourseLab</a>
           </Link>
         </div>
-        <div className="items-stretch hidden lg:flex mx-2">
+        <div className="hidden lg:flex mx-2 items-center">
           {userData?.user?.isAdmin && (
             <Link href="/cpanel">
-              <a className="btn btn-ghost btn-sm rounded-btn">Control Panel</a>
+              <a className="btn btn-ghost btn-sm rounded-btn">
+                {t("auth-header-cpanel")}
+              </a>
             </Link>
           )}
           <Link href="/home">
-            <a className="btn btn-ghost btn-sm rounded-btn">Home</a>
+            <a className="btn btn-ghost btn-sm rounded-btn">
+              {t("auth-header-home")}
+            </a>
           </Link>
           <Link href="/messages">
-            <a className="btn btn-ghost btn-sm rounded-btn">Chats</a>
+            <a className="btn btn-ghost btn-sm rounded-btn">
+              {t("auth-header-chats")}
+            </a>
           </Link>
           <Link href="/myfiles">
-            <a className="btn btn-ghost btn-sm rounded-btn">Files</a>
+            <a className="btn btn-ghost btn-sm rounded-btn">
+              {t("auth-header-files")}
+            </a>
           </Link>
           <Link href="/courses">
-            <a className="btn btn-ghost btn-sm rounded-btn">Explorer</a>
+            <a className="btn btn-ghost btn-sm rounded-btn">
+              {t("auth-header-explorer")}
+            </a>
           </Link>
           <Link href="/manager">
-            <a className="btn btn-ghost btn-sm rounded-btn">Manager</a>
+            <a className="btn btn-ghost btn-sm rounded-btn">
+              {t("auth-header-manager")}
+            </a>
           </Link>
+          <LanguageSelector />
         </div>
         {/* <div className="flex-1 lg:flex-none">
           <div className="form-control">
@@ -103,7 +118,7 @@ export default function AuthHeader() {
               <Avatar />
             </div>
             {dropdown && (
-              <Menu user={userData} close={() => setDropdown(false)} />
+              <Menu user={userData} close={() => setDropdown(false)} t={t} />
             )}
           </div>
         </div>
@@ -115,9 +130,11 @@ export default function AuthHeader() {
 const Menu = ({
   user,
   close,
+  t,
 }: {
   user: UserDataInterface | null;
   close: Function;
+  t: any;
 }) => {
   const { pushModal } = useModals();
   const router = useRouter();
@@ -154,7 +171,7 @@ const Menu = ({
         <li>
           <Link href={"/settings"}>
             <a className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-              Settings
+              {t("auth-header-settings")}
             </a>
           </Link>
         </li>
@@ -165,7 +182,7 @@ const Menu = ({
           className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white cursor-pointer"
           onClick={handleLogout}
         >
-          Sign out
+          {t("auth-header-signout")}
         </div>
       </div>
     </div>

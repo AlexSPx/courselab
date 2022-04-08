@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import CourseDraftCard from "../../components/cards/CourseDraftCard";
 import SeoTags from "../../components/SeoTags";
 import { CourseInterface } from "../../interfaces";
@@ -36,7 +37,7 @@ export const Manager: NextPage<CourseManagerTypes> = ({ courses }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req }) => {
+  async ({ req, locale }) => {
     try {
       const courseRes = await axios.get(`${baseurl}/course/mycourses/admin`, {
         withCredentials: true,
@@ -49,6 +50,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           user: req.user,
           courses: courseRes.data,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     } catch (error) {
@@ -56,6 +58,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           user: undefined,
           courses: null,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     }

@@ -1,7 +1,12 @@
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import SeoTags from "../../components/SeoTags";
+import { withSession } from "../../lib/withSession";
 
 export const FAQ: NextPage = () => {
+  const { t } = useTranslation("faq");
+
   const FAQ = ({ Q, A }: { Q: string; A: string }) => {
     return (
       <li className="w-2/5">
@@ -21,49 +26,31 @@ export const FAQ: NextPage = () => {
         assignment, assignments, quiz, quizzes, students, teachers, structure, structure course"
       />
       <h2 className="text-3xl font-extrabold leading-9 border-b-2 border-gray-100 text-gray-900 mb-12">
-        FAQs
+        {t("title")}
       </h2>
       <ul className="flex items-start gap-8 flex-wrap">
-        <FAQ
-          Q="Can I both enroll in a course and create one?"
-          A="Yes. You can enroll in as many courses as you like and still create and publish content."
-        />
-        <FAQ
-          Q="How do I enroll into a CourseLab course?"
-          A="All of the courses are entirely on-demand. You can begin the course whenever you like. 
-          The deadlines are determined by the course teachers. After you enroll in a course 
-          it will popup on your home page alongside information for your progression and tasks."
-        />
-        <FAQ
-          Q="How can I leave a CourseLab course?"
-          A='Leaving a course is as easy as clicking one button. On your course page(/learn/{course}) 
-          there is a "Leave" button on the left side. When you click it you will be out of the course. 
-          But by doing that you will lose all of your progress.'
-        />
-        <FAQ
-          Q="Are there prerequisites or language requirements?"
-          A="All of the prerequisites, if any, should be listed in the extended course infromation. 
-        If they are not, you can contact the teachers/creators to inform them about it. If they do 
-        not cooperate you can report it to the support. CourseLab does not have any language requirements, 
-        for now the website is only in English, but we hope to change that soon by adding native translations. 
-        Staring with Bulgarian. There are no limitations for in what language the courses should be, it is up to the teachers."
-        />
-        <FAQ
-          Q="Do I have to be online at the same time as the other course members?"
-          A="No. The idea of the platform is to be asynchronous. So all of the resources are available at any time."
-        />
-        <FAQ
-          Q="How to use courselab?"
-          A="Register from the /register tab, browse the course explorer, find something that 
-          you are interested in enrolling and click 'Enroll'"
-        />
-        <FAQ
-          Q="Why are courses important?"
-          A="Everyone's goal should be to always improve and adapt to the ever-chaning world. 
-          Expanding your knowledge in a certain region or starting something new will do just that for you. 
-          Start now by enrolling in a courselab course."
-        />
+        <FAQ Q={t("q1")} A={t("a1")} />
+        <FAQ Q={t("q2")} A={t("a2")} />
+        <FAQ Q={t("q3")} A={t("a3")} />
+        <FAQ Q={t("q4")} A={t("a4")} />
+        <FAQ Q={t("q5")} A={t("a5")} />
+        <FAQ Q={t("q6")} A={t("a6")} />
+        <FAQ Q={t("q7")} A={t("a7")} />
       </ul>
     </section>
   );
 };
+
+export const getServerSideProps: GetServerSideProps = withSession(
+  async ({ req, locale }) => {
+    return {
+      props: {
+        user: req.user || null,
+        ...(await serverSideTranslations(locale!, ["common", "faq"])),
+      },
+    };
+  },
+  {
+    requiresAuth: null,
+  }
+);

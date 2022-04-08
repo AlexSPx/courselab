@@ -1,20 +1,21 @@
 import React, { useState } from "react";
-import { Left, Main, Right } from "../Layouts/MainLayout";
+import { Main } from "../Layouts/MainLayout";
 import ImageSelector from "../../components/Inputs/ImageSelector";
-import {
-  ErrorModal,
-  LoadingModal,
-  SuccessModal,
-  useModals,
-} from "../../components/Modal";
 import axios from "axios";
 import { baseurl } from "../../lib/fetcher";
 import { CourseInterface } from "../../interfaces";
 import CourseDraftCard from "../../components/cards/CourseDraftCard";
 import { useSWRConfig } from "swr";
 import useRequest from "../../lib/useRequest";
+import { TFunction } from "react-i18next";
 
-export default function Page({ drafts }: { drafts: CourseInterface[] }) {
+export default function Page({
+  drafts,
+  t,
+}: {
+  drafts: CourseInterface[];
+  t: TFunction<"translation", undefined>;
+}) {
   const [name, setName] = useState("");
   const [publicName, setPublicName] = useState("");
   const [description, setDescription] = useState("");
@@ -53,9 +54,11 @@ export default function Page({ drafts }: { drafts: CourseInterface[] }) {
 
   return (
     <Main css="items-center">
-      <div className="divider max-w-2xl w-full italic">Drafts</div>
+      <div className="divider max-w-2xl w-full italic">{t("drafts")}</div>
       <div className="flex flex-row">{mapDrafts}</div>
-      <div className="divider max-w-2xl w-full italic">Create a Course</div>
+      <div className="divider max-w-2xl w-full italic">
+        {t("create-course")}
+      </div>
 
       <div className="flex flex-col max-w-2xl w-full md:w-3/5"></div>
 
@@ -64,18 +67,18 @@ export default function Page({ drafts }: { drafts: CourseInterface[] }) {
           <ImageSelector
             image={image}
             setImage={setImage}
-            label="Select an Image"
+            label={t("select-image")}
             shape="square"
           />
         </div>
         <div className="flex flex-col w-full">
           <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">Public Name</span>
+              <span className="label-text">{t("public-name")}</span>
             </label>
             <input
               type="text"
-              placeholder="Public Name"
+              placeholder={t("public-name")}
               value={publicName}
               className="input input-bordered"
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -85,11 +88,11 @@ export default function Page({ drafts }: { drafts: CourseInterface[] }) {
           </div>
           <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">Name</span>
+              <span className="label-text">{t("name")}</span>
             </label>
             <input
               type="text"
-              placeholder="Name"
+              placeholder={t("name")}
               value={name}
               className="input input-bordered"
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -98,8 +101,8 @@ export default function Page({ drafts }: { drafts: CourseInterface[] }) {
             />
             <span className="label">
               <span className="label-text-alt flex w-full justify-between">
-                <p>Must be uniqe</p>
-                <p>{`htts://courselab.xyz/course/${name}`}</p>
+                <p>{t("must-be-unique")}</p>
+                <p>{`htts://course-lab.xyz/course/${name}`}</p>
               </span>
             </span>
           </div>
@@ -107,11 +110,11 @@ export default function Page({ drafts }: { drafts: CourseInterface[] }) {
       </div>
       <div className="form-control max-w-2xl w-full lg:w-3/5 mb-3">
         <label className="label">
-          <span className="label-text">Description</span>
+          <span className="label-text">{t("description")}</span>
         </label>
         <textarea
           className="textarea h-24 textarea-bordered"
-          placeholder="Bio"
+          placeholder={t("description")}
           defaultValue={description}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
             setDescription(e.target.value);
@@ -119,7 +122,7 @@ export default function Page({ drafts }: { drafts: CourseInterface[] }) {
         />
       </div>
       <div className="btn max-w-2xl w-full md:w-3/5" onClick={createCourse}>
-        Create a Draft
+        {t("create-draft")}
       </div>
     </Main>
   );

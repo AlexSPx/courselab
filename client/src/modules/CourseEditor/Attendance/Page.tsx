@@ -1,25 +1,16 @@
+import { TFunction } from "react-i18next";
 import { CourseInterface } from "../../../interfaces";
 import { Main, MainLayout } from "../../Layouts/MainLayout";
 import Schedules from "./Schedules";
 import StartOnJoin from "./StartOnJoin";
 
-export default function Page({ course }: { course: CourseInterface }) {
-  // const courseData = useStructureData(course);
-
-  // const [week, setWeek] = useState(0);
-
-  // useEffect(() => {
-  //   courseData.setCurrentWeek(week);
-  // }, [courseData, week]);
-
-  // const mapDays = courseData
-  //   .getWeek()
-  //   .map((day: DataModelInterface[], index: number) => {
-  //     return (
-  //       <Day courseName={course.name} key={index} day={day} index={index} />
-  //     );
-  //   });
-
+export default function Page({
+  course,
+  t,
+}: {
+  course: CourseInterface;
+  t: TFunction<"course_settings", undefined>;
+}) {
   const Model = () => {
     if (course.scheduleType === "SCHEDULE")
       return <Schedules course={course} />;
@@ -30,7 +21,9 @@ export default function Page({ course }: { course: CourseInterface }) {
   return (
     <MainLayout>
       <Main css="max-w-7xl items-center">
-        <p className="text-2xl font-bold">Machine Learning - Attendance</p>
+        <p className="text-2xl font-bold">
+          Machine Learning - {t("nav-attendance")}
+        </p>
         <Model />
       </Main>
     </MainLayout>

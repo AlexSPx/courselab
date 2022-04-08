@@ -1,4 +1,4 @@
-import type { AppProps, NextWebVitalsMetric } from "next/app";
+import type { AppProps } from "next/app";
 import Layout from "../components/Layout";
 import { ModalContextProvider } from "../contexts/ModalContex";
 import UserCtxProvider from "../contexts/UserContext";
@@ -14,8 +14,11 @@ import "react-clock/dist/Clock.css";
 import Script from "next/script";
 import { SWRConfig } from "swr";
 import { fetcher } from "../lib/fetcher";
+import { appWithTranslation } from "next-i18next";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  console.log(pageProps._nextI18Next);
+
   return (
     <>
       <Script
@@ -47,4 +50,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);

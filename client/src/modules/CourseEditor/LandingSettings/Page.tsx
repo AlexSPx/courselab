@@ -12,6 +12,7 @@ import axios from "axios";
 import { baseurl } from "../../../lib/fetcher";
 import dynamic from "next/dynamic";
 import useRequest from "../../../lib/useRequest";
+import { TFunction } from "react-i18next";
 
 const TextDetails = dynamic(() => import("./TextDetails"), { ssr: false });
 
@@ -54,7 +55,13 @@ const removedStyles: CSSProperties = {
   borderRadius: 1,
 };
 
-export default function Landing({ details }: { details: CourseDetails }) {
+export default function Landing({
+  details,
+  t,
+}: {
+  details: CourseDetails;
+  t: TFunction<"course_settings", undefined>;
+}) {
   const [files, setFiles] = useState<FileWithPreview[]>();
   const [quill, setQuill] = useState<Quill>();
   const [sponsors, setSponsors] = useState<Sponsor[]>(details.sponsors);
@@ -74,37 +81,43 @@ export default function Landing({ details }: { details: CourseDetails }) {
     >
       <div className="flex flex-row w-full items-center justify-center">
         <p className="flex font-bold text-2xl text-center">
-          {details.course.public_name} - Landing page
+          {details.course.public_name} - {t("nav-attendance")}
         </p>
       </div>
-      <div className="divider w-[95%]">Display Images</div>
+      <div className="divider w-[95%]">{t("display-images")}</div>
       <ImagesSection
         files={files}
         setFiles={setFiles}
         courseName={details.courseName}
         initial={details.images}
+        t={t}
       />
-      <div className="divider w-[95%]">Course Description</div>
+      <div className="divider w-[95%]">
+        {t("description", { ns: "common" })}
+      </div>
       <TextDetails
         quill={quill}
         setQuill={setQuill}
         courseName={details.courseName}
+        t={t}
       />
-      <div className="divider w-[95%]">Sponsors</div>
+      <div className="divider w-[95%]">{t("sponsors")}</div>
       <SponsorSection
         sponsors={sponsors}
         setSponsors={setSponsors}
         pushModal={pushModal}
         closeModal={closeModal}
         courseName={details.courseName}
+        t={t}
       />
-      <div className="divider w-[95%]">Reviews</div>
+      <div className="divider w-[95%]">{t("reviews")}</div>
       <ReviewsSection
         tweets={tweets}
         setTweets={setTweets}
         pushModal={pushModal}
         closeModal={closeModal}
         courseName={details.courseName}
+        t={t}
       />
     </div>
   );
@@ -115,11 +128,13 @@ const ImagesSection = ({
   setFiles,
   initial,
   courseName,
+  t,
 }: {
   files: FileWithPreview[] | undefined;
   setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | undefined>>;
   initial: string[];
   courseName: string;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [removed, setRemoved] = useState<string[]>();
@@ -248,7 +263,7 @@ const ImagesSection = ({
           className="w-full flex items-center justify-center text-center h-[32rem]"
         >
           <input {...getInputProps()} />
-          <p>Drag and drop some files here, or click to select files</p>
+          <p>{t("dnd")}</p>
         </div>
         {hasChanges && (
           <button
@@ -256,7 +271,7 @@ const ImagesSection = ({
             onClick={handleSaveImages}
             aria-label="upload images"
           >
-            Update Images
+            {t("update-images")}
           </button>
         )}
       </div>
@@ -270,12 +285,14 @@ const SponsorSection = ({
   pushModal,
   closeModal,
   courseName,
+  t,
 }: {
   sponsors: Sponsor[] | undefined;
   setSponsors: React.Dispatch<React.SetStateAction<Sponsor[]>>;
   pushModal: any;
   closeModal: any;
   courseName: string;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const openCreateMenu = () => {
     const mkey = Date.now();
@@ -285,6 +302,7 @@ const SponsorSection = ({
         onClose={() => closeModal(mkey)}
         setSponsors={setSponsors}
         courseName={courseName}
+        t={t}
       />,
       { timer: false }
     );
@@ -333,7 +351,7 @@ const SponsorSection = ({
         onClick={openCreateMenu}
         aria-label="add a sponsor"
       >
-        Add a sponsor
+        {t("add-sponsor")}
       </button>
     </div>
   );
@@ -345,12 +363,14 @@ const ReviewsSection = ({
   pushModal,
   closeModal,
   courseName,
+  t,
 }: {
   tweets: string[] | undefined;
   setTweets: React.Dispatch<React.SetStateAction<string[]>>;
   pushModal: any;
   closeModal: any;
   courseName: string;
+  t: TFunction<"course_settings", undefined>;
 }) => {
   const openAddTweetMenu = () => {
     const mkey = Date.now();
@@ -359,6 +379,7 @@ const ReviewsSection = ({
         key={mkey}
         onClose={() => closeModal(mkey)}
         setTweets={setTweets}
+        t={t}
       />,
       { timer: false }
     );
@@ -396,14 +417,14 @@ const ReviewsSection = ({
           onClick={openAddTweetMenu}
           aria-label="add a tweet"
         >
-          Add a Tweet
+          {t("add-tweet")}
         </button>
         <button
           className="btn btn-outline mt-2 mb-6 mx-1"
           onClick={handleSaveTweets}
           aria-label="save tweets"
         >
-          Save Tweets
+          {t("save-tweets")}
         </button>
       </div>
     </div>

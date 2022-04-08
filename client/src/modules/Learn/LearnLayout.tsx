@@ -11,6 +11,8 @@ type LearnLayout = {
   weeks: number;
   name: string;
   public_name: string;
+  weekLabel: string;
+  leaveLabel: string;
 };
 
 export const LearnLayout: React.FC<LearnLayout> = ({
@@ -18,6 +20,8 @@ export const LearnLayout: React.FC<LearnLayout> = ({
   weeks,
   name,
   public_name,
+  weekLabel,
+  leaveLabel,
 }) => {
   const { url } = useHasImage(name, { type: "course_logo" });
 
@@ -33,7 +37,7 @@ export const LearnLayout: React.FC<LearnLayout> = ({
     return (
       <SideBarHref
         key={index}
-        label={`week - ${index + 1}`}
+        label={`${weekLabel} - ${index + 1}`}
         href={{ pathname: router.pathname, query: { name, week: index } }}
       />
     );
@@ -59,7 +63,7 @@ export const LearnLayout: React.FC<LearnLayout> = ({
         {buttons}
         <SideBarButton
           key={"leave"}
-          label="Leave"
+          label={leaveLabel}
           func={() =>
             executeQuery(
               async () => {

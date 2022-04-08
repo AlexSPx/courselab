@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import useSWR from "swr";
 import SeoTags from "../../components/SeoTags";
 import { VideoInterface } from "../../interfaces";
@@ -29,7 +30,7 @@ export const Video: NextPage<VideoPageProps> = ({ video }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ query, req }) => {
+  async ({ query, req, locale }) => {
     const videoId = typeof query.id === "string" ? query.id : "";
 
     try {
@@ -41,10 +42,20 @@ export const getServerSideProps: GetServerSideProps = withSession(
       });
 
       return {
-        props: { user: req.user, video: res.data },
+        props: {
+          user: req.user,
+          video: res.data,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
+        },
       };
     } catch (error) {
-      return { props: { user: undefined, video: null } };
+      return {
+        props: {
+          user: undefined,
+          video: null,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
+        },
+      };
     }
   }
 );

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useTranslation } from "next-i18next";
 import React, { useRef, useState } from "react";
 import Modal, { useModals } from "..";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
@@ -23,7 +24,7 @@ export default function GradeAssignment({
   const [comment, setComment] = useState<string | undefined>(
     submit.submits[submitIndex].comment
   );
-
+  const { t } = useTranslation("course_settings");
   const { executeQuery } = useRequest();
 
   const wrapperRef = useRef(null);
@@ -106,21 +107,21 @@ export default function GradeAssignment({
         >
           <div className="flex flex-col w-full justify-center items-center">
             <p className="text-xl font-semibold font-mono pt-5">
-              {submit.enrollment.user.username}&apos;s submit
+              {t("submit", { username: submit.enrollment.user.username })}
             </p>
           </div>
           <div className="divider w-full"></div>
           <div className="flex flex-col p-3 font-mono">
             <div className="mb-2">
-              <p className="font-semibold">Latest submit:</p>
+              <p className="font-semibold">{t("latest-submit")}:</p>
               <FormatDate date={submit.submits[submitIndex].dateOfSubmit} />
             </div>
             <div className="my-2">
-              <p className="font-semibold">Attachments:</p>
+              <p className="font-semibold">{t("attachments")}:</p>
               <div className="flex flex-wrap">{mapAttachments}</div>
             </div>
             <div className="flex flex-col w-full justify-center">
-              <p className="font-semibold">Add a comment:</p>
+              <p className="font-semibold">{t("add-comment")}:</p>
 
               <textarea
                 className="textarea textarea-bordered w-3/4"
@@ -135,7 +136,8 @@ export default function GradeAssignment({
               onClick={handleReturn}
               aria-label="Return an assignment"
             >
-              {submit.submits[submitIndex].returned && "Update"} Return
+              {submit.submits[submitIndex].returned && t("update")}{" "}
+              {t("return")}
             </button>
           </div>
         </div>

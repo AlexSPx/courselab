@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import { BsArrowLeft } from "react-icons/bs";
 import FormatDate from "../../../../components/FormatDate";
@@ -15,7 +16,7 @@ export default function DatesRender({
   goBack?: () => void;
 }) {
   const [currentWeek, setCurrentWeek] = useState(0);
-
+  const { t } = useTranslation("course_settings");
   const Week = () => {
     const mapDays = [...Array(7)].map((_, index) => {
       return (
@@ -25,6 +26,7 @@ export default function DatesRender({
           index={index}
           startingDate={date}
           key={`${currentWeek}-${index}`}
+          t={t}
         />
       );
     });
@@ -50,6 +52,8 @@ export default function DatesRender({
         currentWeek={currentWeek}
         setCurrentWeek={setCurrentWeek}
         courseWeeks={course.weeks!}
+        weekLabel={t("week")}
+        selectDateLabel={t("select-week")}
       />
       <Week />
     </div>

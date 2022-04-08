@@ -1,4 +1,5 @@
 import axios from "axios";
+import { TFunction, useTranslation } from "next-i18next";
 import React, { useEffect, useState } from "react";
 import FormatDate from "../../../components/FormatDate";
 import { useModals } from "../../../components/Modal";
@@ -27,6 +28,7 @@ export default function RenderQuiz({
 }) {
   const [submitted, setSubmitted] = useState<QuizSubmitType[]>();
   const [missing, setMissing] = useState<QuizSubmitType[]>();
+  const { t } = useTranslation("course_settings");
 
   useEffect(() => {
     const fetch = async () => {
@@ -49,6 +51,7 @@ export default function RenderQuiz({
         setSubmits={setSubmitted}
         index={index}
         key={`submittedquiz#${submit.id}`}
+        t={t}
       />
     );
   });
@@ -65,11 +68,11 @@ export default function RenderQuiz({
         <thead>
           <tr>
             <th></th>
-            <th>Name</th>
-            <th className="hidden md:table-cell">Username</th>
-            <th className="hidden md:table-cell">Submitted At</th>
-            <th className="hidden md:table-cell">Points</th>
-            <th>Returned</th>
+            <th>{t("user-name")}</th>
+            <th className="hidden md:table-cell">{t("username")}</th>
+            <th className="hidden md:table-cell">{t("submitted-on")}</th>
+            <th className="hidden md:table-cell">{t("submits")}</th>
+            <th>{t("attachments")}</th>
           </tr>
         </thead>
         <tbody>{mapSubmitted}</tbody>
@@ -83,12 +86,14 @@ const Submited = ({
   quiz,
   setSubmits,
   index,
+  t,
 }: {
   quiz: QuizSubmitType;
   setSubmits: React.Dispatch<
     React.SetStateAction<QuizSubmitType[] | undefined>
   >;
   index: number;
+  t: TFunction;
 }) => {
   const { pushModal, closeModal } = useModals();
 
@@ -100,6 +105,7 @@ const Submited = ({
         key={akey}
         setSubmits={setSubmits}
         submit={quiz}
+        t={t}
       />,
       {
         timer: false,

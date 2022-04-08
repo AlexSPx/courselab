@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { withSession } from "../../lib/withSession";
 import Error401 from "../../components/Error401";
 import SeoTags from "../../components/SeoTags";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Page = dynamic(() => import("./Page"), { ssr: false });
 
@@ -26,7 +27,7 @@ export const Document: NextPage<DocumentPageProps> = ({ document }) => {
   );
 };
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ query, req }) => {
+  async ({ query, req, locale }) => {
     const docId = typeof query.id === "string" ? query.id : "";
 
     try {
@@ -41,6 +42,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           user: req.user,
           document: res.data,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
         },
       };
     } catch (error) {
@@ -48,6 +50,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           user: undefined,
           document: null,
+          ...(await serverSideTranslations(locale!, ["common", "docs"])),
         },
       };
     }

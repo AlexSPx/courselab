@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import { TFunction } from "react-i18next";
 import Modal from "..";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
 import { QuizGivenAnswer, QuizzQuestionInterface } from "../../../interfaces";
@@ -12,12 +13,14 @@ export default function GradeQuiz({
   onClose,
   submit,
   setSubmits,
+  t,
 }: {
   onClose: Function;
   submit: QuizSubmitType;
   setSubmits: React.Dispatch<
     React.SetStateAction<QuizSubmitType[] | undefined>
   >;
+  t: TFunction<"course_settings", undefined>;
 }) {
   const [answers, setAnswers] = useState<QuizGivenAnswer[]>(
     submit.quizzes[0].answers
@@ -78,6 +81,7 @@ export default function GradeQuiz({
             answers.find((answer) => answer.question === question.id)!
           }
           changeAnswer={changeAnswer}
+          t={t}
           key={question.id}
         />
       );
@@ -90,6 +94,7 @@ export default function GradeQuiz({
             answers.find((answer) => answer.question === question.id)!
           }
           changeAnswer={changeAnswer}
+          t={t}
           key={question.id}
         />
       );
@@ -105,17 +110,17 @@ export default function GradeQuiz({
         >
           <div className="flex flex-col w-full justify-center items-center">
             <p className="text-xl font-semibold font-mono pt-5">
-              {submit.user.username}&apos;s submit
+              {t("quiz", { username: submit.user.username })}
             </p>
           </div>
           <div className="divider w-full"></div>
           <div className="flex flex-col p-3 font-mono">
             <div className="mb-2">
-              <p className="font-semibold">Submitted on:</p>
+              <p className="font-semibold">{t("submitted-on")}:</p>
               <FormatDate date={submit.quizzes[0].dateOfSubmit} />
             </div>
             <div className="my-2">
-              <p className="font-semibold">Questions:</p>
+              <p className="font-semibold">{t("questions")}:</p>
               <div
                 className="flex flex-col p-1 font-sans max-h-[60vh] overflow-auto"
                 id="journal-scroll"
@@ -124,14 +129,14 @@ export default function GradeQuiz({
               </div>
             </div>
             <div className="flex flex-col w-full justify-center">
-              <p className="font-semibold">Add a comment:</p>
+              <p className="font-semibold">{t("add-comment")}:</p>
             </div>
             <button
               className="btn btn-outline my-3"
               onClick={handleReturn}
               aria-label="Return a quizz"
             >
-              {submit.quizzes[0].returned && "Update"} Return
+              {submit.quizzes[0].returned && t("update")} {t("return")}
             </button>
           </div>
         </div>
@@ -144,10 +149,12 @@ const OpenedQuestion = ({
   question,
   givenAnswer,
   changeAnswer,
+  t,
 }: {
   question: QuizzQuestionInterface;
   givenAnswer: QuizGivenAnswer;
   changeAnswer: (correct: boolean) => void;
+  t: TFunction;
 }) => {
   return (
     <div
@@ -157,7 +164,7 @@ const OpenedQuestion = ({
     >
       <p className="text-lg max-w-[85%]">{question.question}</p>
       <p className="absolute top-3 right-3 text-sm text-gray-700 italic">
-        points: {question.points}
+        {t("points")}: {question.points}
       </p>
       <input
         type="text"
@@ -171,7 +178,7 @@ const OpenedQuestion = ({
           onClick={() => changeAnswer(false)}
           aria-label="Take off points"
         >
-          Take Points
+          {t("take points")}{" "}
         </button>
       ) : (
         <button
@@ -179,7 +186,7 @@ const OpenedQuestion = ({
           onClick={() => changeAnswer(true)}
           aria-label="Give points"
         >
-          Give Points
+          {t("give-points")}
         </button>
       )}
     </div>
@@ -190,10 +197,12 @@ const ClosedQuestion = ({
   question,
   givenAnswer,
   changeAnswer,
+  t,
 }: {
   question: QuizzQuestionInterface;
   givenAnswer: QuizGivenAnswer;
   changeAnswer: (correct: boolean) => void;
+  t: TFunction;
 }) => {
   const options = question.options?.map((option) => {
     return (
@@ -218,7 +227,7 @@ const ClosedQuestion = ({
     >
       <p className="text-lg max-w-[85%]">{question.question}</p>
       <p className="absolute top-3 right-3 text-sm text-gray-700 italic">
-        points: {question.points}
+        {t("points")}: {question.points}
       </p>
       {options}
       {givenAnswer.correct ? (
@@ -227,7 +236,7 @@ const ClosedQuestion = ({
           onClick={() => changeAnswer(false)}
           aria-label="Take off points"
         >
-          Take Points
+          {t("take-points")}
         </button>
       ) : (
         <button
@@ -235,7 +244,7 @@ const ClosedQuestion = ({
           onClick={() => changeAnswer(true)}
           aria-label="Give points"
         >
-          Give Points
+          {t("give-points")}
         </button>
       )}
     </div>

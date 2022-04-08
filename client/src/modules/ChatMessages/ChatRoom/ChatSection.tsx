@@ -5,7 +5,15 @@ import useMessageQuery from "../../../Hooks/useMessageQuery";
 import { ChatRoom } from "../../../interfaces";
 import Message from "./Message";
 
-export default function ChatSection({ chatroom }: { chatroom: ChatRoom }) {
+export default function ChatSection({
+  chatroom,
+  typeLabel,
+  typingLabel,
+}: {
+  chatroom: ChatRoom;
+  typeLabel: string;
+  typingLabel: string;
+}) {
   const { socket } = useContext(WebSocketContext);
   const { userData } = useContext(UserContext);
 
@@ -88,19 +96,23 @@ export default function ChatSection({ chatroom }: { chatroom: ChatRoom }) {
   });
 
   return (
-    <div className="flex flex-col w-[73rem] h-full">
+    <div className="flex flex-col w-full h-full">
       <div className="h-full max-h-[67rem] overflow-auto" id="journal-scroll">
         {mapMessages}
       </div>
       <section className="flex flex-col order-last w-full h-24 justify-center p-2">
         <p className="text-sm text-gray-500 h-7 italic mx-3">
-          {usersTyping.length > 0 && <> {mapUsersTyping} typing...</>}
+          {usersTyping.length > 0 && (
+            <>
+              {mapUsersTyping} {typingLabel}...
+            </>
+          )}
         </p>
         <div className="flex flex-row h-full w-[95%] bg-white border-2 rounded-lg justify-center">
           <input
             type="text"
             className="w-[87%] outline-none"
-            placeholder="Type something..."
+            placeholder={typeLabel}
             value={messageToSend}
             onChange={(e) => setMessageToSend(e.target.value)}
             onKeyDown={(e) => {

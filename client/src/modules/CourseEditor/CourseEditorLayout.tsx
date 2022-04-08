@@ -10,16 +10,19 @@ import SideBar, {
 } from "../Layouts/SideBar";
 import useRequst from "../../lib/useRequest";
 import { AiOutlineContacts } from "react-icons/ai";
+import { TFunction } from "react-i18next";
 
 type SideBarMenuProps = {
   name: string;
   published: boolean;
+  t: TFunction;
 };
 
 export const CourseEditorLayout: React.FC<SideBarMenuProps> = ({
   children,
   name,
   published,
+  t,
 }) => {
   const { executeQuery } = useRequst();
 
@@ -71,34 +74,34 @@ export const CourseEditorLayout: React.FC<SideBarMenuProps> = ({
       <SideBar css="bg-white">
         <SideBarSection label="Settings" />
         <SideBarHref
-          label="General settings"
+          label={t("nav-general")}
           icon={<SettingsIcon />}
           href={`${path}/general`}
         />
         <SideBarHref
-          label="Course structure"
+          label={t("nav-structure")}
           icon={<StructureIcon />}
           href={`${path}/structure`}
         />
         <SideBarHref
-          label="Course landing"
+          label={t("nav-landing")}
           icon={<IoIosLaptop size={31} />}
           href={`${path}/landing`}
         />
         <SideBarHref
-          label="Attendance"
+          label={t("nav-attendance")}
           icon={<AiOutlineContacts size={31} />}
           href={`${path}/attendance`}
         />
         {published ? (
           <SideBarButton
-            label="Unlist"
+            label={t("nav-unlist")}
             aria-label="unlist"
             func={handleUnlist}
           />
         ) : (
           <SideBarButton
-            label="Publish"
+            label={t("nav-publish")}
             aria-label="publish"
             func={handlePublish}
           />

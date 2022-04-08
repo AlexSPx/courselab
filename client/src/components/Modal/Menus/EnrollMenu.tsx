@@ -10,13 +10,16 @@ import { CloseIcon } from "../../../svg/small";
 import useHasImage from "../../../Hooks/useHasImage";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
 import FormatDate from "../../FormatDate";
+import { TFunction } from "react-i18next";
 
 export default function EnrollMenu({
   course,
   onClose,
+  t,
 }: {
   course: CoursePublicRaw;
   onClose: Function;
+  t: TFunction;
 }) {
   const [startingDate, setStartingDate] = useState(new Date());
   const [dateChoseValue, setdateChoseValue] = useState("def");
@@ -77,7 +80,7 @@ export default function EnrollMenu({
         value={dateChoseValue}
       >
         <option value="def" disabled={true}>
-          Select a date
+          {t("select-date")}
         </option>
         {mapDates}
       </select>
@@ -92,7 +95,7 @@ export default function EnrollMenu({
           ref={wrapperRef}
         >
           <div className="flex flex-row justify-between p-3 border-b bg-white max-h-[60%]">
-            <span className="font-semibold label">Enroll</span>
+            <span className="font-semibold label">{t("enroll")}</span>
             <div
               className="flex h-10 w-10  items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer"
               onClick={() => onClose()}
@@ -114,16 +117,18 @@ export default function EnrollMenu({
               <p className="text-xl font-semibold mt-4">
                 {course?.public_name}
               </p>
-              <p className="text-sm text-gray-500">
-                Signed in as @{userData?.user?.username}
-              </p>
+              {userData?.isAuth && (
+                <p className="text-sm text-gray-500">
+                  {t("signed-as", { username: userData?.user?.username })}
+                </p>
+              )}
               {course?.scheduleType === "SCHEDULE" && <DateSelector />}
               <button
                 className="btn btn-info px-20 mt-3 font-medium text-white bg-blue-600 hover:bg-blue-700"
                 onClick={handleEndroll}
                 aria-label="Enroll into a course"
               >
-                Enroll
+                {t("enroll")}
               </button>
             </div>
           </div>

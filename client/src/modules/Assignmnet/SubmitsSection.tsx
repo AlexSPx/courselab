@@ -1,4 +1,5 @@
 import axios from "axios";
+import { TFunction } from "react-i18next";
 import { useState } from "react";
 import FIleAdder, {
   Attachment,
@@ -23,8 +24,10 @@ const latestSubmit = (submits: AssignmentSubmit[]) => {
 
 export default function SubmitsSection({
   assignment,
+  t,
 }: {
   assignment: AssignmentInterface;
+  t: TFunction;
 }) {
   const [attachedFiles, setAttachedFiles] = useState<Attachment[]>();
   const [toBeRemoved, setToBeRemoved] =
@@ -234,7 +237,7 @@ export default function SubmitsSection({
     <>
       <div className="flex flex-col p-4 w-full h-full items-center justify-center bg-white border border-gray-100 shadow-sm rounded-xl">
         <section className="font-bold text-2xl w-full">
-          Submit
+          {t("submit")}
           <p className="text-lg font-semibold">
             {submit && <FormatDate date={submit?.dateOfSubmit} />}
           </p>
@@ -243,7 +246,7 @@ export default function SubmitsSection({
         <section className="flex flex-col relative w-full h-full mt-4 items-center">
           {submit && (
             <div className="flex flex-col items-center">
-              <p className="font-semibold text-lg">Already Submitted</p>
+              <p className="font-semibold text-lg">{t("already-submitted")}</p>
               <div
                 className="flex flex-wrap w-full h-full max-h-[14rem] items-center justify-center overflow-auto mb-3"
                 id="journal-scroll"
@@ -255,7 +258,7 @@ export default function SubmitsSection({
 
           {(!submit || submit.dateOfRemoval) && (
             <div className="flex flex-col items-center">
-              <p className="font-semibold text-lg">New Attachments</p>
+              <p className="font-semibold text-lg">{t("new-attachnebts")}</p>
               <FIleAdder
                 type="submit"
                 style="top"
@@ -272,7 +275,7 @@ export default function SubmitsSection({
             onClick={handleUnSubmit}
             aria-label="ussubmit assignment"
           >
-            Unsubmit
+            {t("unsubmit")}
           </button>
         ) : (
           <button
@@ -280,13 +283,15 @@ export default function SubmitsSection({
             onClick={handleSubmit}
             aria-label="submit assignment"
           >
-            Submit
+            {t("submit")}
           </button>
         )}
       </div>
       {submit?.returned && (
         <div className="flex flex-col p-4 w-full h-fit  justify-center bg-white border border-gray-100 shadow-sm rounded-xl mt-3 mb-1">
-          <p className="font-semibold text-lg pt-2 ml-2">Submit returned</p>
+          <p className="font-semibold text-lg pt-2 ml-2">
+            {t("submit-returned")}
+          </p>
           <textarea
             value={submit?.comment}
             className="w-full textarea textarea-bordered rounded-lg"

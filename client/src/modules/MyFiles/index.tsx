@@ -1,5 +1,7 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
 import CourseDraftCard from "../../components/cards/CourseDraftCard";
 import FormatDate from "../../components/FormatDate";
@@ -34,11 +36,14 @@ type FilesPageType = {
 export const MyFilesPage: NextPage<FilesPageType> = ({
   files: { documents, videos },
 }) => {
+  const { t } = useTranslation();
+
   const mapDocument = documents.map((documentOnUser) => {
     return (
       <Document
         documentOnUser={documentOnUser}
         key={documentOnUser.AssignedAt?.toString() || new Date().toString()}
+        label={t("document")}
       />
     );
   });
@@ -47,6 +52,7 @@ export const MyFilesPage: NextPage<FilesPageType> = ({
       <Video
         videoOnUser={videoOnUser}
         key={videoOnUser.AssignedAt?.toString() || new Date().toString()}
+        label={t("video")}
       />
     );
   });
@@ -57,11 +63,23 @@ export const MyFilesPage: NextPage<FilesPageType> = ({
         title="CourseLab | Manager"
         description="The place to manage your courses"
       />
-      <Main css="max-w-4xl">
-        <div className="divider">Documents</div>
-        {mapDocument}
-        <div className="divider">Videos</div>
-        {mapVideos}
+      <Main css="max-w-4xl items-center">
+        <div className="divider w-full text-lg">{t("documents")}</div>
+        {mapDocument.length ? (
+          mapDocument
+        ) : (
+          <h3 className="text-lg font-mono text-gray-500">
+            {t("no-documents")}
+          </h3>
+        )}
+        <div className="divider w-full text-lg">{t("videos")}</div>
+        {mapVideos.length ? (
+          mapVideos
+        ) : (
+          <h3 className="text-lg font-mono text-gray-500">
+            {t("no-documents")}
+          </h3>
+        )}
       </Main>
     </MainLayout>
   );
@@ -69,8 +87,10 @@ export const MyFilesPage: NextPage<FilesPageType> = ({
 
 const Document = ({
   documentOnUser,
+  label,
 }: {
   documentOnUser: DocumentUser & DocumentName;
+  label: string;
 }) => {
   return (
     <Link href={`/doc/${documentOnUser.document.id}`} passHref={true}>
@@ -80,7 +100,7 @@ const Document = ({
       >
         <div className="flex flex-row items-center justify-center mr-3">
           <DocumentIcon />
-          Document
+          {label}
         </div>
         <div className="divider divider-vertical"></div>
         {documentOnUser.document.name}
@@ -89,16 +109,22 @@ const Document = ({
   );
 };
 
-const Video = ({ videoOnUser }: { videoOnUser: VideoUser & VideoName }) => {
+const Video = ({
+  videoOnUser,
+  label,
+}: {
+  videoOnUser: VideoUser & VideoName;
+  label: string;
+}) => {
   return (
-    <Link href={`/doc/${videoOnUser.video.id}`} passHref={true}>
+    <Link href={`/video/${videoOnUser.video.id}`} passHref={true}>
       <a
         className="flex w-full border border-gray-800 rounded p-1 px-6 my-1 hover:bg-gray-200 cursor-pointer"
         target="_blank"
       >
         <div className="flex flex-row items-center justify-center mr-3">
           <VideoIcon />
-          Video
+          {label}
         </div>
         <div className="divider divider-vertical"></div>
         {videoOnUser.video.name}
@@ -108,7 +134,7 @@ const Video = ({ videoOnUser }: { videoOnUser: VideoUser & VideoName }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req }) => {
+  async ({ req, locale }) => {
     try {
       const { data } = await axios.get(`${baseurl}/user/myfiles`, {
         withCredentials: true,
@@ -121,6 +147,8 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           files: data,
           user: req.user,
+
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     } catch (error) {
@@ -128,6 +156,7 @@ export const getServerSideProps: GetServerSideProps = withSession(
         props: {
           files: null,
           user: undefined,
+          ...(await serverSideTranslations(locale!, ["common"])),
         },
       };
     }

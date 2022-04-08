@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import { useContext, useState } from "react";
 import useSWR from "swr";
 import { UserContext } from "../../contexts/UserContext";
@@ -13,12 +14,13 @@ export const MessagesLayout: React.FC = ({ children }) => {
   useSWR(`${baseurl}/chatroom/rooms`, {
     onSuccess: (data) => setChatrooms(data),
   });
-
+  const { t } = useTranslation();
   const mapRooms = chatrooms.map((chatroom) => {
     return (
       <ChatPreview
         key={chatroom.id}
         chatroom={chatroom}
+        emailLabel={t("email")}
         userId={userData?.user?.id!}
       />
     );
@@ -29,8 +31,12 @@ export const MessagesLayout: React.FC = ({ children }) => {
       className="flex flex-row w-full h-full overflow-auto bg-gray-50"
       id="journal-scroll"
     >
-      <SideBar css="bg-white w-[32vw]">
-        <Searchbar />
+      <SideBar css="bg-white w-[32vw] z-10">
+        <Searchbar
+          email={t("email")}
+          searching={t("searching")}
+          instructions={t("chat-instructions")}
+        />
         {mapRooms}
       </SideBar>
       <div

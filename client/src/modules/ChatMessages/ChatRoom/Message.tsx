@@ -36,7 +36,7 @@ export default function Message({
       }
     >
       <div className="relative w-12 h-12 min-w-[3rem]">
-        <Avatar user={member.user || null} />
+        <Avatar user={member.user || null} refresh={false} />
       </div>
       <div className="flex flex-col ml-3">
         <div className="text-gray-500 flex flex-row items-center">
