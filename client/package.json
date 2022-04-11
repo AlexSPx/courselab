@@ -18,7 +18,7 @@
     "cookie": "^0.4.1",
     "cors": "^2.8.5",
     "critters": "^0.0.7",
-    "daisyui": "^1.16.0",
+    "daisyui": "^1.25.4",
     "i18next-http-backend": "^1.4.0",
     "lodash": "^4.17.21",
     "next": "^12.0.7",
