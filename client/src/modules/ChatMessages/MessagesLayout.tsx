@@ -31,7 +31,7 @@ export const MessagesLayout: React.FC = ({ children }) => {
       className="flex flex-row w-full h-full overflow-auto bg-gray-50"
       id="journal-scroll"
     >
-      <SideBar css="bg-white w-[32vw] z-10">
+      <SideBar css="bg-white pt-12 w-[32vw] z-10 relative">
         <Searchbar
           email={t("email")}
           searching={t("searching")}

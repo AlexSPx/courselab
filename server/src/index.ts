@@ -13,6 +13,7 @@ import video from "./api/video";
 import assignment from "./api/assignment";
 import quiz from "./api/quiz";
 import chatroom from "./api/chatrooms";
+import admin from "./api/admin";
 
 import path from "path";
 import sharp from "sharp";
@@ -26,6 +27,7 @@ import helmet from "helmet";
 import { debug } from "console";
 import setUpSocketServer from "./sockets/setup";
 import { baseDir } from "./settings/multer";
+import { isAdmin, isAuth } from "./middlewares/auth";
 
 require("dotenv").config();
 
@@ -92,7 +94,7 @@ export const io = new Server(httpServer, {
   app.use("/api/assignment", assignment);
   app.use("/api/quiz", quiz);
   app.use("/api/chatroom", chatroom);
-
+  app.use("/api/admin", isAuth, isAdmin, admin);
   // static
   app.use(
     "/api/user/avatars",

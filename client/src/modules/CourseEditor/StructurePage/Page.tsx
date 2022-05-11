@@ -6,6 +6,7 @@ import { useModals } from "../../../components/Modal";
 import StructureCreateFile, { CreateFile } from "./StructureCreateFile";
 
 import useStructureData, {
+  Data,
   StructureData,
 } from "../../../Hooks/useStructureData";
 import { CourseInterface, DataModelInterface } from "../../../interfaces";
@@ -21,6 +22,7 @@ import {
 } from "../../../svg/small";
 import NoSsr from "../../../components/NoSsr";
 import { TFunction } from "react-i18next";
+import { weekCount } from "../../../lib/structureHelpers";
 
 export default function Structure({
   course,
@@ -252,7 +254,7 @@ const WeekSection = ({
   setCurrentWeek,
   t,
 }: {
-  data: Object[] | null;
+  data: Data | null;
   week: number;
   setCurrentWeek: React.Dispatch<React.SetStateAction<number>>;
   t: TFunction<"course_settings", undefined>;
@@ -260,6 +262,8 @@ const WeekSection = ({
   const [active, setActive] = useState(false);
 
   const dropdown = data?.map((week, index) => {
+    weekCount(week);
+    const { videos, documents, assignments, quizzes } = weekCount(week);
     return (
       <div
         className="flex flex-col w-full h-full p-1 hover:bg-gray-900 hover:text-white"
@@ -273,26 +277,50 @@ const WeekSection = ({
           {t("week")} {index + 1}
         </p>
         <div className="flex flex-row font-thin italic">
-          <p className="mx-1">{t("videos", { ns: "common" })}: 3</p>
-          <p className="mx-1">{t("documents", { ns: "common" })}: 2</p>
-          <p className="mx-1">{t("assignments", { ns: "common" })}: 4</p>
-          <p className="mx-1">{t("quizzes", { ns: "common" })}: 1</p>
+          <p className="mx-1">
+            {t("videos", { ns: "common" })}: {videos}
+          </p>
+          <p className="mx-1">
+            {t("documents", { ns: "common" })}: {documents}
+          </p>
+          <p className="mx-1">
+            {t("assignments", { ns: "common" })}: {assignments}
+          </p>
+          <p className="mx-1">
+            {t("quizzes", { ns: "common" })}: {quizzes}
+          </p>
         </div>
       </div>
     );
   });
 
-  const CurrentWeek = ({ week, index }: { week: object; index: number }) => {
+  const CurrentWeek = ({
+    week,
+    index,
+  }: {
+    week: DataModelInterface[][];
+    index: number;
+  }) => {
+    const { videos, documents, assignments, quizzes } = weekCount(week);
+
     return (
-      <div className="flex flex-col w-full h-full p-1 hover:bg-gray-900 hover:text-white">
+      <div className="flex flex-col w-full h-full p-1">
         <p className="text-2xl font-semibold">
           {t("week")} {index + 1}
         </p>
         <div className="flex flex-row font-thin italic">
-          <p className="mx-1">{t("videos", { ns: "common" })}: 3</p>
-          <p className="mx-1">{t("documents", { ns: "common" })}: 2</p>
-          <p className="mx-1">{t("assignments", { ns: "common" })}: 4</p>
-          <p className="mx-1">{t("quizzes", { ns: "common" })}: 1</p>
+          <p className="mx-1">
+            {t("videos", { ns: "common" })}: {videos}
+          </p>
+          <p className="mx-1">
+            {t("documents", { ns: "common" })}: {documents}
+          </p>
+          <p className="mx-1">
+            {t("assignments", { ns: "common" })}: {assignments}
+          </p>
+          <p className="mx-1">
+            {t("quizzes", { ns: "common" })}: {quizzes}
+          </p>
         </div>
       </div>
     );

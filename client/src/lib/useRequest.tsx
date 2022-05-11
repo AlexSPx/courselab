@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import {
   ErrorModal,
   LoadingModal,
@@ -25,7 +25,7 @@ export default function useRequest() {
       successTitle?: string;
       successBody?: string;
       onSuccess?: (data: AxiosResponse<any>) => void;
-      onFail?: Function;
+      onFail?: (error: AxiosError) => void;
       successStatus?: number;
     } = {}
   ) => {
@@ -61,7 +61,7 @@ export default function useRequest() {
       if (axios.isAxiosError(error)) {
         if (error.response) {
           closeModal(ackey);
-          if (onFail) onFail();
+          if (onFail) onFail(error);
           pushModal(
             <ErrorModal
               title="Error"

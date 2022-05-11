@@ -48,7 +48,7 @@ export const LearnLayout: React.FC<LearnLayout> = ({
       className="flex flex-row w-full h-full overflow-auto bg-gray-50"
       id="journal-scroll"
     >
-      <SideBar css="bg-white">
+      <SideBar css="bg-white relative pt-9">
         <div className="relative w-24 h-24 rounded-lg shadow mt-4">
           <Image
             src={url}

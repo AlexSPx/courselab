@@ -11,6 +11,7 @@ import useHasImage from "../../../Hooks/useHasImage";
 import useOnOutsideClick from "../../../Hooks/useOnOutsideClick";
 import FormatDate from "../../FormatDate";
 import { TFunction } from "react-i18next";
+import { useRouter } from "next/router";
 
 export default function EnrollMenu({
   course,
@@ -27,6 +28,7 @@ export default function EnrollMenu({
   const wrapperRef = useRef(null);
 
   const { userData } = useContext(UserContext);
+  const { push } = useRouter();
 
   const { executeQuery } = useRequest();
   const { url } = useHasImage(course.name, {
@@ -55,6 +57,10 @@ export default function EnrollMenu({
         loadingBody: "This might take awhile",
         successTitle: "Everything is set",
         successBody: "Redirecting...",
+        onFail: (error) => {
+          if (error.response?.data === "Must be logged in") push("/login");
+          onClose();
+        },
       }
     );
   };

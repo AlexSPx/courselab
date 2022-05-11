@@ -10,54 +10,24 @@ import { useRouter } from "next/router";
 import useOnOutsideClick from "../../Hooks/useOnOutsideClick";
 import { useTranslation } from "next-i18next";
 import LanguageSelector from "../../components/LanguageSelector";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 export default function AuthHeader() {
   const { userData } = useContext(UserContext);
   const { t } = useTranslation("common");
   const [dropdown, setDropdown] = useState(false);
+  const [mobileDropdown, setMobileDropdown] = useState(false);
 
   return (
     <header className="w-full border-b">
-      <div className="navbar mb-1 text-black rounded-box m-1">
+      <div className="navbar mb-1 text-black rounded-box m-1 justify-between">
         <div className="flex-1 hidden px-2 mx-2 lg:flex">
           <Link href="/home">
             <a className="text-lg font-bold">CourseLab</a>
           </Link>
         </div>
-        <div className="hidden lg:flex mx-2 items-center">
-          {userData?.user?.isAdmin && (
-            <Link href="/cpanel">
-              <a className="btn btn-ghost btn-sm rounded-btn">
-                {t("auth-header-cpanel")}
-              </a>
-            </Link>
-          )}
-          <Link href="/home">
-            <a className="btn btn-ghost btn-sm rounded-btn">
-              {t("auth-header-home")}
-            </a>
-          </Link>
-          <Link href="/messages">
-            <a className="btn btn-ghost btn-sm rounded-btn">
-              {t("auth-header-chats")}
-            </a>
-          </Link>
-          <Link href="/myfiles">
-            <a className="btn btn-ghost btn-sm rounded-btn">
-              {t("auth-header-files")}
-            </a>
-          </Link>
-          <Link href="/courses">
-            <a className="btn btn-ghost btn-sm rounded-btn">
-              {t("auth-header-explorer")}
-            </a>
-          </Link>
-          <Link href="/manager">
-            <a className="btn btn-ghost btn-sm rounded-btn">
-              {t("auth-header-manager")}
-            </a>
-          </Link>
-          <LanguageSelector />
+        <div className="hidden md:flex mx-2 items-center">
+          <Links isAdmin={userData?.user?.isAdmin} t={t} />
         </div>
         {/* <div className="flex-1 lg:flex-none">
           <div className="form-control">
@@ -109,6 +79,12 @@ export default function AuthHeader() {
             </svg>
           </button>
         </div> */}
+        <div
+          className="flex md:hidden"
+          onClick={() => setMobileDropdown(!mobileDropdown)}
+        >
+          <GiHamburgerMenu size={32} className="cursor-pointer" />
+        </div>
         <div className="flex-none">
           <div className="inline-block justify-start relative avatar online">
             <div
@@ -123,9 +99,52 @@ export default function AuthHeader() {
           </div>
         </div>
       </div>
+      <div className="flex flex-col items-center py-1 md:hidden ">
+        {mobileDropdown && <Links isAdmin={userData?.user?.isAdmin} t={t} />}
+      </div>
     </header>
   );
 }
+
+const Links = ({ isAdmin, t }: { isAdmin?: boolean; t: Function }) => {
+  return (
+    <>
+      {isAdmin && (
+        <Link href="/cpanel">
+          <a className="btn btn-ghost btn-sm rounded-btn">
+            {t("auth-header-cpanel")}
+          </a>
+        </Link>
+      )}
+      <Link href="/home">
+        <a className="btn btn-ghost btn-sm rounded-btn">
+          {t("auth-header-home")}
+        </a>
+      </Link>
+      <Link href="/messages">
+        <a className="btn btn-ghost btn-sm rounded-btn">
+          {t("auth-header-chats")}
+        </a>
+      </Link>
+      <Link href="/myfiles">
+        <a className="btn btn-ghost btn-sm rounded-btn">
+          {t("auth-header-files")}
+        </a>
+      </Link>
+      <Link href="/courses">
+        <a className="btn btn-ghost btn-sm rounded-btn">
+          {t("auth-header-explorer")}
+        </a>
+      </Link>
+      <Link href="/manager">
+        <a className="btn btn-ghost btn-sm rounded-btn">
+          {t("auth-header-manager")}
+        </a>
+      </Link>
+      <LanguageSelector />
+    </>
+  );
+};
 
 const Menu = ({
   user,

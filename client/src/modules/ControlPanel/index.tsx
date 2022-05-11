@@ -1,11 +1,13 @@
 import { NextPage, GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import SeoTags from "../../components/SeoTags";
 import { WebSocketContext } from "../../contexts/SocketContext";
 import { baseurl } from "../../lib/fetcher";
 import { withSession } from "../../lib/withSession";
-import { Main, MainLayout } from "../Layouts/MainLayout";
+import { MainLayout, Main } from "../Layouts/MainLayout";
+import Page from "./Page";
 
 export const ControlPanelPage: NextPage = () => {
   const { socket } = useContext(WebSocketContext);
@@ -28,23 +30,24 @@ export const ControlPanelPage: NextPage = () => {
   return (
     <MainLayout>
       <SeoTags
-        title={`Control Panel`}
+        title={`CourseLab | Control Panel`}
         description={`The general settings for your course`}
       />
       <Main>
-        <h1 className="text-2xl text-center">Comming Soon</h1>
+        <Page />
       </Main>
     </MainLayout>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = withSession(
-  async ({ req, query }) => {
+  async ({ req, query, locale }) => {
     const course = typeof query.name === "string" ? query.name : "";
 
     return {
       props: {
         user: req.user,
+        ...(await serverSideTranslations(locale!, ["common", "control_panel"])),
       },
     };
   },

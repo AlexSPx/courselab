@@ -42,3 +42,17 @@ const convert = (data: Data): prepareData => {
 
   return { weeks };
 };
+
+export const weekCount = (week: DataModelInterface[][]) => {
+  const counts = { videos: 0, documents: 0, assignments: 0, quizzes: 0 };
+  week.forEach((day) => {
+    day.forEach((dmodel) => {
+      if (dmodel.type === "DOCUMENT") counts.documents++;
+      else if (dmodel.type === "VIDEO") counts.videos++;
+      else if (dmodel.type === "ASSIGNMENT") counts.assignments++;
+      else if (dmodel.type === "QUIZ") counts.quizzes++;
+    });
+  });
+
+  return counts;
+};

@@ -231,7 +231,7 @@ router.post("/submits/details", isAuth, async (req, res) => {
     const all = await prismaClient.courseEnrollment.findMany({
       where: {
         course_id: req.body.course,
-        startingAt: req.body.startingDate,
+        startingAt: req.body.startingDate || undefined,
         role: "STUDENT",
         quizzes: {
           some: {
@@ -267,6 +267,7 @@ router.post("/submits/details", isAuth, async (req, res) => {
     const { submitted, missing } = submitsDitribution(all);
     return res.status(200).send({ submitted, missing });
   } catch (error) {
+    console.log(error);
     return res.status(400).send(JSON.stringify(error));
   }
 });

@@ -76,10 +76,10 @@ const CourseLogoCheck = (
 
   useEffect(() => {
     if (error) {
-      setUrl(`${baseurl}/course/logo/default.jpg`);
+      setUrl(`https://avatars.dicebear.com/api/initials/${name}.svg`);
       return;
     }
 
     setUrl(`${baseurl}${url}.jpg`);
-  }, [error, setUrl, url]);
+  }, [error, name, setUrl, url]);
 };

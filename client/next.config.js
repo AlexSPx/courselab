@@ -1,6 +1,6 @@
 const withPlugins = require("next-compose-plugins");
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: true,
+  enabled: process.env.BUNDLE_ANALIZE === "true" ? true : false,
 });
 const withPWA = require("next-pwa");
 const { i18n } = require("./next-i18next.config");

@@ -1,0 +1,19 @@
+{
+  "control-panel": "Control Panel",
+  "users": "Users",
+  "reg-users": "Registered users",
+  "courses": "Courses",
+  "pub-courses": "Published Courses",
+  "name": "name",
+  "reg-date": "register date",
+  "is-admin": "Is Admin",
+  "details": "Details",
+  "general-admin": "general admin",
+  "manage-accounts": "Manage Accounts",
+  "searchbar-msg": "Enter username or email",
+  "verified": "Verified",
+  "active": "Active",
+  "admin": "Admin",
+  "no-user": "No user was found",
+  "profile": "{{username}}'s profile"
+}

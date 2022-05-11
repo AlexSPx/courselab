@@ -9,7 +9,7 @@ import SideBar, {
   SideBarButton,
 } from "../Layouts/SideBar";
 import useRequst from "../../lib/useRequest";
-import { AiOutlineContacts } from "react-icons/ai";
+import { AiOutlineContacts, AiOutlineMenuUnfold } from "react-icons/ai";
 import { TFunction } from "react-i18next";
 
 type SideBarMenuProps = {
@@ -68,7 +68,7 @@ export const CourseEditorLayout: React.FC<SideBarMenuProps> = ({
 
   return (
     <div
-      className="flex flex-row w-full h-full overflow-auto bg-gray-50"
+      className="flex flex-row relative w-full h-full overflow-auto bg-gray-50"
       id="journal-scroll"
     >
       <SideBar css="bg-white">

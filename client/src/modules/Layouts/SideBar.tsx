@@ -1,16 +1,40 @@
 import Link from "next/link";
+import { useState } from "react";
+import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
 
 type CssProp = {
   css?: string;
 };
 
 const SideBar: React.FC<CssProp> = ({ children, css }) => {
+  const [mobileMenu, setMobileMenu] = useState(false);
+
+  const MobileMenu = () => {
+    return (
+      <div
+        className="absolute md:hidden my-2 z-[60] left-0 mx-1 cursor-pointer bg-white border"
+        onClick={() => setMobileMenu(!mobileMenu)}
+      >
+        {mobileMenu ? (
+          <AiOutlineMenuUnfold size={38} />
+        ) : (
+          <AiOutlineMenuFold size={38} />
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div
-      className={`hidden md:flex flex-col items-center w-72 border-r sticky top-0 left-0 ${css}`}
-    >
-      {children}
-    </div>
+    <>
+      <MobileMenu />
+      <div
+        className={`absolute flex flex-col ${
+          !mobileMenu && "hidden"
+        } z-50 w-56 h-full pt-8 md:flex md:sticky md:pt-0 items-center md:w-72 border-r top-0 left-0 ${css}`}
+      >
+        {children}
+      </div>
+    </>
   );
 };
 

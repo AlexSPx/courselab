@@ -11,7 +11,6 @@ export interface UserDataInterface {
     first_name: string;
     last_name: string;
     socials: null | JSON;
-    avatar: string | null;
     email: string;
     isActuve: boolean;
     isAdmin: boolean;
@@ -22,6 +21,20 @@ export interface UserDataInterface {
 export interface UserContextInterface {
   userData: UserDataInterface;
   setUserData: any;
+}
+
+export type UserInformation = GeneralUserInformation & {
+  isAdmin: boolean;
+  isVerified: boolean;
+  isActive: boolean;
+  socials: UserSocials | null;
+};
+
+export interface UserSocials {
+  location: {
+    country: string;
+    city: string;
+  };
 }
 
 export interface CourseInterface {
