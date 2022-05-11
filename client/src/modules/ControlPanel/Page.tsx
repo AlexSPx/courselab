@@ -199,7 +199,7 @@ const RenderUser = ({
   user: UserInformation;
   pushModal: any;
   closeModal: any;
-  t: TFunction;
+  t: TFunction<"control_panel", undefined>;
 }) => {
   const handleOpenUser = () => {
     const mkey = Date.now();
