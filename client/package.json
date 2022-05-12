@@ -44,7 +44,7 @@
     "screenfull": "^6.0.0",
     "sharp": "^0.29.3",
     "socket.io-client": "^4.4.0",
-    "swr": "^1.0.1"
+    "swr": "^1.2.2"
   },
   "devDependencies": {
     "@types/cookie": "^0.4.1",
