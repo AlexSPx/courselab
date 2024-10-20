@@ -21,7 +21,7 @@
     "daisyui": "^1.16.0",
     "i18next-http-backend": "^1.4.0",
     "lodash": "^4.17.21",
-    "next": "^12.0.7",
+    "next": "^14.2.7",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^10.5.0",
     "next-pwa": "^5.4.6",
